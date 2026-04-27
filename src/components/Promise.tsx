@@ -1,5 +1,7 @@
 'use client';
 
+import { motion } from 'framer-motion';
+
 const ITEMS = [
   {
     icon: (
@@ -81,52 +83,63 @@ const ITEMS = [
 
 export default function SriSrestaPromise() {
   return (
-    <section className="bg-[#fffbfa] py-12 md:py-16 overflow-hidden">
-      <div className="max-w-[1500px] mx-auto px-4 lg:pl-10 lg:pr-6 w-full flex flex-col lg:flex-row items-center justify-between">
-        
-        {/* Left Titling */}
-        <div className="w-full lg:w-[45%] flex justify-start lg:justify-end pr-0 lg:pr-[140px] relative z-10 mb-12 lg:mb-0">
-          <h2 className="text-[#032C5E] font-domine text-[42px] sm:text-[48px] lg:text-[80px] leading-[1.05] font-medium text-left lg:text-right relative">
-            Sri Sresta<br />
-            <span className="relative inline-flex items-center">
-              Promis
-              <span className="relative">
-                e
+    <section className="bg-white py-12 md:py-16 overflow-hidden" style={{ backgroundColor: '#ffffff' }}>
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        className="max-w-[1500px] mx-auto px-4 lg:pl-10 lg:pr-6 w-full relative"
+      >
+        <motion.div 
+          variants={{
+            hidden: { x: "50%", opacity: 0 },
+            visible: { x: 0, opacity: 1, transition: { duration: 1.4, ease: [0.23, 1, 0.32, 1] } }
+          }}
+          className="flex flex-col lg:flex-row items-center justify-between w-full"
+        >
+          {/* Left Titling */}
+          <div className="w-full lg:w-[45%] flex justify-start lg:justify-end pr-0 lg:pr-[140px] relative z-10 mb-12 lg:mb-0">
+            <h2 className="text-[#032C5E] font-domine text-[42px] sm:text-[48px] lg:text-[80px] leading-[1.05] font-medium text-left lg:text-right relative">
+              Sri Sresta<br />
+              <span className="relative inline-flex items-center">
+                Promis
+                <span className="relative">
+                  e
+                </span>
               </span>
-            </span>
-          </h2>
-        </div>
-
-        {/* Right Info Box */}
-        <div className="w-full lg:w-[55%] relative z-0">
-          <div className="border border-[#032C5E]/60 rounded-[20px] bg-[#FFFBFA] px-[16px] py-[16px] md:px-[24px] md:py-[24px] lg:px-[28px] lg:py-[28px] relative overflow-hidden">
-            
-            {/* Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-y-[32px] gap-x-[16px] relative z-20">
-              {ITEMS.map((item, idx) => (
-                <div key={idx} className="flex flex-col items-center text-center">
-                  {/* Circle Icon - NO SHADOWS, NO ANIMATIONS */}
-                  <div className="w-[60px] h-[60px] sm:w-[68px] sm:h-[68px] shrink-0 bg-[#032C5E] text-white rounded-full flex flex-col items-center justify-center mb-4 [&_svg]:w-[32px] [&_svg]:h-[32px]">
-                    {item.icon}
-                  </div>
-                  {/* Label */}
-                  <h4 
-                    className={`text-[#032C5E]/90 text-[13px] md:text-[14.5px] leading-tight font-medium mx-auto font-sans ${
-                      item.label === 'Lifetime Exchange & Buyback' || item.label === 'Personalised Video Consultations' 
-                      ? 'max-w-[160px] whitespace-normal' 
-                      : 'w-full whitespace-normal lg:whitespace-nowrap'
-                    }`}
-                  >
-                    {item.label}
-                  </h4>
-                </div>
-              ))}
-            </div>
-            
+            </h2>
           </div>
-        </div>
 
-      </div>
+          {/* Right Info Box */}
+          <div className="w-full lg:w-[55%] relative z-0">
+            <div className="border border-[#032C5E]/60 rounded-[20px] bg-white px-[16px] py-[16px] md:px-[24px] md:py-[24px] lg:px-[28px] lg:py-[28px] relative overflow-hidden" style={{ backgroundColor: '#ffffff' }}>
+              
+              {/* Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-y-[32px] gap-x-[16px] relative z-20">
+                {ITEMS.map((item, idx) => (
+                  <div key={idx} className="flex flex-col items-center text-center">
+                    {/* Circle Icon - NO SHADOWS, NO ANIMATIONS */}
+                    <div className="w-[60px] h-[60px] sm:w-[68px] sm:h-[68px] shrink-0 bg-[#032C5E] text-white rounded-full flex flex-col items-center justify-center mb-4 [&_svg]:w-[32px] [&_svg]:h-[32px]">
+                      {item.icon}
+                    </div>
+                    {/* Label */}
+                    <h4 
+                      className={`text-[#032C5E]/90 text-[13px] md:text-[14.5px] leading-tight font-medium mx-auto font-sans ${
+                        item.label === 'Lifetime Exchange & Buyback' || item.label === 'Personalised Video Consultations' 
+                        ? 'max-w-[160px] whitespace-normal' 
+                        : 'w-full whitespace-normal lg:whitespace-nowrap'
+                      }`}
+                    >
+                      {item.label}
+                    </h4>
+                  </div>
+                ))}
+              </div>
+              
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion, Variants } from 'framer-motion';
 
 const CARDS = [
   {
@@ -75,14 +76,30 @@ export default function CuratedStyles() {
 
   const indices = [index0, index1, index2];
 
+  const containerVariants: Variants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.2 } }
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+  };
+
   return (
-    <section className="bg-white py-10">
-      <div className="w-full px-8 mx-auto flex flex-col lg:flex-row items-center lg:divide-x lg:divide-[#f6e1e1]">
+    <section className="bg-white py-10 overflow-hidden">
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        className="w-full px-8 mx-auto flex flex-col lg:flex-row items-center lg:divide-x lg:divide-[#f6e1e1]"
+      >
         
         {/* LEFT COMPONENT: 3 Cards Grid */}
         <div className="lg:w-[55%] grid grid-cols-1 md:grid-cols-3 gap-5 lg:pr-8 mb-8 lg:mb-0">
           {CARDS.map((card, idx) => (
-            <a href={card.link} key={idx} className="block group">
+            <motion.a variants={itemVariants} href={card.link} key={idx} className="block group">
               <div className="bg-[#fff5f8] p-[10px] rounded-[18px] flex flex-col h-full hover:shadow-md transition-shadow">
                 
                 {/* Image Container with Crossfade */}
@@ -112,12 +129,12 @@ export default function CuratedStyles() {
                   </p>
                 </div>
               </div>
-            </a>
+            </motion.a>
           ))}
         </div>
 
         {/* RIGHT COMPONENT: Gift Card Banner */}
-        <div className="lg:w-[45%] lg:pl-8">
+        <motion.div variants={itemVariants} className="lg:w-[45%] lg:pl-8">
           <div className="rounded-[24px] overflow-hidden relative shadow-sm">
             {/* Background Image guarantees natural aspect ratio */}
             <img 
@@ -140,9 +157,9 @@ export default function CuratedStyles() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-      </div>
+      </motion.div>
     </section>
   );
 }

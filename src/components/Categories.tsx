@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 
 /* ─── Default assets baked in — overridden if client uploads via /upload ─── */
 const GOLD_DEFAULTS = [
@@ -54,13 +55,13 @@ const GOLD_PLAN_DEFAULT: PlanData = {
   badge: 'Gold Mine', installment: '10 + 1', suffix: 'Monthly Plan',
   desc: 'Pay 10 installments, and get 100% off on the last one!',
   btnText: 'Enroll Now', btnLink: '#',
-};
+}
 
 const SILVER_PLAN_DEFAULT: PlanData = {
   badge: 'Silver Mine', installment: '10 + 1', suffix: 'Monthly Plan',
   desc: 'Pay 10 installments, and get 100% off on the last one!',
   btnText: 'Enroll Now', btnLink: '#',
-};
+}
 
 interface CategoryItem { name: string; img?: string; filename?: string | null; }
 
@@ -84,7 +85,7 @@ interface Props {
 }
 
 export default function Categories({ goldLive, silverLive, goldPlan, silverPlan }: Props) {
-  const [tab, setTab] = useState<'gold' | 'silver'>('gold');
+  const [tab, setTab] = useState<'gold' | 'silver'>('silver'); // Default to silver as gold is commented out
 
   const goldItems   = buildItems(GOLD_DEFAULTS,   goldLive);
   const silverItems = buildItems(SILVER_DEFAULTS, silverLive);
@@ -95,59 +96,65 @@ export default function Categories({ goldLive, silverLive, goldPlan, silverPlan 
     : { ...SILVER_PLAN_DEFAULT, ...silverPlan };
 
   return (
-    <section className="bg-white py-10">
+    <section className="bg-white py-10 overflow-hidden">
       <div className="w-full px-6">
 
-        {/* ── Gold / Silver toggle ── */}
+        {/* ── Silver Title (styled like tab) ── */}
         <div className="flex items-center justify-center mb-10">
-          <div className="relative inline-flex rounded-full bg-gray-100 p-1">
-            <span
-              className={`absolute top-1 h-[calc(100%-8px)] w-[calc(50%-4px)] rounded-full transition-all duration-300 ease-in-out
-                ${tab === 'gold'
-                  ? 'left-1 bg-gradient-to-r from-amber-400 to-yellow-500 shadow-md'
-                  : 'left-[calc(50%+3px)] bg-gradient-to-r from-slate-400 to-gray-500 shadow-md'
-                }`}
-            />
-            <button
-              onClick={() => setTab('gold')}
-              className={`relative z-10 px-10 py-2.5 rounded-full text-sm font-bold tracking-widest uppercase transition-colors duration-300
-                ${tab === 'gold' ? 'text-white' : 'text-gray-400 hover:text-gray-600'}`}
-            >
-              Gold
-            </button>
-            <button
-              onClick={() => setTab('silver')}
-              className={`relative z-10 px-10 py-2.5 rounded-full text-sm font-bold tracking-widest uppercase transition-colors duration-300
-                ${tab === 'silver' ? 'text-white' : 'text-gray-400 hover:text-gray-600'}`}
-            >
+          <div className="relative inline-flex rounded-full bg-gray-100 p-1.5">
+            <span className="absolute inset-1 rounded-full bg-gradient-to-r from-slate-400 to-gray-500 shadow-md" />
+            <div className="relative z-10 px-12 py-3 rounded-full text-base font-bold tracking-widest uppercase text-white">
               Silver
-            </button>
+            </div>
           </div>
         </div>
 
         {/* ── 2-row × 8-col grid ── */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-x-4 md:gap-y-8">
-          {items.map((cat, i) => (
-            <div
-              key={`${tab}-${i}`}
-              className="flex flex-col items-center gap-3 cursor-pointer group"
-            >
-              <div className={`w-full aspect-square rounded-[22px] overflow-hidden flex items-center justify-center
-                transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-xl
-                ${tab === 'gold' ? 'bg-[#fff5f5] group-hover:bg-[#ffeef0]' : 'bg-[#f4f6f9] group-hover:bg-[#eaeff7]'}`}
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.6 }}
+          className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-x-4 md:gap-y-8"
+        >
+          {items.map((cat, i) => {
+            const isLeft = (i % 8) % 2 === 0;
+
+            return (
+              <motion.div
+                key={`${tab}-${i}`}
+                variants={{
+                  hidden: {
+                    x: isLeft ? 'calc(100% + 1rem)' : 'calc(-100% - 1rem)',
+                  },
+                  visible: {
+                    x: 0,
+                    transition: { delay: 0.3, duration: 1.5, ease: [0.23, 1, 0.32, 1] }
+                  }
+                }}
+                className="flex flex-col items-center gap-3 cursor-pointer group"
               >
-                <img src={cat.img} alt={cat.name} className="w-[78%] h-[78%] object-contain" />
-              </div>
-              <p className={`text-[12px] font-medium text-center leading-tight transition-colors
-                ${tab === 'gold' ? 'text-gray-400 group-hover:text-amber-600' : 'text-gray-400 group-hover:text-slate-600'}`}>
-                {cat.name}
-              </p>
-            </div>
-          ))}
-        </div>
+                <div className={`w-full aspect-square rounded-[22px] overflow-hidden flex items-center justify-center
+                  transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-xl
+                  ${tab === 'gold' ? 'bg-[#fff5f5] group-hover:bg-[#ffeef0]' : 'bg-[#f4f6f9] group-hover:bg-[#eaeff7]'}`}
+                >
+                  <img src={cat.img} alt={cat.name} className="w-[78%] h-[78%] object-contain" />
+                </div>
+                <p className={`text-[12px] font-medium text-center leading-tight transition-colors
+                  ${tab === 'gold' ? 'text-gray-400 group-hover:text-amber-600' : 'text-gray-400 group-hover:text-slate-600'}`}>
+                  {cat.name}
+                </p>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+
 
         {/* ── Offer Plan Banner — after grid ── */}
-        <div
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           style={tab === 'gold' ? {
             backgroundImage: [
               'linear-gradient(to right, transparent 0%, rgba(180,110,140,0.25) 30%, rgba(180,110,140,0.25) 70%, transparent 100%)',
@@ -185,7 +192,7 @@ export default function Categories({ goldLive, silverLive, goldPlan, silverPlan 
           >
             {plan.btnText}
           </a>
-        </div>
+        </motion.div>
 
       </div>
     </section>

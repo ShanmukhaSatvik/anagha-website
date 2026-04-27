@@ -1,61 +1,62 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 const REVIEWS = [
   {
     name: 'Akanksha Khanna, 27',
     text: 'Delighted with my engagement ring from Sri Sresta! It’s my dream ring, fits perfectly and is stunning to look at. Thanks, Sri Sresta, for helping us find the perfect symbol of love!',
-    img: '/images/curated/layered_necklace.png',
+    img: '/images/testimonials/t1.png',
     rotate: 'rotate-2',
     translateY: 'translate-y-04',
   },
   {
     name: 'Diksha Singh, 29',
     text: 'I was worried about finding good quality fine jewellery pieces online, but Sri Sresta’s customer service gave me full assurance and the delivery was super quick. Their jewellery is certified.',
-    img: '/images/curated/bracelet_2.png',
+    img: '/images/testimonials/t2.png',
     rotate: 'rotate-2',
     translateY: 'translate-y-0',
   },
   {
     name: 'Nutan Mishra, 33',
     text: 'I got a Nazariya for my baby boy from Sri Sresta. It’s so cute seeing it on my little one’s wrist, and it gives me a sense of security knowing it’s there. Thanks, Sri Sresta, for making such lovely pieces!',
-    img: '/images/curated/chain_3.png',
+    img: '/images/testimonials/t3.png',
     rotate: '-rotate-2',
     translateY: '-translate-y-4',
   },
   {
     name: 'Divya Mishra, 26',
     text: 'On Valentine’s Day, my husband gifted me a necklace from Sri Sresta, and I haven’t taken it off ever since. Everyone asks me where it’s from, and I just LOVE how nice it looks on me.',
-    img: '/images/curated/ear_rings_4.png',
+    img: '/images/testimonials/t4.png',
     rotate: 'rotate-3',
     translateY: 'translate-y-6',
   },
   {
     name: 'Anuska Ananya, 24',
     text: 'Sri Sresta is my go-to place for jewellery. I love that I can wear their jewellery to work, dates, parties and brunches; it goes with everything and makes my outfits look stylish and trendy.',
-    img: '/images/curated/pendant_1.png',
+    img: '/images/testimonials/t6.png', // Swapped with Priya
     rotate: '-rotate-6',
     translateY: 'translate-y-2',
   },
   {
     name: 'Priya Singh, 34',
     text: 'I had trouble finding jewellery that suited my minimalist style, but Sri Sresta’s sleek and elegant designs were exactly what I was looking for. They have pieces for every style and occasion.',
-    img: '/images/curated/men_jewellery_1.png',
+    img: '/images/testimonials/t5.png', // Swapped with Anuska
     rotate: 'rotate-1',
     translateY: 'translate-y-10',
   },
   {
     name: 'Avni Sharma, 27',
     text: 'Me and my friends love Sri Sresta’s unique designs, especially their enamel jewellery. I love how their enamel pieces add a pop of colour to my outfits. Their jewellery is stylish, modern.',
-    img: '/images/curated/men_jewellery_2.png',
+    img: '/images/testimonials/t7.png',
     rotate: '-rotate-3',
     translateY: '-translate-y-2',
   },
   {
     name: 'Sonaalee Semwal, 28',
     text: 'I bought a bracelet from Sri Sresta as a birthday gift from me to me. I love how versatile it is. If you want to buy yourself a gift, Sri Sresta is the place to go!',
-    img: '/images/curated/men_jewellery_3.png',
+    img: '/images/testimonials/t8.png',
     rotate: 'rotate-3',
     translateY: 'translate-y-4',
   }
@@ -92,22 +93,23 @@ export default function Testimonials() {
 
   return (
     <section className="bg-white py-16 overflow-hidden relative">
-      <div className="w-full mb-12 relative">
-        {/* Scrollable Container */}
-        <div 
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        className="w-full mb-12 relative"
+      >
+        {/* Scrollable Container with Slide-in Animation */}
+        <motion.div 
+          variants={{
+            hidden: { x: "50%", opacity: 0 },
+            visible: { x: 0, opacity: 1, transition: { duration: 1.4, ease: [0.23, 1, 0.32, 1] } }
+          }}
           ref={scrollRef}
           onScroll={handleScroll}
           className="flex gap-10 overflow-x-auto pb-16 pt-10 px-8 lg:px-12 snap-x snap-mandatory z-10 relative scrollbar-hide"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {/* Wavy Background Path (Now scrolls with content) - COMMENTED OUT AWAITING APPROVAL
-          <div className="absolute top-[-10px] left-0 right-0 w-[4150px] overflow-hidden pointer-events-none z-0">
-            <svg className="w-full h-[100px]" preserveAspectRatio="none" viewBox="0 0 4150 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M-13 50 C 150.5 -15 350.5 110.5 550.5 50 C 750.5 -10.5 950.5 110.5 1150.5 50 C 1350.5 -10.5 1550.5 110.5 1750.5 50 C 1950.5 -10.5 2150.5 110.5 2350.5 50 C 2550.5 -10.5 2750.5 110.5 2950.5 50 C 3150.5 -10.5 3350.5 110.5 3550.5 50 C 3750.5 -10.5 3950.5 110.5 4150.5 50" stroke="#000" strokeWidth="1" strokeLinecap="round" opacity="0.15" />
-            </svg>
-          </div>
-          */}
-
           {REVIEWS.map((review, idx) => {
             const displayImg = imagesOverride[idx] || review.img;
             const displayName = namesOverride[idx] || review.name;
@@ -138,16 +140,22 @@ export default function Testimonials() {
               </div>
             );
           })}
-        </div>
+        </motion.div>
 
         {/* Custom Styled Scrollbar indicator matching exact Testimonial background color */}
-        <div className="max-w-[280px] mx-auto mt-10 relative h-[4px] bg-gray-200 rounded-full overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.8 }}
+          transition={{ delay: 1, duration: 0.5 }}
+          className="max-w-[280px] mx-auto mt-10 relative h-[4px] bg-gray-200 rounded-full overflow-hidden"
+        >
           <div 
             className="absolute top-0 left-0 h-full rounded-full transition-all duration-75"
             style={{ width: `${Math.max(15, scrollProgress)}%`, backgroundColor: '#e29db1' }}
           />
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

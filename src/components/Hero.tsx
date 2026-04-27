@@ -23,7 +23,7 @@ async function getHeroMeta(): Promise<HeroMeta> {
 export default async function Hero() {
   const meta = await getHeroMeta();
 
-  const src = meta.filename ? `/uploads/${meta.filename}` : '/images/hero_banner.png';
+  const src = meta.filename ? `/uploads/${meta.filename}` : '/images/hero_banner.avif';
   const isVideo = meta.type === 'video';
 
   return (

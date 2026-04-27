@@ -8,9 +8,9 @@ import LatestCollections from '@/components/LatestCollections';
 import CuratedStyles from '@/components/CuratedStyles';
 import DesignLed from '@/components/DesignLed';
 import Testimonials from '@/components/Testimonials';
+import AboutCompany from '@/components/AboutCompany';
 import PromiseSection from '@/components/Promise';
-
-
+import Footer from '@/components/Footer';
 async function getMeta() {
   try {
     const raw = await readFile(
@@ -29,7 +29,7 @@ export default async function Home() {
   return (
     <>
       <Header />
-      <main>
+      <main className="flex flex-col gap-y-8 md:gap-y-12 pb-8 md:pb-12">
         <Hero />
         <Categories
           goldLive={meta.goldCategories || []}
@@ -54,8 +54,10 @@ export default async function Home() {
         </section>
 
         <Testimonials />
+        <AboutCompany />
         <PromiseSection />
       </main>
+      <Footer />
     </>
   );
 }

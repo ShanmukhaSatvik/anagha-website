@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 
 
 const DEFAULTS = [
@@ -26,7 +27,13 @@ export default function Offers({ live }: Props) {
 
 
   return (
-    <section className="w-full bg-white py-2">
+    <motion.section 
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="w-full bg-white py-2 -mt-12 md:-mt-16 relative z-10"
+    >
       <div className="relative w-full overflow-hidden select-none">
 
         {/* ── Slides strip ── */}
@@ -91,6 +98,6 @@ export default function Offers({ live }: Props) {
         </div>
 
       </div>
-    </section>
+    </motion.section>
   );
 }
