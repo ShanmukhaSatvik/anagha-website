@@ -92,7 +92,7 @@ export default function Testimonials() {
   }, []);
 
   return (
-    <section className="bg-white py-16 overflow-hidden relative">
+    <section className="bg-white pt-16 pb-8 overflow-hidden relative">
       <motion.div 
         initial="hidden"
         whileInView="visible"

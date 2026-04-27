@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 export default function AboutCompany() {
   return (
-    <section className="bg-[#fffbfa] py-16 relative overflow-hidden">
+    <section className="bg-[#fffbfa] pt-8 pb-16 relative overflow-hidden">
       <div className="max-w-[1300px] mx-auto px-4 lg:px-8 relative z-10">
         
         {/* Horizontal Line connecting icons (visible on desktop) */}

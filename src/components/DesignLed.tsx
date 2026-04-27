@@ -2,22 +2,26 @@
 
 import { useState, useEffect } from 'react';
 import { motion, Variants } from 'framer-motion';
+import Link from 'next/link';
 
 const ITEMS = [
   {
     largeImg: '/images/design-led/earrings_2.webp',
     smallImg: '/images/design-led/earrings_1.png',
-    label:    'Earrings'
+    label:    'Earrings',
+    slug:     'earrings'
   },
   {
     largeImg: '/images/design-led/bangles_2.webp',
     smallImg: '/images/design-led/bangles_1.png',
-    label:    'Bangles'
+    label:    'Bangles',
+    slug:     'bangles'
   },
   {
     largeImg: '/images/design-led/necklace_2.webp',
     smallImg: '/images/design-led/necklace_1.png',
-    label:    'Necklace'
+    label:    'Necklace',
+    slug:     'necklaces'
   }
 ];
 
@@ -86,38 +90,39 @@ export default function DesignLed() {
 
           return (
             <motion.div variants={cardVariants} key={idx} className="flex flex-col items-center">
-              
-              {/* Image Box - Made smaller by reducing width to 80% */}
-              <div className="relative w-[80%] max-w-[320px] mx-auto mb-24 border border-[#f0f0f0] rounded-[16px] shadow-sm bg-[#fafafa] transform-style-3d">
-                <img 
-                  src={displayLarge} 
-                  alt={`${displayLabel} worn`} 
-                  className="w-full object-cover rounded-[16px]"
-                  draggable={false}
-                />
-                
-                {/* Overlapping small container */}
-                <div className="absolute z-10 left-1/2 bottom-0 translate-y-[75%] -translate-x-1/2">
-                  <motion.div 
-                    variants={popVariants}
-                    className="w-[140px] h-[85px] sm:w-[160px] sm:h-[95px] xl:w-[200px] xl:h-[120px] bg-white rounded-[20px] shadow-[0_12px_40px_rgb(0,0,0,0.15)] 
-                              flex items-center justify-center p-1 overflow-hidden"
-                  >
-                    <img 
-                      src={displaySmall} 
-                      alt={displayLabel} 
-                      className="w-full h-full object-cover scale-[1.2] opacity-90 transition-opacity hover:opacity-100" 
-                      draggable={false}
-                    />
-                  </motion.div>
+              <Link href={`/jewellery/${item.slug}`} className="flex flex-col items-center w-full group">
+
+                {/* Image Box */}
+                <div className="relative w-[92%] max-w-[380px] mx-auto mb-24 border-2 border-[#f1592a] rounded-[16px] shadow-sm bg-[#fafafa] transform-style-3d group-hover:shadow-md transition-shadow duration-300">
+                  <img 
+                    src={displayLarge} 
+                    alt={`${displayLabel} worn`} 
+                    className="w-full object-cover rounded-[16px]"
+                    draggable={false}
+                  />
+                  
+                  {/* Overlapping small container */}
+                  <div className="absolute z-10 left-1/2 bottom-0 translate-y-[75%] -translate-x-1/2">
+                    <motion.div 
+                      variants={popVariants}
+                      className="w-[140px] h-[85px] sm:w-[160px] sm:h-[95px] xl:w-[200px] xl:h-[120px] bg-white rounded-[20px] shadow-[0_12px_40px_rgb(0,0,0,0.15)] border-2 border-gray-200
+                                flex items-center justify-center p-1 overflow-hidden"
+                    >
+                      <img 
+                        src={displaySmall} 
+                        alt={displayLabel} 
+                        className="w-full h-full object-cover scale-[1.08] opacity-90 transition-opacity hover:opacity-100" 
+                        draggable={false}
+                      />
+                    </motion.div>
+                  </div>
                 </div>
-              </div>
 
-              {/* Label below */}
-              <p className="text-[13px] text-gray-400 font-medium tracking-wide mt-4">
-                {displayLabel}
-              </p>
-
+                {/* Label below */}
+                <p className="text-[16px] text-gray-500 font-semibold tracking-wide mt-4 group-hover:text-[#2e6da4] transition-colors">
+                  {displayLabel}
+                </p>
+              </Link>
             </motion.div>
           );
         })}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, Variants } from 'framer-motion';
+import Link from 'next/link';
 
 const CARDS = [
   {
@@ -13,7 +14,7 @@ const CARDS = [
       '/images/curated/layered_necklace_3.png',
       '/images/curated/layered_necklace.png',
     ],
-    link: '#'
+    link: '/jewellery/necklaces'
   },
   {
     title: 'Coveted Styles',
@@ -24,7 +25,7 @@ const CARDS = [
       '/images/curated/ear_rings_4.png',
       '/images/curated/pendant_1.png',
     ],
-    link: '#'
+    link: '/jewellery/bracelets'
   },
   {
     title: 'Sri Sresta Man',
@@ -35,7 +36,7 @@ const CARDS = [
       '/images/curated/men_jewellery_3.png',
       '/images/curated/men_jewellery_4.png',
     ],
-    link: '#'
+    link: '/jewellery/mens-jewellery'
   }
 ];
 
@@ -99,37 +100,39 @@ export default function CuratedStyles() {
         {/* LEFT COMPONENT: 3 Cards Grid */}
         <div className="lg:w-[55%] grid grid-cols-1 md:grid-cols-3 gap-5 lg:pr-8 mb-8 lg:mb-0">
           {CARDS.map((card, idx) => (
-            <motion.a variants={itemVariants} href={card.link} key={idx} className="block group">
-              <div className="bg-[#fff5f8] p-[10px] rounded-[18px] flex flex-col h-full hover:shadow-md transition-shadow">
-                
-                {/* Image Container with Crossfade */}
-                <div className="bg-white rounded-[12px] aspect-square overflow-hidden relative mb-4 flex items-center justify-center p-2">
-                  {card.images.map((img, i) => {
-                    const globalIndex = idx * 4 + i;
-                    const displaySrc = overrides[globalIndex] || img;
-                    return (
-                      <img 
-                        key={i}
-                        src={displaySrc} 
-                        alt={`${card.title} ${i + 1}`} 
-                        className={`absolute inset-0 w-full h-full object-contain p-4 transition-all duration-[1200ms] ease-in-out
-                          ${i === indices[idx] ? 'opacity-100 scale-100 translate-y-0 blur-0 z-10' : 'opacity-0 scale-90 translate-y-3 blur-sm z-0'}`} 
-                      />
-                    );
-                  })}
-                </div>
+            <motion.div variants={itemVariants} key={idx}>
+              <Link href={card.link} className="block group">
+                <div className="bg-[#fff5f8] p-[10px] rounded-[18px] flex flex-col h-full hover:shadow-md transition-shadow">
+                  
+                  {/* Image Container with Crossfade */}
+                  <div className="bg-white rounded-[12px] aspect-square overflow-hidden relative mb-4 flex items-center justify-center p-2">
+                    {card.images.map((img, i) => {
+                      const globalIndex = idx * 4 + i;
+                      const displaySrc = overrides[globalIndex] || img;
+                      return (
+                        <img 
+                          key={i}
+                          src={displaySrc} 
+                          alt={`${card.title} ${i + 1}`} 
+                          className={`absolute inset-0 w-full h-full object-contain p-4 transition-all duration-[1200ms] ease-in-out
+                            ${i === indices[idx] ? 'opacity-100 scale-100 translate-y-0 blur-0 z-10' : 'opacity-0 scale-90 translate-y-3 blur-sm z-0'}`} 
+                        />
+                      );
+                    })}
+                  </div>
 
-                {/* Text Content */}
-                <div className="px-1 pb-2 flex-grow">
-                  <h3 className="text-[#032C5E] font-domine text-[15px] font-semibold border-b-[1.5px] border-[#032C5E]/50 inline-block mb-2 group-hover:border-[#032C5E] transition-colors">
-                    {card.title}
-                  </h3>
-                  <p className="text-[12.5px] text-gray-500 leading-snug">
-                    {card.desc}
-                  </p>
+                  {/* Text Content */}
+                  <div className="px-1 pb-2 flex-grow">
+                    <h3 className="text-[#032C5E] font-domine text-[15px] font-semibold border-b-[1.5px] border-[#032C5E]/50 inline-block mb-2 group-hover:border-[#032C5E] transition-colors">
+                      {card.title}
+                    </h3>
+                    <p className="text-[12.5px] text-gray-500 leading-snug">
+                      {card.desc}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </motion.a>
+              </Link>
+            </motion.div>
           ))}
         </div>
 

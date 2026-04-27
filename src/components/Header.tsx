@@ -192,7 +192,27 @@ export default function Header() {
               key={n}
               className="group relative flex items-center gap-1 h-full px-1 text-white text-[10.5px] xl:text-[12px] font-medium whitespace-nowrap cursor-pointer hover:bg-white/10 transition-colors"
             >
-              {n} <span className="text-[13px] xl:text-[15px] opacity-100 leading-none">▾</span>
+              {(() => {
+                const NAV_LINKS: Record<string, string> = {
+                  'ALL JEWELLERY':   '/jewellery',
+                  'WATCH JEWELLERY': '/jewellery/watch-jewellery',
+                  'RINGS':           '/jewellery/rings',
+                  'EARRINGS':        '/jewellery/earrings',
+                  'PENDANTS':        '/jewellery/pendants',
+                  'SOLITAIRES':      '/jewellery/solitaires',
+                  'GOLD COINS':      '/jewellery/coins',
+                };
+                const href = NAV_LINKS[n];
+                return href ? (
+                  <Link href={href} className="flex items-center gap-1 h-full w-full">
+                    {n} <span className="text-[13px] xl:text-[15px] opacity-100 leading-none">▾</span>
+                  </Link>
+                ) : (
+                  <>
+                    {n} <span className="text-[13px] xl:text-[15px] opacity-100 leading-none">▾</span>
+                  </>
+                );
+              })()}
               
               {n === 'WATCH JEWELLERY' && (
                 <div className="absolute top-full left-0 bg-white shadow-2xl w-[900px] py-10 rounded-b-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] border-t-2 border-navy translate-y-2 group-hover:translate-y-0">

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 /* ─── Default assets baked in — overridden if client uploads via /upload ─── */
 const GOLD_DEFAULTS = [
@@ -41,6 +42,28 @@ const SILVER_DEFAULTS = [
   { name: 'Silver Chains',    img: '/images/category/silver_chain.png' },
   { name: 'Kada',             img: '/images/category/silver_kada.png' },
 ];
+
+/* ─── Maps category display names → route slug ─── */
+const CATEGORY_SLUG_MAP: Record<string, string> = {
+  'Solitaires':       'solitaires',
+  'Watch Jewellery':  'watch-jewellery',
+  "Men's Jewellery":  'mens-jewellery',
+  'Mangalsutras':     'mangalsutra',
+  'Nose Pins':        'nose-pins',
+  'Kids Jewellery':   'kids-jewellery',
+  'Gold Coins':       'coins',
+  'Silver Coins':     'coins',
+  'Anklets':          'anklets',
+  'Pendants':         'pendants',
+  'Rings':            'rings',
+  'Necklaces':        'necklaces',
+  'Earrings':         'earrings',
+  'Bangles':          'bangles',
+  'Bracelets':        'bracelets',
+  'Gold Chains':      'chains',
+  'Silver Chains':    'chains',
+  'Kada':             'kadas',
+};
 
 interface PlanData {
   badge: string;
@@ -118,6 +141,8 @@ export default function Categories({ goldLive, silverLive, goldPlan, silverPlan 
         >
           {items.map((cat, i) => {
             const isLeft = (i % 8) % 2 === 0;
+            const slug = CATEGORY_SLUG_MAP[cat.name];
+            const href = slug ? `/jewellery/${slug}` : '/jewellery';
 
             return (
               <motion.div
@@ -131,18 +156,22 @@ export default function Categories({ goldLive, silverLive, goldPlan, silverPlan 
                     transition: { delay: 0.3, duration: 1.5, ease: [0.23, 1, 0.32, 1] }
                   }
                 }}
-                className="flex flex-col items-center gap-3 cursor-pointer group"
               >
-                <div className={`w-full aspect-square rounded-[22px] overflow-hidden flex items-center justify-center
-                  transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-xl
-                  ${tab === 'gold' ? 'bg-[#fff5f5] group-hover:bg-[#ffeef0]' : 'bg-[#f4f6f9] group-hover:bg-[#eaeff7]'}`}
+                <Link
+                  href={href}
+                  className="flex flex-col items-center gap-3 cursor-pointer group"
                 >
-                  <img src={cat.img} alt={cat.name} className="w-[78%] h-[78%] object-contain" />
-                </div>
-                <p className={`text-[12px] font-medium text-center leading-tight transition-colors
-                  ${tab === 'gold' ? 'text-gray-400 group-hover:text-amber-600' : 'text-gray-400 group-hover:text-slate-600'}`}>
-                  {cat.name}
-                </p>
+                  <div className={`w-full aspect-square rounded-[22px] overflow-hidden flex items-center justify-center
+                    transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-xl
+                    ${tab === 'gold' ? 'bg-[#fff5f5] group-hover:bg-[#ffeef0]' : 'bg-[#f4f6f9] group-hover:bg-[#eaeff7]'}`}
+                  >
+                    <img src={cat.img} alt={cat.name} className="w-[78%] h-[78%] object-contain" />
+                  </div>
+                  <p className={`text-[12px] font-medium text-center leading-tight transition-colors
+                    ${tab === 'gold' ? 'text-gray-400 group-hover:text-amber-600' : 'text-gray-400 group-hover:text-slate-600'}`}>
+                    {cat.name}
+                  </p>
+                </Link>
               </motion.div>
             );
           })}
