@@ -1,1014 +1,130 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import Header from '@/components/Header';
+import { motion } from 'framer-motion';
 
-const ACCEPTED     = 'image/jpeg,image/png,image/gif,image/webp,image/avif,video/mp4,video/webm';
-const ACCEPTED_IMG = 'image/jpeg,image/png,image/webp,image/gif,image/avif';
-const SLOTS        = 16;
-
-/* ─── Category grid sub-component ──────────────────────────── */
-function CategoryGrid({ type }: { type: 'gold' | 'silver' }) {
-  const [files,    setFiles]    = useState<(File | null)[]>(new Array(SLOTS).fill(null));
-  const [previews, setPreviews] = useState<(string | null)[]>(new Array(SLOTS).fill(null));
-  const [names,    setNames]    = useState<string[]>(new Array(SLOTS).fill(''));
-  const [saving,   setSaving]   = useState<string | null>(null);
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  useEffect(() => {
-    fetch(`/api/upload/categories?type=${type}`)
-      .then(r => r.json())
-      .then(data => {
-        setNames(new Array(SLOTS).fill('').map((_, i) => data[i]?.name || ''));
-        setPreviews(new Array(SLOTS).fill(null).map((_, i) =>
-          data[i]?.filename ? `/uploads/${data[i].filename}` : null
-        ));
-      });
-  }, [type]);
-
-  const loadFile = (f: File, i: number) => {
-    setPreviews(prev => { const n = [...prev]; n[i] = URL.createObjectURL(f); return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = f; return n; });
-  };
-
-  const save = async (i: number) => {
-    setSaving(`${i}`);
-    const fd = new FormData();
-    if (files[i]) fd.append('file', files[i]!);
-    fd.append('index', String(i));
-    fd.append('name', names[i]);
-    await fetch(`/api/upload/categories?type=${type}`, { method: 'POST', body: fd });
-    setFiles(prev => { const n = [...prev]; n[i] = null; return n; });
-    setSaving(null);
-  };
-
-  const reset = async (i: number) => {
-    if (!confirm(`Reset slot ${i + 1}?`)) return;
-    await fetch(`/api/upload/categories?type=${type}&index=${i}`, { method: 'DELETE' });
-    setPreviews(prev => { const n = [...prev]; n[i] = null; return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = null; return n; });
-    setNames(prev    => { const n = [...prev]; n[i] = ''; return n; });
-  };
-
-  const clearAll = async () => {
-    if (!confirm(`Clear all ${type} categories?`)) return;
-    await fetch(`/api/upload/categories?type=${type}`, { method: 'DELETE' });
-    setPreviews(new Array(SLOTS).fill(null));
-    setFiles(new Array(SLOTS).fill(null));
-    setNames(new Array(SLOTS).fill(''));
-  };
-
-  const accent = type === 'gold'
-    ? 'from-amber-400 to-yellow-500'
-    : 'from-slate-400 to-gray-500';
-  const cardBg = type === 'gold' ? 'bg-[#fff5f5]' : 'bg-[#f4f6f9]';
+export default function AdminHome() {
+  const sections = [
+    {
+      title: 'Landing Page',
+      desc: 'Customize the main homepage content, hero banners, curated styles, and testimonials.',
+      img: '/images/admin/landing_thumb.png',
+      link: '/upload/landing',
+      color: 'from-pink-500 to-rose-500'
+    },
+    {
+      title: 'Jewellery Page',
+      desc: 'Manage product collections, categories, and inventory for the jewellery catalog.',
+      img: '/images/admin/jewellery_thumb.png',
+      link: '/upload/jewellery',
+      color: 'from-blue-500 to-indigo-600',
+      comingSoon: false
+    }
+  ];
 
   return (
-    <div className="space-y-6">
-      {/* Section header */}
-      <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-        <div className="flex items-center gap-3">
-          <span className={`w-3 h-3 rounded-full bg-gradient-to-r ${accent}`} />
-          <h2 className="text-xl font-display font-bold text-navy uppercase tracking-widest">
-            {type === 'gold' ? 'Gold' : 'Silver'} Categories
-          </h2>
-          <span className="text-xs text-gray-300 font-medium">(16 slots)</span>
-        </div>
-        <button
-          onClick={clearAll}
-          className="px-5 py-1.5 rounded-full border border-gray-200 text-[10px] font-black text-red-400 uppercase tracking-widest hover:bg-red-50 transition-all"
-        >
-          Clear All
-        </button>
-      </div>
-
-      {/* Grid */}
-      <div className="grid grid-cols-8 gap-x-5 gap-y-10">
-        {Array.from({ length: SLOTS }).map((_, i) => (
-          <div key={i} className="flex flex-col items-center gap-2">
-            {/* Image slot */}
-            <div
-              onClick={() => inputRefs.current[i]?.click()}
-              className={`relative w-full aspect-square rounded-[18px] cursor-pointer overflow-hidden ${cardBg}
-                border border-white hover:border-gray-200 transition-all flex items-center justify-center group shadow-sm`}
-            >
-              <input
-                ref={el => { inputRefs.current[i] = el; }}
-                type="file" accept={ACCEPTED_IMG} className="hidden"
-                onChange={e => { const f = e.target.files?.[0]; if (f) loadFile(f, i); }}
-              />
-              {previews[i]
-                ? <img src={previews[i]!} alt="" className="w-full h-full object-cover" />
-                : <span className="text-xl grayscale opacity-10 group-hover:opacity-30 transition-all">✨</span>
-              }
-              {/* hover overlay */}
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all" />
-            </div>
-
-            {/* Name input */}
-            <input
-              type="text"
-              value={names[i]}
-              onChange={e => setNames(prev => { const n = [...prev]; n[i] = e.target.value; return n; })}
-              placeholder="ENTER NAME"
-              className="w-full text-center text-[11px] font-black text-navy border-b border-gray-200 focus:border-coral outline-none bg-transparent placeholder:text-gray-300 tracking-tight py-1"
-            />
-
-            {/* Actions */}
-            <div className="flex gap-2 justify-center">
-              <button
-                onClick={() => save(i)}
-                className={`text-[10px] bg-gradient-to-r ${accent} text-white px-3 py-1.5 rounded-full font-black shadow-sm active:scale-90 transition-all`}
-              >
-                {saving === String(i) ? '…' : 'SAVE'}
-              </button>
-              <button
-                onClick={() => reset(i)}
-                className="text-[10px] text-gray-300 hover:text-red-400 font-black px-1.5 transition-colors"
-              >
-                RESET
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ─── Main upload page ─────────────────────────────────────── */
-export default function UploadPage() {
-  const [heroFile,    setHeroFile]    = useState<File | null>(null);
-  const [heroPreview, setHeroPreview] = useState<string | null>(null);
-  const [heroIsVideo, setHeroIsVideo] = useState(false);
-  const [heroSaving,  setHeroSaving]  = useState(false);
-  const [heroMsg,     setHeroMsg]     = useState('');
-  const heroInputRef = useRef<HTMLInputElement>(null);
-
-  const loadHero = (f: File) => {
-    if (heroPreview) URL.revokeObjectURL(heroPreview);
-    setHeroPreview(URL.createObjectURL(f));
-    setHeroIsVideo(f.type.startsWith('video/'));
-    setHeroFile(f);
-  };
-
-  const publishHero = async () => {
-    if (!heroFile) return;
-    setHeroSaving(true);
-    const fd = new FormData();
-    fd.append('file', heroFile);
-    await fetch('/api/upload/hero', { method: 'POST', body: fd });
-    setHeroFile(null);
-    setHeroSaving(false);
-    setHeroMsg('Hero published!');
-  };
-
-  const resetHero = async () => {
-    if (!confirm('Reset hero to default?')) return;
-    await fetch('/api/upload/hero', { method: 'DELETE' });
-    setHeroPreview(null);
-    setHeroFile(null);
-    setHeroMsg('Hero reset.');
-  };
-
-  return (
-    <div className="min-h-screen bg-[#fafafa] pb-24">
+    <div className="min-h-screen bg-[#fffbfa] flex flex-col">
       <Header />
-
-      <div className="max-w-[1600px] mx-auto px-8 py-12 space-y-20">
-
-        {/* ── HERO ── */}
-        <section className="space-y-5">
-          <div className="flex items-end justify-between border-b border-gray-100 pb-4">
-            <h2 className="text-2xl font-display font-bold text-navy uppercase tracking-widest">Hero Section</h2>
-            <div className="flex items-center gap-3">
-              {heroMsg && <span className="text-xs text-green-500 font-bold">{heroMsg}</span>}
-              <button onClick={resetHero} className="px-5 py-1.5 rounded-full border border-gray-200 text-[10px] font-black text-gray-400 uppercase tracking-widest hover:bg-gray-50 transition-all">Reset</button>
-              {heroFile && (
-                <button onClick={publishHero} disabled={heroSaving}
-                  className="px-6 py-1.5 rounded-full bg-coral text-white text-[10px] font-black uppercase tracking-widest shadow-md hover:bg-coralDark transition-all">
-                  {heroSaving ? '…' : 'Publish Hero'}
-                </button>
-              )}
-            </div>
-          </div>
-
-          <div
-            onClick={() => heroInputRef.current?.click()}
-            className="relative w-full h-[360px] rounded-2xl overflow-hidden cursor-pointer border-2 border-dashed border-gray-200 hover:border-navy/30 bg-gray-50 flex items-center justify-center transition-all group"
+      
+      <main className="flex-1 max-w-[1200px] mx-auto w-full px-4 pt-8 pb-16 md:pt-12 md:pb-24">
+        <div className="flex flex-col items-center text-center mb-16">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-5xl font-display font-bold text-navy mb-4"
           >
-            <input ref={heroInputRef} type="file" accept={ACCEPTED} className="hidden"
-              onChange={e => { const f = e.target.files?.[0]; if (f) loadHero(f); }} />
-            {heroPreview ? (
-              <>
-                {heroIsVideo
-                  ? <video src={heroPreview} className="w-full h-full object-cover" autoPlay muted loop />
-                  : <img src={heroPreview} alt="hero" className="w-full h-full object-cover" />}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                  <span className="bg-white/90 text-navy px-4 py-2 rounded-full text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity shadow-xl">CLICK TO REPLACE</span>
+            Admin Dashboard
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-gray-500 max-w-lg text-lg"
+          >
+            Welcome back. Select a section to start customizing your store experience.
+          </motion.p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+          {sections.map((section, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 + idx * 0.1 }}
+            >
+              <Link 
+                href={section.link}
+                className={`group block relative bg-white rounded-[32px] overflow-hidden shadow-sm border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 ${section.comingSoon ? 'pointer-events-none grayscale opacity-70' : ''}`}
+              >
+                {/* Image Container */}
+                <div className="aspect-[16/10] overflow-hidden relative">
+                  <img 
+                    src={section.img} 
+                    alt={section.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${section.color} opacity-20 group-hover:opacity-40 transition-opacity`} />
+                  
+                  {section.comingSoon && (
+                    <div className="absolute top-6 right-6 bg-navy/80 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-full backdrop-blur-md">
+                      Coming Soon
+                    </div>
+                  )}
                 </div>
-              </>
-            ) : (
-              <div className="text-center text-gray-300 group-hover:text-navy/30 transition-colors">
-                <p className="font-bold text-sm tracking-widest uppercase">Click to upload Banner</p>
-                <p className="text-[10px] mt-1 opacity-60 italic">Recommended: 1920 × 520 px</p>
-              </div>
-            )}
-          </div>
-        </section>
 
-        {/* ── GOLD CATEGORIES ── */}
-        <CategoryGrid type="gold" />
-
-        {/* ── GOLD OFFER PLAN ── */}
-        <PlanEditor type="gold" />
-
-        {/* ── SILVER CATEGORIES ── */}
-        <CategoryGrid type="silver" />
-
-        {/* ── SILVER OFFER PLAN ── */}
-        <PlanEditor type="silver" />
-
-        {/* ── OFFERS CAROUSEL ── */}
-        <OffersEditor />
-
-        {/* ── LATEST COLLECTIONS ── */}
-        <CollectionsEditor />
-
-        {/* ── CURATED STYLES ── */}
-        <CuratedStylesEditor />
-
-        {/* ── DESIGN LED ── */}
-        <DesignLedEditor />
-
-        {/* ── STANDALONE BANNER ── */}
-        <StandaloneBannerEditor />
-
-        {/* ── TESTIMONIALS ── */}
-        <TestimonialsEditor />
-
-      </div>
-    </div>
-  );
-}
-
-/* ─── Offer Plan Editor ─────────────────────────────────────── */
-function PlanEditor({ type }: { type: 'gold' | 'silver' }) {
-  const [badge,       setBadge]       = useState(type === 'gold' ? 'Gold Mine' : 'Silver Mine');
-  const [installment, setInstallment] = useState('10 + 1');
-  const [suffix,      setSuffix]      = useState('Monthly Plan');
-  const [desc,        setDesc]        = useState('Pay 10 installments, and get 100% off on the last one!');
-  const [btnText,     setBtnText]     = useState('Enroll Now');
-  const [btnLink,     setBtnLink]     = useState('#');
-  const [saving,      setSaving]      = useState(false);
-  const [msg,         setMsg]         = useState('');
-
-  useEffect(() => {
-    fetch(`/api/upload/offer-plan?type=${type}`).then(r => r.json()).then(d => {
-      if (d.badge)       setBadge(d.badge);
-      if (d.installment) setInstallment(d.installment);
-      if (d.suffix)      setSuffix(d.suffix);
-      if (d.desc)        setDesc(d.desc);
-      if (d.btnText)     setBtnText(d.btnText);
-      if (d.btnLink)     setBtnLink(d.btnLink);
-    });
-  }, [type]);
-
-  const save = async () => {
-    setSaving(true);
-    await fetch(`/api/upload/offer-plan?type=${type}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ badge, installment, suffix, desc, btnText, btnLink }),
-    });
-    setSaving(false);
-    setMsg('Saved!');
-    setTimeout(() => setMsg(''), 2000);
-  };
-
-  const reset = async () => {
-    if (!confirm('Reset to default?')) return;
-    await fetch(`/api/upload/offer-plan?type=${type}`, { method: 'DELETE' });
-    setBadge(type === 'gold' ? 'Gold Mine' : 'Silver Mine');
-    setInstallment('10 + 1');
-    setSuffix('Monthly Plan');
-    setDesc('Pay 10 installments, and get 100% off on the last one!');
-    setBtnText('Enroll Now');
-    setBtnLink('#');
-    setMsg('Reset!');
-    setTimeout(() => setMsg(''), 2000);
-  };
-
-  const accent = type === 'gold' ? 'from-amber-400 to-yellow-500' : 'from-slate-400 to-gray-500';
-  const bannerBg = type === 'gold' ? 'bg-[#fff0f3]' : 'bg-[#f0f3ff]';
-  const highlight = type === 'gold' ? 'text-coral' : 'text-slate-400';
-  const btnColor  = type === 'gold' ? 'bg-coral' : 'bg-slate-500';
-
-  return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-        <div className="flex items-center gap-3">
-          <span className={`w-3 h-3 rounded-full bg-gradient-to-r ${accent}`} />
-          <h2 className="text-xl font-display font-bold text-navy uppercase tracking-widest">
-            {type === 'gold' ? 'Gold' : 'Silver'} Offer Plan Banner
-          </h2>
-        </div>
-        <div className="flex items-center gap-3">
-          {msg && <span className="text-xs text-green-500 font-bold">{msg}</span>}
-          <button onClick={reset} className="px-5 py-1.5 rounded-full border border-gray-200 text-[10px] font-black text-gray-400 uppercase hover:bg-gray-50">Reset</button>
-          <button onClick={save} disabled={saving} className={`px-5 py-1.5 rounded-full bg-gradient-to-r ${accent} text-white text-[10px] font-black uppercase shadow-md`}>
-            {saving ? '…' : 'Save Plan'}
-          </button>
-        </div>
-      </div>
-
-      {/* Live preview */}
-      <div
-        style={type === 'gold' ? {
-          backgroundImage: [
-            'linear-gradient(to right, transparent 0%, rgba(180,110,140,0.25) 30%, rgba(180,110,140,0.25) 70%, transparent 100%)',
-            'linear-gradient(to right, transparent 0%, rgba(180,110,140,0.25) 30%, rgba(180,110,140,0.25) 70%, transparent 100%)',
-            'linear-gradient(to right, #ffffff 0%, #fffafa 20%, #fff5f5 50%, #fffafa 80%, #ffffff 100%)',
-          ].join(','),
-          backgroundSize:     '100% 1px, 100% 1px, 100% 100%',
-          backgroundPosition: 'top, bottom, center',
-          backgroundRepeat:   'no-repeat',
-        } : {
-          backgroundImage: [
-            'linear-gradient(to right, transparent 0%, rgba(100,120,155,0.2) 30%, rgba(100,120,155,0.2) 70%, transparent 100%)',
-            'linear-gradient(to right, transparent 0%, rgba(100,120,155,0.2) 30%, rgba(100,120,155,0.2) 70%, transparent 100%)',
-            'linear-gradient(to right, #f8fafc 0%, #f2f5f9 20%, #e8eef5 50%, #f2f5f9 80%, #f8fafc 100%)',
-          ].join(','),
-          backgroundSize:     '100% 1px, 100% 1px, 100% 100%',
-          backgroundPosition: 'top, bottom, center',
-          backgroundRepeat:   'no-repeat',
-        }}
-        className="flex items-center justify-center gap-6 w-full py-3.5"
-      >
-        <p className="text-[13.5px] text-navy">
-          <span className="font-bold">{badge} </span>
-          <span className={`font-extrabold ${highlight}`}>{installment}</span>
-          <span className="font-bold"> {suffix}</span>
-          <span className="text-gray-400 font-normal text-[13px] ml-1.5">({desc})</span>
-        </p>
-        <span className={`shrink-0 px-6 py-2 rounded-lg text-[13px] font-bold text-white shadow-sm ${btnColor}`}>{btnText}</span>
-      </div>
-
-      {/* Fields — only editable parts */}
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1">
-          <label className="text-[10px] font-black text-gray-400 uppercase tracking-wider">Description</label>
-          <input value={desc} onChange={e => setDesc(e.target.value)}
-            className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-navy outline-none focus:border-coral bg-white w-full" />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-wider">Button Text</label>
-            <input value={btnText} onChange={e => setBtnText(e.target.value)}
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-navy font-semibold outline-none focus:border-coral bg-white" />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-wider">Button Link</label>
-            <input value={btnLink} onChange={e => setBtnLink(e.target.value)}
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-navy outline-none focus:border-coral bg-white" />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ─── Offers Carousel Editor ─────────────────────────────────── */
-const OFFER_DEFAULTS = [
-  '/images/offers/offer_1.jpg',
-  '/images/offers/offer_2.jpg',
-  '/images/offers/offer_3.jpg',
-  '/images/offers/offer_4.jpg',
-];
-
-function OffersEditor() {
-  const [files,    setFiles]    = useState<(File | null)[]>(new Array(4).fill(null));
-  const [previews, setPreviews] = useState<(string | null)[]>(new Array(4).fill(null));
-  const [saving,   setSaving]   = useState<number | null>(null);
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  useEffect(() => {
-    fetch('/api/upload/offers').then(r => r.json()).then((slots: (string | null)[]) => {
-      setPreviews(new Array(4).fill(null).map((_, i) => slots[i] ? `/uploads/${slots[i]}` : null));
-    });
-  }, []);
-
-  const loadFile = (f: File, i: number) => {
-    setPreviews(prev => { const n = [...prev]; n[i] = URL.createObjectURL(f); return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = f; return n; });
-  };
-
-  const save = async (i: number) => {
-    if (!files[i]) return;
-    setSaving(i);
-    const fd = new FormData();
-    fd.append('file', files[i]!);
-    fd.append('index', String(i));
-    await fetch('/api/upload/offers', { method: 'POST', body: fd });
-    setFiles(prev => { const n = [...prev]; n[i] = null; return n; });
-    setSaving(null);
-  };
-
-  const reset = async (i: number) => {
-    if (!confirm(`Reset offer ${i + 1} to default?`)) return;
-    await fetch(`/api/upload/offers?index=${i}`, { method: 'DELETE' });
-    setPreviews(prev => { const n = [...prev]; n[i] = null; return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = null; return n; });
-  };
-
-  return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-        <div className="flex items-center gap-3">
-          <span className="w-3 h-3 rounded-full bg-gradient-to-r from-rose-400 to-pink-500" />
-          <h2 className="text-xl font-display font-bold text-navy uppercase tracking-widest">Offers Carousel</h2>
-          <span className="text-xs text-gray-300 font-medium">(4 slides)</span>
-        </div>
-        <button
-          onClick={async () => {
-            if (!confirm('Reset all offer slides to defaults?')) return;
-            await Promise.all([0,1,2,3].map(i => fetch(`/api/upload/offers?index=${i}`, { method: 'DELETE' })));
-            setPreviews(new Array(4).fill(null));
-            setFiles(new Array(4).fill(null));
-          }}
-          className="px-4 py-1.5 rounded-full border border-gray-200 text-[10px] font-black text-gray-400 uppercase hover:bg-gray-50"
-        >
-          Reset All
-        </button>
-      </div>
-
-      <div className="grid grid-cols-4 gap-5">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="flex flex-col gap-2">
-            {/* Preview */}
-            <div
-              onClick={() => inputRefs.current[i]?.click()}
-              className="relative w-full aspect-[16/9] rounded-xl overflow-hidden cursor-pointer
-                bg-gray-50 border-2 border-dashed border-gray-200 hover:border-navy/30 group transition-all flex items-center justify-center"
-            >
-              <input
-                ref={el => { inputRefs.current[i] = el; }}
-                type="file" accept={ACCEPTED_IMG} className="hidden"
-                onChange={e => { const f = e.target.files?.[0]; if (f) loadFile(f, i); }}
-              />
-              {previews[i]
-                ? <img src={previews[i]!} alt="" className="w-full h-full object-cover" />
-                : (
-                  <div className="flex flex-col items-center gap-1 text-gray-300">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
-                    <p className="text-[10px] font-bold uppercase tracking-widest">Drop image</p>
-                  </div>
-                )}
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                <span className="text-white text-xs font-bold opacity-0 group-hover:opacity-100 bg-black/40 px-3 py-1 rounded-full">REPLACE</span>
-              </div>
-              <span className="absolute top-2 left-2 bg-black/40 text-white text-[10px] font-black px-2 py-0.5 rounded-full">
-                SLIDE {i + 1}
-              </span>
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-2">
-              <button
-                onClick={() => save(i)}
-                disabled={!files[i]}
-                className="flex-1 text-[10px] bg-gradient-to-r from-rose-400 to-pink-500 text-white py-1.5 rounded-full font-black shadow-sm disabled:opacity-30 transition-all"
-              >
-                {saving === i ? '…' : 'SAVE'}
-              </button>
-              <button
-                onClick={() => reset(i)}
-                className="text-[10px] text-gray-300 hover:text-red-400 font-black px-2 transition-colors"
-              >
-                RESET
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ─── Latest Collections Editor ─────────────────────────────── */
-const COLLECTION_DEFAULTS = [
-  '/images/collections/latest_1.webp',
-  '/images/collections/latest_2.webp',
-  '/images/collections/latest_3.webp',
-];
-const COLLECTION_LABELS = ['Left Card', 'Center Card (Featured)', 'Right Card'];
-
-function CollectionsEditor() {
-  const [files,    setFiles]    = useState<(File | null)[]>(new Array(3).fill(null));
-  const [previews, setPreviews] = useState<(string | null)[]>(new Array(3).fill(null));
-  const [btnLink,  setBtnLink]  = useState('#');
-  const [saving,   setSaving]   = useState<number | null>(null);
-  const [msg,      setMsg]      = useState('');
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  useEffect(() => {
-    fetch('/api/upload/collections').then(r => r.json()).then((d: { slots: (string|null)[], btnLink?: string }) => {
-      if (d.slots) setPreviews(new Array(3).fill(null).map((_, i) => d.slots[i] ? `/uploads/${d.slots[i]}` : null));
-      if (d.btnLink) setBtnLink(d.btnLink);
-    });
-  }, []);
-
-  const loadFile = (f: File, i: number) => {
-    setPreviews(prev => { const n = [...prev]; n[i] = URL.createObjectURL(f); return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = f; return n; });
-  };
-
-  const save = async (i: number) => {
-    if (!files[i]) return;
-    setSaving(i);
-    const fd = new FormData();
-    fd.append('file', files[i]!);
-    fd.append('index', String(i));
-    fd.append('btnLink', btnLink);
-    await fetch('/api/upload/collections', { method: 'POST', body: fd });
-    setFiles(prev => { const n = [...prev]; n[i] = null; return n; });
-    setSaving(null);
-    setMsg('Saved!'); setTimeout(() => setMsg(''), 2000);
-  };
-
-  const reset = async (i: number) => {
-    if (!confirm(`Reset ${COLLECTION_LABELS[i]} to default?`)) return;
-    await fetch(`/api/upload/collections?index=${i}`, { method: 'DELETE' });
-    setPreviews(prev => { const n = [...prev]; n[i] = null; return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = null; return n; });
-  };
-
-  return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-        <div className="flex items-center gap-3">
-          <span className="w-3 h-3 rounded-full bg-gradient-to-r from-coral to-pink-400" />
-          <h2 className="text-xl font-display font-bold text-navy uppercase tracking-widest">Latest Collections</h2>
-        </div>
-        <div className="flex items-center gap-3">
-          {msg && <span className="text-xs text-green-500 font-bold">{msg}</span>}
-          <button
-            onClick={async () => {
-              if (!confirm('Reset all collection slots to defaults?')) return;
-              await Promise.all([0,1,2].map(i => fetch(`/api/upload/collections?index=${i}`, { method: 'DELETE' })));
-              setPreviews(new Array(3).fill(null));
-              setFiles(new Array(3).fill(null));
-            }}
-            className="px-4 py-1.5 rounded-full border border-gray-200 text-[10px] font-black text-gray-400 uppercase hover:bg-gray-50"
-          >
-            Reset All
-          </button>
-        </div>
-      </div>
-
-      {/* Button link */}
-      <div className="flex items-center gap-3">
-        <label className="text-[10px] font-black text-gray-400 uppercase tracking-wider shrink-0">Browse Button Link</label>
-        <input value={btnLink} onChange={e => setBtnLink(e.target.value)}
-          className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-navy outline-none focus:border-coral bg-white flex-1" />
-      </div>
-
-      {/* 3 image slots */}
-      <div className="grid grid-cols-3 gap-5 items-end">
-        {[0, 1, 2].map(i => (
-          <div key={i} className="flex flex-col gap-2">
-            <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider">{COLLECTION_LABELS[i]}</p>
-            <div
-              onClick={() => inputRefs.current[i]?.click()}
-              className="relative w-full rounded-xl overflow-hidden cursor-pointer bg-gray-50
-                border-2 border-dashed border-gray-200 hover:border-coral/50 group transition-all
-                flex items-center justify-center"
-              style={{ aspectRatio: '16/10' }}
-            >
-              <input
-                ref={el => { inputRefs.current[i] = el; }}
-                type="file" accept={ACCEPTED_IMG} className="hidden"
-                onChange={e => { const f = e.target.files?.[0]; if (f) loadFile(f, i); }}
-              />
-              {previews[i]
-                ? <img src={previews[i]!} alt="" className="w-full h-full object-cover" />
-                : (
-                  <div className="flex flex-col items-center gap-1 text-gray-300">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
-                    <p className="text-[10px] font-bold uppercase tracking-widest">Drop image</p>
-                  </div>
-                )}
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                <span className="text-white text-xs font-bold opacity-0 group-hover:opacity-100 bg-black/40 px-3 py-1 rounded-full">REPLACE</span>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <button onClick={() => save(i)} disabled={!files[i]}
-                className="flex-1 text-[10px] bg-gradient-to-r from-coral to-pink-400 text-white py-1.5 rounded-full font-black shadow-sm disabled:opacity-30 transition-all">
-                {saving === i ? '…' : 'SAVE'}
-              </button>
-              <button onClick={() => reset(i)}
-                className="text-[10px] text-gray-300 hover:text-red-400 font-black px-2 transition-colors">
-                RESET
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ─── Curated Styles Editor ─────────────────────────────────── */
-const CURATED_LABELS = ['Layered Necklaces', 'Coveted Styles', 'Sri Sresta Man'];
-const ACCEPTED_IMG_CURATED = 'image/jpeg,image/png,image/webp,image/gif,image/avif';
-
-function CuratedStylesEditor() {
-  const [files,    setFiles]    = useState<(File | null)[]>(new Array(12).fill(null));
-  const [previews, setPreviews] = useState<(string | null)[]>(new Array(12).fill(null));
-  const [saving,   setSaving]   = useState<number | null>(null);
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  useEffect(() => {
-    fetch('/api/upload/curated').then(r => r.json()).then((d: { slots: (string|null)[] }) => {
-      if (d.slots) setPreviews(new Array(12).fill(null).map((_, i) => d.slots[i] ? `/uploads/${d.slots[i]}` : null));
-    });
-  }, []);
-
-  const loadFile = (f: File, i: number) => {
-    setPreviews(prev => { const n = [...prev]; n[i] = URL.createObjectURL(f); return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = f; return n; });
-  };
-
-  const save = async (i: number) => {
-    if (!files[i]) return;
-    setSaving(i);
-    const fd = new FormData();
-    fd.append('file', files[i]!);
-    fd.append('index', String(i));
-    await fetch('/api/upload/curated', { method: 'POST', body: fd });
-    setFiles(prev => { const n = [...prev]; n[i] = null; return n; });
-    setSaving(null);
-  };
-
-  const reset = async (i: number) => {
-    if (!confirm(`Reset slot ${i + 1} to default?`)) return;
-    await fetch(`/api/upload/curated?index=${i}`, { method: 'DELETE' });
-    setPreviews(prev => { const n = [...prev]; n[i] = null; return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = null; return n; });
-  };
-
-  return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-        <div className="flex items-center gap-3">
-          <span className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-400 to-indigo-500" />
-          <h2 className="text-xl font-display font-bold text-navy uppercase tracking-widest">Curated Styles</h2>
-          <span className="text-xs text-gray-300 font-medium">(12 revolving slots)</span>
-        </div>
-        <button
-          onClick={async () => {
-            if (!confirm('Reset all 12 slots to defaults?')) return;
-            await Promise.all(Array.from({length:12}).map((_, i) => fetch(`/api/upload/curated?index=${i}`, { method: 'DELETE' })));
-            setPreviews(new Array(12).fill(null));
-            setFiles(new Array(12).fill(null));
-          }}
-          className="px-4 py-1.5 rounded-full border border-gray-200 text-[10px] font-black text-gray-400 uppercase hover:bg-gray-50"
-        >
-          Reset All
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {[0, 1, 2].map(group => (
-          <div key={group} className="flex flex-col gap-4 border border-gray-100 p-4 rounded-xl bg-white shadow-sm">
-            <h3 className="text-xs font-bold text-navy uppercase text-center border-b border-gray-50 pb-2">{CURATED_LABELS[group]}</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {[0, 1, 2, 3].map(sub => {
-                const i = (group * 4) + sub;
-                return (
-                  <div key={i} className="flex flex-col gap-2">
-                    <div
-                      onClick={() => inputRefs.current[i]?.click()}
-                      className="relative w-full aspect-square rounded-xl overflow-hidden cursor-pointer bg-gray-50 border-2 border-dashed border-gray-200 hover:border-purple-300 group transition-all flex items-center justify-center p-2"
-                    >
-                      <input ref={el => { inputRefs.current[i] = el; }} type="file" accept={ACCEPTED_IMG_CURATED} className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) loadFile(f, i); }} />
-                      {previews[i]
-                        ? <img src={previews[i]!} alt="" className="w-full h-full object-contain drop-shadow-sm" />
-                        : <span className="text-[10px] font-black text-gray-300 uppercase">+ Slot {sub + 1}</span>
-                      }
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                        <span className="text-white text-[10px] font-bold opacity-0 group-hover:opacity-100 bg-black/40 px-2 py-1 rounded-full">REPLACE</span>
+                {/* Content */}
+                <div className="p-8 lg:p-10">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-display font-bold text-navy group-hover:text-rose-600 transition-colors">
+                      {section.title}
+                    </h2>
+                    {!section.comingSoon && (
+                      <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-rose-50 group-hover:text-rose-600 transition-all">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M5 12h14m-7-7l7 7-7 7"/>
+                        </svg>
                       </div>
-                    </div>
-                    <div className="flex gap-1">
-                      <button onClick={() => save(i)} disabled={!files[i]} className="flex-1 text-[9px] bg-gradient-to-r from-purple-400 to-indigo-500 text-white py-1.5 rounded-full font-black shadow-sm disabled:opacity-30">
-                        {saving === i ? '…' : 'SAVE'}
-                      </button>
-                      <button onClick={() => reset(i)} className="text-[9px] text-gray-300 hover:text-red-400 font-black px-1.5">RESET</button>
-                    </div>
+                    )}
                   </div>
-                );
-              })}
-            </div>
+                  <p className="text-gray-500 leading-relaxed text-sm lg:text-base">
+                    {section.desc}
+                  </p>
+                </div>
+
+                {/* Decorative Element */}
+                <div className={`absolute bottom-0 left-0 h-1 w-0 bg-gradient-to-r ${section.color} group-hover:w-full transition-all duration-700`} />
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Quick Tips or Info */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="mt-20 p-8 rounded-[24px] bg-white/50 border border-gray-100 backdrop-blur-sm flex flex-col md:flex-row items-center gap-6"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-500 shrink-0">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+              <path d="M12 16v-4m0-4h.01"/>
+            </svg>
           </div>
-        ))}
-      </div>
+          <div>
+            <h4 className="text-navy font-bold mb-1">Administrative Note</h4>
+            <p className="text-gray-500 text-sm">
+              All changes made in these editors are live. Please ensure assets are optimized for web performance (WebP recommended) before uploading.
+            </p>
+          </div>
+        </motion.div>
+      </main>
+      
+      <footer className="py-8 text-center text-gray-400 text-xs tracking-widest uppercase border-t border-gray-100">
+        © 2026 Sri Sresta Administrative Portal
+      </footer>
     </div>
-  );
-}
-
-/* ─── Design Led Editor ─────────────────────────────────────── */
-const DESIGN_LED_DEFAULT_LABELS = ['Earrings', 'Bangles', 'Necklace'];
-
-function DesignLedEditor() {
-  const [files,    setFiles]    = useState<(File | null)[]>(new Array(6).fill(null));
-  const [previews, setPreviews] = useState<(string | null)[]>(new Array(6).fill(null));
-  const [labels,   setLabels]   = useState<string[]>(['Earrings', 'Bangles', 'Necklace']);
-  const [saving,   setSaving]   = useState<number | null>(null);
-  const [savingLabel, setSavingLabel] = useState<number | null>(null);
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  useEffect(() => {
-    fetch('/api/upload/design-led').then(r => r.json()).then(d => {
-      if (d.images) setPreviews(new Array(6).fill(null).map((_, i) => d.images[i] ? `/uploads/${d.images[i]}` : null));
-      if (d.labels) setLabels(d.labels.map((L:string, i:number) => L || DESIGN_LED_DEFAULT_LABELS[i]));
-    });
-  }, []);
-
-  const loadFile = (f: File, i: number) => {
-    setPreviews(prev => { const n = [...prev]; n[i] = URL.createObjectURL(f); return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = f; return n; });
-  };
-
-  const saveContent = async (i: number, isImage: boolean) => {
-    const fd = new FormData();
-    if (isImage) {
-      if (!files[i]) return;
-      setSaving(i);
-      fd.append('file', files[i]!);
-      fd.append('index', String(i));
-    } else {
-      setSavingLabel(i);
-      fd.append('labelIndex', String(i));
-      fd.append('label', labels[i]);
-    }
-    await fetch('/api/upload/design-led', { method: 'POST', body: fd });
-    if (isImage) {
-      setFiles(prev => { const n = [...prev]; n[i] = null; return n; });
-      setSaving(null);
-    } else {
-      setSavingLabel(null);
-    }
-  };
-
-  const resetAll = async () => {
-    if (!confirm('Reset DesignLed entirely?')) return;
-    await fetch(`/api/upload/design-led`, { method: 'DELETE' });
-    setPreviews(new Array(6).fill(null));
-    setFiles(new Array(6).fill(null));
-    setLabels([...DESIGN_LED_DEFAULT_LABELS]);
-  };
-
-  return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-        <div className="flex items-center gap-3">
-          <span className="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500" />
-          <h2 className="text-xl font-display font-bold text-navy uppercase tracking-widest">Design Led</h2>
-          <span className="text-xs text-gray-300 font-medium">(3 Groups)</span>
-        </div>
-        <button onClick={resetAll} className="px-4 py-1.5 rounded-full border border-gray-200 text-[10px] font-black text-gray-400 uppercase hover:bg-gray-50">
-          Reset All
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {[0, 1, 2].map(group => (
-          <div key={group} className="flex flex-col gap-4 border border-gray-100 p-4 rounded-xl bg-white shadow-sm">
-            <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-wider">Group Label</label>
-              <div className="flex gap-2">
-                <input value={labels[group] ?? ''} onChange={e => {
-                  const val = e.target.value;
-                  setLabels(prev => { const n = [...prev]; n[group] = val; return n; });
-                }} className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm outline-none w-full text-navy font-semibold" />
-                <button onClick={() => saveContent(group, false)} className="px-3 rounded-lg bg-teal-500 hover:bg-teal-600 transition-colors text-white text-[10px] font-bold">
-                  {savingLabel === group ? '…' : 'SAVE'}
-                </button>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-3 mt-2">
-              {/* Large and Small Images side-by-side */}
-              {[0, 1].map(sub => {
-                const i = group * 2 + sub;
-                const isLarge = sub === 0;
-                return (
-                  <div key={sub} className="flex flex-col justify-between gap-2 p-3 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider text-center">{isLarge ? 'Background' : 'Foreground'}</p>
-                    <div onClick={() => inputRefs.current[i]?.click()} className={`relative w-full cursor-pointer bg-white overflow-hidden rounded-md flex items-center justify-center border border-gray-100 hover:border-teal-400 transition-colors ${isLarge ? 'aspect-[4/5]' : 'aspect-square bg-gray-50/50'}`}>
-                      <input ref={el => { inputRefs.current[i] = el; }} type="file" accept={ACCEPTED_IMG_CURATED} className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) loadFile(f, i); }} />
-                      {previews[i]
-                        ? <img src={previews[i]!} alt="" className="w-full h-full object-cover" />
-                        : <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Click to browse</span>
-                      }
-                    </div>
-                    <div className="flex gap-2 mt-1">
-                      <button onClick={() => saveContent(i, true)} disabled={!files[i]} className="flex-1 text-[9px] uppercase tracking-wider bg-emerald-500 hover:bg-emerald-600 transition-colors text-white py-1.5 rounded disabled:opacity-30 font-bold">
-                        {saving === i ? '…' : 'Upload'}
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ─── Standalone Banner Editor ─────────────────────────────────────── */
-function StandaloneBannerEditor() {
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    fetch('/api/upload/standalone-banner').then(r => r.json()).then(d => {
-      if (d.banner) setPreview(`/uploads/${d.banner}`);
-    });
-  }, []);
-
-  const loadFile = (f: File) => {
-    setPreview(URL.createObjectURL(f));
-    setFile(f);
-  };
-
-  const publish = async () => {
-    if (!file) return;
-    setSaving(true);
-    const fd = new FormData();
-    fd.append('file', file);
-    await fetch('/api/upload/standalone-banner', { method: 'POST', body: fd });
-    setFile(null);
-    setSaving(false);
-  };
-
-  const reset = async () => {
-    if (!confirm('Reset banner to default?')) return;
-    await fetch('/api/upload/standalone-banner', { method: 'DELETE' });
-    setPreview(null);
-    setFile(null);
-  };
-
-  return (
-    <section className="space-y-5 border-t border-gray-100 pt-12">
-      <div className="flex items-end justify-between border-b border-gray-100 pb-4">
-        <div className="flex items-center gap-3">
-          <span className="w-3 h-3 rounded-full bg-gradient-to-r from-orange-400 to-red-500" />
-          <h2 className="text-xl font-display font-bold text-navy uppercase tracking-widest">Standalone Banner</h2>
-        </div>
-        <div className="flex items-center gap-3">
-          <button onClick={reset} className="px-5 py-1.5 rounded-full border border-gray-200 text-[10px] font-black text-gray-400 uppercase hover:bg-gray-50 transition-all">Reset</button>
-          {file && (
-            <button onClick={publish} disabled={saving} className="px-6 py-1.5 rounded-full bg-orange-500 text-white text-[10px] font-black uppercase shadow-md disabled:opacity-30">
-              {saving ? '…' : 'Publish Banner'}
-            </button>
-          )}
-        </div>
-      </div>
-
-      <div onClick={() => inputRef.current?.click()} className="relative w-full aspect-[21/6] rounded-2xl overflow-hidden cursor-pointer border-2 border-dashed border-gray-200 hover:border-orange-300 bg-gray-50 flex flex-col items-center justify-center transition-all group">
-        <input ref={inputRef} type="file" accept={ACCEPTED_IMG_CURATED} className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) loadFile(f); }} />
-        {preview ? (
-          <>
-            <img src={preview} alt="banner" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
-              <span className="bg-white/90 text-navy px-4 py-2 rounded-full text-xs font-bold opacity-0 group-hover:opacity-100 shadow-xl">REPLACE</span>
-            </div>
-          </>
-        ) : (
-          <div className="text-center text-gray-300 group-hover:text-orange-400/50 transition-colors">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mx-auto mb-2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
-            <p className="font-bold text-xs uppercase tracking-widest">Click to upload Full-Width Banner</p>
-          </div>
-        )}
-      </div>
-    </section>
-  );
-}
-
-/* ─── Testimonials Editor ─────────────────────────────────────── */
-const TESTIMONIAL_DEFAULT_NAMES = [
-  'Akanksha Khanna, 27', 'Diksha Singh, 29', 'Nutan Mishra, 33', 'Divya Mishra, 26',
-  'Anuska Ananya, 24', 'Priya Singh, 34', 'Avni Sharma, 27', 'Sonaalee Semwal, 28'
-];
-const TESTIMONIAL_DEFAULT_TEXTS = [
-  'Delighted with my engagement ring from Sri Sresta! It’s my dream ring, fits perfectly and is stunning to look at. Thanks, Sri Sresta, for helping us find the perfect symbol of love!',
-  'I was worried about finding good quality fine jewellery pieces online, but Sri Sresta’s customer service gave me full assurance and the delivery was super quick. Their jewellery is certified.',
-  'I got a Nazariya for my baby boy from Sri Sresta. It’s so cute seeing it on my little one’s wrist, and it gives me a sense of security knowing it’s there. Thanks, Sri Sresta, for making such lovely pieces!',
-  'On Valentine’s Day, my husband gifted me a necklace from Sri Sresta, and I haven’t taken it off ever since. Everyone asks me where it’s from, and I just LOVE how nice it looks on me.',
-  'Sri Sresta is my go-to place for jewellery. I love that I can wear their jewellery to work, dates, parties and brunches; it goes with everything and makes my outfits look stylish and trendy.',
-  'I had trouble finding jewellery that suited my minimalist style, but Sri Sresta’s sleek and elegant designs were exactly what I was looking for. They have pieces for every style and occasion.',
-  'Me and my friends love Sri Sresta’s unique designs, especially their enamel jewellery. I love how their enamel pieces add a pop of colour to my outfits. Their jewellery is stylish, modern.',
-  'I bought a bracelet from Sri Sresta as a birthday gift from me to me. I love how versatile it is. If you want to buy yourself a gift, Sri Sresta is the place to go!'
-];
-
-function TestimonialsEditor() {
-  const [files,    setFiles]    = useState<(File | null)[]>(new Array(8).fill(null));
-  const [previews, setPreviews] = useState<(string | null)[]>(new Array(8).fill(null));
-  const [names,    setNames]    = useState<string[]>([...TESTIMONIAL_DEFAULT_NAMES]);
-  const [texts,    setTexts]    = useState<string[]>([...TESTIMONIAL_DEFAULT_TEXTS]);
-  const [saving,   setSaving]   = useState<number | null>(null);
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  useEffect(() => {
-    fetch('/api/upload/testimonials').then(r => r.json()).then(d => {
-      if (d.images) setPreviews(new Array(8).fill(null).map((_, i) => d.images[i] ? `/uploads/${d.images[i]}` : null));
-      if (d.names) setNames(d.names.map((n:string, i:number) => n || TESTIMONIAL_DEFAULT_NAMES[i]));
-      if (d.texts) setTexts(d.texts.map((t:string, i:number) => t || TESTIMONIAL_DEFAULT_TEXTS[i]));
-    });
-  }, []);
-
-  const loadFile = (f: File, i: number) => {
-    setPreviews(prev => { const n = [...prev]; n[i] = URL.createObjectURL(f); return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = f; return n; });
-  };
-
-  const save = async (i: number) => {
-    setSaving(i);
-    const fd = new FormData();
-    if (files[i]) fd.append('file', files[i]!);
-    fd.append('index', String(i));
-    fd.append('name', names[i]);
-    fd.append('text', texts[i]);
-    await fetch('/api/upload/testimonials', { method: 'POST', body: fd });
-    setFiles(prev => { const n = [...prev]; n[i] = null; return n; });
-    setSaving(null);
-  };
-
-  const reset = async (i: number) => {
-    if (!confirm(`Reset Testimonial ${i + 1} to default?`)) return;
-    await fetch(`/api/upload/testimonials?index=${i}`, { method: 'DELETE' });
-    setPreviews(prev => { const n = [...prev]; n[i] = null; return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = null; return n; });
-    setNames(prev    => { const n = [...prev]; n[i] = TESTIMONIAL_DEFAULT_NAMES[i]; return n; });
-    setTexts(prev    => { const n = [...prev]; n[i] = TESTIMONIAL_DEFAULT_TEXTS[i]; return n; });
-  };
-
-  const resetAll = async () => {
-    if (!confirm('Reset all 8 Testimonials to defaults?')) return;
-    await fetch(`/api/upload/testimonials`, { method: 'DELETE' });
-    setPreviews(new Array(8).fill(null));
-    setFiles(new Array(8).fill(null));
-    setNames([...TESTIMONIAL_DEFAULT_NAMES]);
-    setTexts([...TESTIMONIAL_DEFAULT_TEXTS]);
-  };
-
-  return (
-    <section className="space-y-5 border-t border-gray-100 pt-12">
-      <div className="flex items-end justify-between border-b border-gray-100 pb-4">
-        <div className="flex items-center gap-3">
-          <span className="w-3 h-3 rounded-full bg-gradient-to-r from-sky-400 to-blue-500" />
-          <h2 className="text-xl font-display font-bold text-navy uppercase tracking-widest">Testimonials</h2>
-          <span className="text-xs text-gray-300 font-medium">(8 Static Cards)</span>
-        </div>
-        <button onClick={resetAll} className="px-4 py-1.5 rounded-full border border-gray-200 text-[10px] font-black text-gray-400 uppercase hover:bg-gray-50 transition-all">
-          Reset All
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-        {[0,1,2,3,4,5,6,7].map(i => (
-          <div key={i} className="flex flex-col gap-3 p-4 bg-gray-50 border border-gray-200 rounded-xl relative shadow-sm">
-            <span className="absolute -top-2 -left-2 bg-blue-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">CARD {i+1}</span>
-            
-            <div className="flex gap-3">
-              <div onClick={() => inputRefs.current[i]?.click()} className="relative w-[30%] aspect-[4/5] shrink-0 bg-white rounded-md border-2 border-dashed border-gray-200 hover:border-blue-300 cursor-pointer overflow-hidden flex items-center justify-center p-1 group">
-                <input ref={el => { inputRefs.current[i] = el; }} type="file" accept={ACCEPTED_IMG_CURATED} className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) loadFile(f, i); }} />
-                {previews[i] ? <img src={previews[i]!} alt="" className="w-full h-full object-contain" /> : <span className="text-[8px] font-bold text-gray-300 text-center uppercase">Image</span>}
-              </div>
-
-              <div className="flex flex-col gap-2 flex-grow w-[70%]">
-                <input placeholder="Name, Age" value={names[i]} onChange={e => { const v = e.target.value; setNames(p => { const n=[...p]; n[i]=v; return n; }) }} className="w-full text-xs font-semibold text-navy border border-gray-200 rounded px-2 py-1 outline-none focus:border-blue-400" />
-                <textarea rows={3} placeholder="Testimonial text..." value={texts[i]} onChange={e => { const v = e.target.value; setTexts(p => { const n=[...p]; n[i]=v; return n; }) }} className="w-full text-[10px] leading-tight text-gray-600 border border-gray-200 rounded px-2 py-1 outline-none resize-none focus:border-blue-400" />
-              </div>
-            </div>
-
-            <div className="flex gap-2 w-full mt-1">
-              <button onClick={() => save(i)} className="flex-1 text-[10px] bg-gradient-to-r from-sky-400 to-blue-500 text-white py-1.5 rounded-full font-black shadow-sm disabled:opacity-30 transition-all uppercase tracking-wider">
-                {saving === i ? '…' : 'SAVE CARD'}
-              </button>
-              <button onClick={() => reset(i)} className="text-[10px] text-gray-300 hover:text-red-400 font-black px-2 transition-colors uppercase tracking-wider">RESET</button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
   );
 }

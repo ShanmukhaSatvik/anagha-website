@@ -64,11 +64,19 @@ export async function DELETE(req: NextRequest) {
     const url   = new URL(req.url);
     const type  = url.searchParams.get('type');
     const index = url.searchParams.get('index');
+    const mode  = url.searchParams.get('mode');
     const meta  = JSON.parse(await readFile(METADATA_PATH, 'utf8'));
     const key   = keyFor(type);
 
     if (index !== null) {
-      if (meta[key]) meta[key][parseInt(index)] = null;
+      const idx = parseInt(index);
+      if (meta[key]) {
+        if (mode === 'delete') {
+          meta[key].splice(idx, 1);
+        } else {
+          meta[key][idx] = null;
+        }
+      }
     } else {
       meta[key] = [];
     }

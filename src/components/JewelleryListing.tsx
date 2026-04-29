@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import { PRODUCTS } from '@/lib/data';
 
 interface Props {
@@ -23,9 +24,29 @@ const FilterGroup = ({ title, items, showMore }: { title: string; items: { label
 );
 
 export default function JewelleryListing({ category }: Props) {
+  const [dynamicCategories, setDynamicCategories] = useState<{name: string, image: string | null}[]>([]);
+  const [dynamicProducts, setDynamicProducts] = useState<any[]>(PRODUCTS);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    Promise.all([
+      fetch('/api/upload/jewellery/categories').then(r => r.json()),
+      fetch('/api/upload/jewellery/products').then(r => r.json())
+    ]).then(([cats, prods]) => {
+      if (!isMounted) return;
+      setDynamicCategories(cats);
+      setDynamicProducts(prods);
+      setLoading(false);
+    }).catch(() => {
+      if (isMounted) setLoading(false);
+    });
+    return () => { isMounted = false; };
+  }, []);
+
   const displayProducts = category
-    ? PRODUCTS.filter((p) => p.category === category)
-    : PRODUCTS;
+    ? dynamicProducts.filter((p) => p.category === category)
+    : dynamicProducts;
 
   const title = category
     ? category.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
@@ -58,10 +79,10 @@ export default function JewelleryListing({ category }: Props) {
                 { label: 'Rs. 40,000 - Rs. 50,000', count: 731 },
                 { label: 'Rs. 50,000 and Above', count: 7186 },
               ]} />
-              <FilterGroup title="Type" items={[
-                { label: 'Earrings', count: 3020 }, { label: 'Rings', count: 2583 }, { label: 'Pendants', count: 1128 },
-                { label: 'Necklaces', count: 855 }, { label: 'Bangles', count: 624 }, { label: 'Bracelets', count: 462 },
-              ]} showMore="+ 21 more" />
+              <FilterGroup title="Type" items={dynamicCategories.map(cat => ({
+                label: cat.name,
+                count: dynamicProducts.filter(p => p.category === cat.name.toLowerCase().replace(/ /g, '-')).length
+              }))} />
               <FilterGroup title="Metal" items={[
                 { label: 'Gold', count: 7716 }, { label: 'Plain Gold/Platinum', count: 2348 }, { label: 'Rose Gold', count: 1618 },
                 { label: 'White Gold', count: 572 }, { label: 'Platinum', count: 164 },

@@ -5,8 +5,38 @@
     "originalName": null,
     "uploadedAt": null
   },
-  "goldCategories": [],
-  "silverCategories": [],
+  "goldCategories": [
+    null,
+    null,
+    null,
+    {
+      "name": "Mangal Sutras",
+      "filename": null,
+      "uploadedAt": "2026-04-29T00:38:18.110Z"
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "silverCategories": [
+    null,
+    null,
+    null,
+    {
+      "name": "Mangal Sutras",
+      "filename": null,
+      "uploadedAt": "2026-04-29T00:38:39.142Z"
+    }
+  ],
   "goldPlan": {
     "badge": "Gold Mine",
     "installment": "10 + 1",
@@ -22,5 +52,430 @@
     "desc": "Pay 10 installments, and get 100% off on the last one!",
     "btnText": "Enroll Now",
     "btnLink": "#"
-  }
+  },
+  "designLedLabels": [
+    "Ear Rings",
+    "Bangles",
+    "Necklace"
+  ],
+  "jewelleryCategories": [
+    {
+      "name": "Rings",
+      "image": "/images/category/gold_rings.png"
+    },
+    {
+      "name": "Earrings",
+      "image": "/images/category/gold_earrings.png"
+    },
+    {
+      "name": "Necklaces",
+      "image": "/images/category/gold_neckalce.png"
+    },
+    {
+      "name": "Mangalsutra",
+      "image": "/images/category/mangalsutra_gold.png"
+    },
+    {
+      "name": "Mens Jewellery",
+      "image": "/images/category/mens_jewellery_gold.png"
+    },
+    {
+      "name": "Chains",
+      "image": "/images/category/gold_chain.png"
+    },
+    {
+      "name": "Pendants",
+      "image": "/images/category/gold_pendant.png"
+    },
+    {
+      "name": "Anklets",
+      "image": "/images/category/gold_anklet.png"
+    },
+    {
+      "name": "Bracelets",
+      "image": "/images/category/gold_bracelet.png"
+    },
+    {
+      "name": "Bangles",
+      "image": "/images/category/gold_bangles.png"
+    },
+    {
+      "name": "Kids Jewellery",
+      "image": "/images/category/kids_jewellery_gold.png"
+    },
+    {
+      "name": "Nose Pins",
+      "image": "/images/category/nose_pin_gold.png"
+    },
+    {
+      "name": "Kadas",
+      "image": "/images/category/gold_kada.png"
+    },
+    {
+      "name": "Coins",
+      "image": "/images/category/gold_coins.png"
+    },
+    {
+      "name": "Solitaires",
+      "image": "/images/category/solitaire_gold.png"
+    },
+    {
+      "name": "Watch Jewellery",
+      "image": "/images/category/watch_jewellery_gold.png"
+    }
+  ],
+  "jewelleryProducts": [
+    {
+      "id": 29,
+      "category": "rings",
+      "name": "Solitaire Gold",
+      "price": "1,20,000",
+      "originalPrice": "1,45,000",
+      "image": "/images/category/solitaire_gold.png"
+    },
+    {
+      "id": 6,
+      "category": "earrings",
+      "name": "Gold Earrings",
+      "price": "13,886",
+      "originalPrice": "17,348",
+      "image": "/images/category/gold_earrings.png"
+    },
+    {
+      "id": 36,
+      "category": "necklaces",
+      "name": "Layered Necklace",
+      "price": "95,000",
+      "originalPrice": "1,10,000",
+      "image": "/images/curated/layered_necklace.png"
+    },
+    {
+      "id": 13,
+      "category": "mangalsutra",
+      "name": "Mangalsutra Gold",
+      "price": "55,000",
+      "originalPrice": "62,000",
+      "image": "/images/category/mangalsutra_gold.png"
+    },
+    {
+      "id": 40,
+      "category": "mens-jewellery",
+      "name": "Men Jewellery 1",
+      "price": "42,000",
+      "originalPrice": "48,000",
+      "image": "/images/curated/men_jewellery_1.png"
+    },
+    {
+      "id": 10,
+      "category": "rings",
+      "name": "Gold Rings",
+      "price": "34,500",
+      "originalPrice": "38,900",
+      "image": "/images/category/gold_rings.png"
+    },
+    {
+      "id": 22,
+      "category": "chains",
+      "name": "Silver Chain",
+      "price": "9,000",
+      "originalPrice": "11,500",
+      "image": "/images/category/silver_chain.png"
+    },
+    {
+      "id": 44,
+      "category": "pendants",
+      "name": "Curated Pendant",
+      "price": "25,000",
+      "originalPrice": "29,000",
+      "image": "/images/curated/pendant_1.png"
+    },
+    {
+      "id": 1,
+      "category": "anklets",
+      "name": "Gold Anklet",
+      "price": "30,603",
+      "originalPrice": "36,072",
+      "image": "/images/category/gold_anklet.png"
+    },
+    {
+      "id": 33,
+      "category": "bracelets",
+      "name": "Curated Bracelet",
+      "price": "28,000",
+      "originalPrice": "32,000",
+      "image": "/images/curated/bracelet_2.png"
+    },
+    {
+      "id": 15,
+      "category": "mens-jewellery",
+      "name": "Mens Jewellery Gold",
+      "price": "75,000",
+      "originalPrice": "85,000",
+      "image": "/images/category/mens_jewellery_gold.png"
+    },
+    {
+      "id": 28,
+      "category": "rings",
+      "name": "Silver Ring",
+      "price": "3,500",
+      "originalPrice": "4,800",
+      "image": "/images/category/silver_ring.png"
+    },
+    {
+      "id": 38,
+      "category": "necklaces",
+      "name": "Layered Necklace 2",
+      "price": "1,05,000",
+      "originalPrice": "1,25,000",
+      "image": "/images/curated/layered_necklace_2.png"
+    },
+    {
+      "id": 2,
+      "category": "bangles",
+      "name": "Gold Bangles",
+      "price": "20,664",
+      "originalPrice": "22,459",
+      "image": "/images/category/gold_bangles.png"
+    },
+    {
+      "id": 11,
+      "category": "kids-jewellery",
+      "name": "Kids Jewellery Gold",
+      "price": "12,303",
+      "originalPrice": "13,422",
+      "image": "/images/category/kids_jewellery_gold.png"
+    },
+    {
+      "id": 34,
+      "category": "chains",
+      "name": "Curated Chain",
+      "price": "33,000",
+      "originalPrice": "38,000",
+      "image": "/images/curated/chain_3.png"
+    },
+    {
+      "id": 17,
+      "category": "nose-pins",
+      "name": "Nose Pin Gold",
+      "price": "5,000",
+      "originalPrice": "6,500",
+      "image": "/images/category/nose_pin_gold.png"
+    },
+    {
+      "id": 42,
+      "category": "mens-jewellery",
+      "name": "Men Jewellery 3",
+      "price": "45,000",
+      "originalPrice": "52,000",
+      "image": "/images/curated/men_jewellery_3.png"
+    },
+    {
+      "id": 7,
+      "category": "kadas",
+      "name": "Gold Kada",
+      "price": "85,400",
+      "originalPrice": "92,000",
+      "image": "/images/category/gold_kada.png"
+    },
+    {
+      "id": 23,
+      "category": "coins",
+      "name": "Silver Coins",
+      "price": "5,500",
+      "originalPrice": "6,200",
+      "image": "/images/category/silver_coins.png"
+    },
+    {
+      "id": 39,
+      "category": "necklaces",
+      "name": "Layered Necklace 3",
+      "price": "1,15,000",
+      "originalPrice": "1,35,000",
+      "image": "/images/curated/layered_necklace_3.png"
+    },
+    {
+      "id": 3,
+      "category": "bracelets",
+      "name": "Gold Bracelet",
+      "price": "45,299",
+      "originalPrice": "52,967",
+      "image": "/images/category/gold_bracelet.png"
+    },
+    {
+      "id": 20,
+      "category": "bangles",
+      "name": "Silver Bangle",
+      "price": "12,000",
+      "originalPrice": "15,000",
+      "image": "/images/category/silver_bangle.png"
+    },
+    {
+      "id": 35,
+      "category": "earrings",
+      "name": "Curated Earrings",
+      "price": "19,000",
+      "originalPrice": "23,000",
+      "image": "/images/curated/ear_rings_4.png"
+    },
+    {
+      "id": 18,
+      "category": "nose-pins",
+      "name": "Nose Pin Silver",
+      "price": "2,000",
+      "originalPrice": "3,000",
+      "image": "/images/category/nose_pin_silver.png"
+    },
+    {
+      "id": 41,
+      "category": "mens-jewellery",
+      "name": "Men Jewellery 2",
+      "price": "38,000",
+      "originalPrice": "44,000",
+      "image": "/images/curated/men_jewellery_2.png"
+    },
+    {
+      "id": 8,
+      "category": "necklaces",
+      "name": "Gold Necklace",
+      "price": "28,900",
+      "originalPrice": "32,500",
+      "image": "/images/category/gold_neckalce.png"
+    },
+    {
+      "id": 25,
+      "category": "silver-jewellery",
+      "name": "Silver Image",
+      "price": "14,000",
+      "originalPrice": "17,000",
+      "image": "/images/category/silver_image.png"
+    },
+    {
+      "id": 37,
+      "category": "necklaces",
+      "name": "Layered Necklace 1",
+      "price": "88,000",
+      "originalPrice": "1,05,000",
+      "image": "/images/curated/layered_necklace_1.png"
+    },
+    {
+      "id": 4,
+      "category": "chains",
+      "name": "Gold Chain",
+      "price": "47,067",
+      "originalPrice": "55,235",
+      "image": "/images/category/gold_chain.png"
+    },
+    {
+      "id": 12,
+      "category": "kids-jewellery",
+      "name": "Kids Jewellery Silver",
+      "price": "9,500",
+      "originalPrice": "11,000",
+      "image": "/images/category/kids_jewellery_silver.png"
+    },
+    {
+      "id": 31,
+      "category": "watch-jewellery",
+      "name": "Watch Jewellery Gold",
+      "price": "35,000",
+      "originalPrice": "42,000",
+      "image": "/images/category/watch_jewellery_gold.png"
+    },
+    {
+      "id": 21,
+      "category": "bracelets",
+      "name": "Silver Bracelet",
+      "price": "10,500",
+      "originalPrice": "13,000",
+      "image": "/images/category/silver_bracelet.png"
+    },
+    {
+      "id": 43,
+      "category": "mens-jewellery",
+      "name": "Men Jewellery 4",
+      "price": "32,000",
+      "originalPrice": "37,000",
+      "image": "/images/curated/men_jewellery_4.png"
+    },
+    {
+      "id": 9,
+      "category": "pendants",
+      "name": "Gold Pendant",
+      "price": "64,200",
+      "originalPrice": "70,000",
+      "image": "/images/category/gold_pendant.png"
+    },
+    {
+      "id": 26,
+      "category": "kadas",
+      "name": "Silver Kada",
+      "price": "16,000",
+      "originalPrice": "19,500",
+      "image": "/images/category/silver_kada.png"
+    },
+    {
+      "id": 14,
+      "category": "mangalsutra",
+      "name": "Mangalsutra Silver",
+      "price": "15,000",
+      "originalPrice": "18,500",
+      "image": "/images/category/mangalsutra_silver.png"
+    },
+    {
+      "id": 30,
+      "category": "solitaires",
+      "name": "Solitaire Silver",
+      "price": "45,000",
+      "originalPrice": "55,000",
+      "image": "/images/category/solitaire_silver.png"
+    },
+    {
+      "id": 5,
+      "category": "coins",
+      "name": "Gold Coins",
+      "price": "11,435",
+      "originalPrice": "14,022",
+      "image": "/images/category/gold_coins.png"
+    },
+    {
+      "id": 16,
+      "category": "mens-jewellery",
+      "name": "Mens Jewellery Silver",
+      "price": "25,000",
+      "originalPrice": "29,000",
+      "image": "/images/category/mens_jewellery_silver.png"
+    },
+    {
+      "id": 24,
+      "category": "earrings",
+      "name": "Silver Earrings",
+      "price": "4,500",
+      "originalPrice": "5,800",
+      "image": "/images/category/silver_earrings.png"
+    },
+    {
+      "id": 19,
+      "category": "anklets",
+      "name": "Silver Anklet",
+      "price": "8,000",
+      "originalPrice": "10,000",
+      "image": "/images/category/silver_anklet.png"
+    },
+    {
+      "id": 32,
+      "category": "watch-jewellery",
+      "name": "Watch Jewellery Silver",
+      "price": "15,000",
+      "originalPrice": "18,000",
+      "image": "/images/category/watch_jewellery_silver.png"
+    },
+    {
+      "id": 27,
+      "category": "necklaces",
+      "name": "Silver Necklace",
+      "price": "22,000",
+      "originalPrice": "26,000",
+      "image": "/images/category/silver_neckalce.png"
+    }
+  ]
 }

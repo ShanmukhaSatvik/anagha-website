@@ -14,17 +14,28 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const category = resolvedParams.category;
   const productId = parseInt(resolvedParams.productId, 10);
 
-  const productData = PRODUCTS.find((p) => p.id === productId);
+  // Read dynamic products
+  let dynamicProducts = PRODUCTS;
+  try {
+    const fs = require('fs/promises');
+    const path = require('path');
+    const metaPath = path.join(process.cwd(), 'public', 'uploads', 'metadata.json');
+    const raw = await fs.readFile(metaPath, 'utf-8');
+    const meta = JSON.parse(raw);
+    if (meta.jewelleryProducts) dynamicProducts = meta.jewelleryProducts;
+  } catch (e) {}
+
+  const productData = dynamicProducts.find((p) => p.id === productId);
 
   if (!productData) {
     notFound();
   }
 
-  // Extend the base product with mock details not present in the main array
+  // Extend the base product with mock details if missing
   const product = {
-    ...productData,
     description: `Premium ${productData.name} crafted with the finest materials. This exquisite piece features intricate detailing, perfect for elevating your everyday style or making a statement at special events.`,
     offer: '30% off on Making Charges: Use SUMMER30',
+    ...productData,
   };
 
   return (
@@ -132,6 +143,44 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                 <p className="text-gray-400 text-[11px]">MRP Incl. of all taxes</p>
               </div>
 
+              <p className="text-[12px] text-gray-600 mb-6 font-medium leading-relaxed">
+                {product.description}
+              </p>
+
+              {/* Customize Section */}
+              <div className="border-y border-gray-100 py-3 mb-6 flex items-center justify-between cursor-pointer group">
+                <span className="text-[12px] text-[#222] font-bold uppercase tracking-wide group-hover:text-[#2e6da4] transition-colors">Customize this design</span>
+                <span className="text-lg text-gray-400 group-hover:text-[#2e6da4] transition-colors">+</span>
+              </div>
+
+              {/* Size Selector */}
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex-1 relative">
+                  <select className="w-full border border-gray-200 rounded px-3 py-2 text-[12px] outline-none appearance-none cursor-pointer">
+                    <option>Select Size</option>
+                    <option>10</option>
+                    <option>12</option>
+                    <option>14</option>
+                  </select>
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+                <button className="text-[12px] text-[#2e6da4] hover:underline whitespace-nowrap">Not sure about the size?</button>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                <button className="flex-1 bg-[#f1592a] text-white font-bold py-3 rounded-full hover:bg-[#d64a20] transition-colors uppercase tracking-widest text-[13px]">
+                  Buy Now
+                </button>
+                <button className="flex-1 border-2 border-[#f1592a] text-[#f1592a] font-bold py-3 rounded-full hover:bg-[#fff5f2] transition-colors uppercase tracking-widest text-[13px]">
+                  10+1 Monthly Plan
+                </button>
+              </div>
+
               {/* Offers */}
               <div className="flex items-center gap-2.5 bg-[#fff5f5] border border-[#ffebeb] p-2.5 rounded-md mb-4">
                 <div className="w-5 h-5 bg-[#f1592a] rounded-full flex items-center justify-center text-white flex-shrink-0">
@@ -154,58 +203,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                 </p>
               </div>
 
-              {/* Pincode Check */}
-              <div className="bg-[#fcfcfc] border border-gray-100 p-4 rounded-md mb-6">
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[12px] text-gray-500">Your pincode</span>
-                  <div className="flex border border-gray-200 rounded overflow-hidden">
-                    <input type="text" placeholder="Pincode" className="px-2.5 py-1 text-[12px] outline-none w-28" />
-                    <button className="bg-gray-100 px-2.5 py-1 text-[10px] font-bold text-gray-500 hover:bg-gray-200 transition-colors uppercase">Update</button>
-                  </div>
-                </div>
-                <p className="text-[10px] text-orange-500">Provide pincode for delivery date & nearby stores!</p>
-              </div>
-
-              <p className="text-[12px] text-gray-600 mb-6 font-medium leading-relaxed">
-                {product.description}
-              </p>
-
-              {/* Customize Section */}
-              <div className="border-y border-gray-100 py-3 mb-6 flex items-center justify-between cursor-pointer group">
-                <span className="text-[12px] text-[#222] font-bold uppercase tracking-wide group-hover:text-[#2e6da4] transition-colors">Customize this design</span>
-                <span className="text-lg text-gray-400 group-hover:text-[#2e6da4] transition-colors">+</span>
-              </div>
-
-              {/* Size Selector */}
-              <div className="flex items-center gap-4 mb-8">
-                <div className="flex-1 relative">
-                  <select className="w-full border border-gray-200 rounded px-3 py-2 text-[12px] outline-none appearance-none cursor-pointer">
-                    <option>Select Size</option>
-                    <option>10</option>
-                    <option>12</option>
-                    <option>14</option>
-                  </select>
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-                </div>
-                <button className="text-[12px] text-[#2e6da4] hover:underline whitespace-nowrap">Not sure about the size?</button>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 mb-10">
-                <button className="flex-1 bg-[#f1592a] text-white font-bold py-3 rounded-sm hover:bg-[#d64a20] transition-colors uppercase tracking-widest text-[13px]">
-                  Buy Now
-                </button>
-                <button className="flex-1 border-2 border-[#f1592a] text-[#f1592a] font-bold py-3 rounded-sm hover:bg-[#fff5f2] transition-colors uppercase tracking-widest text-[13px]">
-                  10+1 Monthly Plan
-                </button>
-              </div>
-
               {/* Trust Markers */}
-              <div className="grid grid-cols-3 gap-3 border-t border-gray-100 pt-6">
+              <div className="grid grid-cols-3 gap-3 border-t border-b border-gray-300 pt-1.5 pb-1.5 mb-6">
                 <div className="flex flex-col items-center text-center">
                    <div className="w-7 h-7 flex items-center justify-center mb-1.5">
                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#2e6da4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -214,13 +213,13 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                    </div>
                    <span className="text-[11px] text-[#2e6da4] uppercase font-bold tracking-tight">30 Day Returnable</span>
                 </div>
-                <div className="flex flex-col items-center text-center border-x border-gray-100">
+                <div className="flex flex-col items-center text-center border-x border-gray-300">
                    <div className="w-7 h-7 flex items-center justify-center mb-1.5">
                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#2e6da4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                      </svg>
                    </div>
-                   <span className="text-[11px] text-[#2e6da4] uppercase font-bold leading-tight px-1 tracking-tight">Lifetime Exchange & Buy-Back</span>
+                   <span className="text-[11px] text-[#2e6da4] uppercase font-bold leading-tight px-1 tracking-tight">Lifetime Exchange &amp; Buy-Back</span>
                 </div>
                 <div className="flex flex-col items-center text-center">
                    <div className="w-7 h-7 flex items-center justify-center mb-1.5">
@@ -232,8 +231,16 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                 </div>
               </div>
 
-              <div className="mt-6 text-center">
-                 <p className="text-[12px] text-gray-500">Any Questions? Please feel free to reach us at: <span className="font-bold text-[#2e6da4]">18004190066</span></p>
+              {/* Pincode Check */}
+              <div className="bg-[#fcfcfc] border border-gray-100 p-4 rounded-md mb-6">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[12px] text-gray-500">Your pincode</span>
+                  <div className="flex border border-gray-200 rounded overflow-hidden">
+                    <input type="text" placeholder="Pincode" className="px-2.5 py-1 text-[12px] outline-none w-28" />
+                    <button className="bg-gray-100 px-2.5 py-1 text-[10px] font-bold text-gray-500 hover:bg-gray-200 transition-colors uppercase">Update</button>
+                  </div>
+                </div>
+                <p className="text-[10px] text-orange-500">Provide pincode for delivery date & nearby stores!</p>
               </div>
 
             </div>

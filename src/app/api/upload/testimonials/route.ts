@@ -64,6 +64,7 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const index = req.nextUrl.searchParams.get('index');
+  const mode  = req.nextUrl.searchParams.get('mode');
   const meta  = await readMeta();
 
   if (index !== null) {
@@ -75,17 +76,23 @@ export async function DELETE(req: NextRequest) {
       const old = images[idx];
       if (old) { try { await unlink(path.join(UPLOAD, old)); } catch {} }
       
-      images[idx] = null;
-      names[idx]  = null;
-      texts[idx]  = null;
+      if (mode === 'delete') {
+        images.splice(idx, 1);
+        names.splice(idx, 1);
+        texts.splice(idx, 1);
+      } else {
+        images[idx] = null;
+        names[idx]  = null;
+        texts[idx]  = null;
+      }
       
       meta.testimonialsImages = images;
       meta.testimonialsNames = names;
       meta.testimonialsTexts = texts;
   } else {
-      meta.testimonialsImages = new Array(8).fill(null);
-      meta.testimonialsNames  = new Array(8).fill(null);
-      meta.testimonialsTexts  = new Array(8).fill(null);
+      meta.testimonialsImages = [];
+      meta.testimonialsNames  = [];
+      meta.testimonialsTexts  = [];
   }
 
   await writeMeta(meta);

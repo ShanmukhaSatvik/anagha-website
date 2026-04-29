@@ -3,41 +3,28 @@
 import { useState, useEffect } from 'react';
 import { motion, Variants } from 'framer-motion';
 import Link from 'next/link';
+import { DESIGN_LED_ITEMS } from '@/lib/data';
 
-const ITEMS = [
-  {
-    largeImg: '/images/design-led/earrings_2.webp',
-    smallImg: '/images/design-led/earrings_1.png',
-    label:    'Earrings',
-    slug:     'earrings'
-  },
-  {
-    largeImg: '/images/design-led/bangles_2.webp',
-    smallImg: '/images/design-led/bangles_1.png',
-    label:    'Bangles',
-    slug:     'bangles'
-  },
-  {
-    largeImg: '/images/design-led/necklace_2.webp',
-    smallImg: '/images/design-led/necklace_1.png',
-    label:    'Necklace',
-    slug:     'necklaces'
-  }
-];
+interface Props {
+  liveImages?: (string | null)[];
+  liveLabels?: (string | null)[];
+}
 
-export default function DesignLed() {
-  const [overrides, setOverrides] = useState<(string | null)[]>(new Array(6).fill(null));
-  const [labelOverrides, setLabelOverrides] = useState<(string | null)[]>(new Array(3).fill(null));
+export default function DesignLed({ liveImages, liveLabels }: Props) {
+  const [overrides, setOverrides] = useState<(string | null)[]>(liveImages ? liveImages.map(f => f ? `/uploads/${f}` : null) : new Array(6).fill(null));
+  const [labelOverrides, setLabelOverrides] = useState<(string | null)[]>(liveLabels || new Array(3).fill(null));
 
   useEffect(() => {
-    fetch('/api/upload/design-led')
-      .then(r => r.json())
-      .then(d => {
-        if (d.images) setOverrides(d.images.map((file: string | null) => file ? `/uploads/${file}` : null));
-        if (d.labels) setLabelOverrides(d.labels);
-      })
-      .catch(() => {});
-  }, []);
+    if (!liveImages && !liveLabels) {
+      fetch('/api/upload/design-led')
+        .then(r => r.json())
+        .then(d => {
+          if (d.images) setOverrides(d.images.map((file: string | null) => file ? `/uploads/${file}` : null));
+          if (d.labels) setLabelOverrides(d.labels);
+        })
+        .catch(() => {});
+    }
+  }, [liveImages, liveLabels]);
 
   const containerVariants: Variants = {
     hidden: {},
@@ -81,7 +68,7 @@ export default function DesignLed() {
         viewport={{ once: true, amount: 0.3 }}
         className="w-full px-4 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-6"
       >
-        {ITEMS.map((item, idx) => {
+        {DESIGN_LED_ITEMS.map((item, idx) => {
           const largeIndex = idx * 2;
           const smallIndex = idx * 2 + 1;
           const displayLarge = overrides[largeIndex] || item.largeImg;

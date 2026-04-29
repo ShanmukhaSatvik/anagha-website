@@ -118,7 +118,7 @@ export default function Header() {
               <span className={VDIV} />
               <Link href="/video-call" className={`${ITEM2} hover:text-navy`}>Video Call Cart</Link>
               <span className={VDIV} />
-              <Link href="/login"      className={`${ITEM3} hover:text-navy`}>Login</Link>
+              <Link href="/upload"     className={`${ITEM3} hover:text-navy`}>Login</Link>
               <span className={VDIV} />
               <Link href="/signup"     className={`${ITEM4} hover:text-navy`}>Signup</Link>
             </div>

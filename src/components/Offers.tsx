@@ -16,9 +16,9 @@ interface Props {
 }
 
 export default function Offers({ live }: Props) {
-  const slides = DEFAULTS.map((def, i) =>
-    live[i] ? `/uploads/${live[i]}` : def
-  );
+  const slides = live.length > 0 
+    ? live.map((filename, i) => filename ? `/uploads/${filename}` : (DEFAULTS[i] || '')) 
+    : DEFAULTS;
 
   const [current, setCurrent] = useState(0);
 

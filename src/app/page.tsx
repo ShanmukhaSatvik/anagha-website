@@ -39,9 +39,9 @@ export default async function Home() {
         />
         <Offers live={meta.offers || []} />
         <LatestCollections live={meta.collections || []} btnLink={meta.collectionsBtnLink} />
-        <CuratedStyles />
+        <CuratedStyles liveSlots={meta.curatedSlots} liveTitles={meta.curatedTitles} />
 
-        <DesignLed />
+        <DesignLed liveImages={meta.designLedImages} liveLabels={meta.designLedLabels} />
 
         {/* Standalone Banner Section */}
         <section className="w-full">
@@ -53,7 +53,13 @@ export default async function Home() {
           />
         </section>
 
-        <Testimonials />
+        <Testimonials 
+          live={{
+            images: meta.testimonialsImages || [],
+            names:  meta.testimonialsNames || [],
+            texts:  meta.testimonialsTexts || [],
+          }} 
+        />
         <AboutCompany />
         <PromiseSection />
       </main>

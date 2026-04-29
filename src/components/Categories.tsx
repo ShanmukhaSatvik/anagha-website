@@ -92,12 +92,17 @@ function buildItems(
   defaults: typeof GOLD_DEFAULTS,
   live: Array<{ name?: string; filename?: string | null } | null>
 ): CategoryItem[] {
-  if (!live || live.length === 0) return defaults;
-  return defaults.map((def, i) => {
-    const o = live[i];
-    if (!o) return def;
-    return { name: o.name || def.name, img: o.filename ? `/uploads/${o.filename}` : def.img };
+  const count = Math.max(defaults.length, live.length);
+  const items = Array.from({ length: count }).map((_, i) => {
+    const d = defaults[i];
+    const l = live[i];
+    if (!l && !d) return null;
+    return { 
+      name: l?.name || d?.name || '', 
+      img: l?.filename ? `/uploads/${l.filename}` : (d?.img || '') 
+    } as CategoryItem;
   });
+  return items.filter((it): it is CategoryItem => it !== null && !!it.name);
 }
 
 interface Props {
@@ -108,13 +113,13 @@ interface Props {
 }
 
 export default function Categories({ goldLive, silverLive, goldPlan, silverPlan }: Props) {
-  const [tab, setTab] = useState<'gold' | 'silver'>('silver'); // Default to silver as gold is commented out
+  const [tab, setTab] = useState<'labgrown' | 'silver'>('labgrown');
 
   const goldItems   = buildItems(GOLD_DEFAULTS,   goldLive);
   const silverItems = buildItems(SILVER_DEFAULTS, silverLive);
-  const items       = tab === 'gold' ? goldItems : silverItems;
+  const items       = tab === 'labgrown' ? goldItems : silverItems;
 
-  const plan: PlanData = tab === 'gold'
+  const plan: PlanData = tab === 'labgrown'
     ? { ...GOLD_PLAN_DEFAULT, ...goldPlan }
     : { ...SILVER_PLAN_DEFAULT, ...silverPlan };
 
@@ -122,13 +127,34 @@ export default function Categories({ goldLive, silverLive, goldPlan, silverPlan 
     <section className="bg-white py-10 overflow-hidden">
       <div className="w-full px-6">
 
-        {/* ── Silver Title (styled like tab) ── */}
+        {/* ── Tab Switcher ── */}
         <div className="flex items-center justify-center mb-10">
-          <div className="relative inline-flex rounded-full bg-gray-100 p-1.5">
-            <span className="absolute inset-1 rounded-full bg-gradient-to-r from-slate-400 to-gray-500 shadow-md" />
-            <div className="relative z-10 px-12 py-3 rounded-full text-base font-bold tracking-widest uppercase text-white">
+          <div className="relative inline-flex rounded-full bg-gray-100 p-1.5 gap-1">
+            {/* Lab Grown Diamonds tab */}
+            <button
+              onClick={() => setTab('labgrown')}
+              className={`relative z-10 px-6 py-3 rounded-full text-sm font-bold tracking-wide uppercase transition-all duration-300
+                ${
+                  tab === 'labgrown'
+                    ? 'bg-gradient-to-r from-rose-400 to-pink-500 text-white shadow-md'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+            >
+              Lab Grown Diamonds
+            </button>
+
+            {/* Silver tab */}
+            <button
+              onClick={() => setTab('silver')}
+              className={`relative z-10 px-8 py-3 rounded-full text-sm font-bold tracking-widest uppercase transition-all duration-300
+                ${
+                  tab === 'silver'
+                    ? 'bg-gradient-to-r from-slate-400 to-gray-500 text-white shadow-md'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+            >
               Silver
-            </div>
+            </button>
           </div>
         </div>
 
@@ -163,12 +189,12 @@ export default function Categories({ goldLive, silverLive, goldPlan, silverPlan 
                 >
                   <div className={`w-full aspect-square rounded-[22px] overflow-hidden flex items-center justify-center
                     transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-xl
-                    ${tab === 'gold' ? 'bg-[#fff5f5] group-hover:bg-[#ffeef0]' : 'bg-[#f4f6f9] group-hover:bg-[#eaeff7]'}`}
+                    ${tab === 'labgrown' ? 'bg-[#fff5f5] group-hover:bg-[#ffeef0]' : 'bg-[#f4f6f9] group-hover:bg-[#eaeff7]'}`}
                   >
                     <img src={cat.img} alt={cat.name} className="w-[78%] h-[78%] object-contain" />
                   </div>
                   <p className={`text-[12px] font-medium text-center leading-tight transition-colors
-                    ${tab === 'gold' ? 'text-gray-400 group-hover:text-amber-600' : 'text-gray-400 group-hover:text-slate-600'}`}>
+                    ${tab === 'labgrown' ? 'text-gray-400 group-hover:text-rose-500' : 'text-gray-400 group-hover:text-slate-600'}`}>
                     {cat.name}
                   </p>
                 </Link>
@@ -184,7 +210,7 @@ export default function Categories({ goldLive, silverLive, goldPlan, silverPlan 
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          style={tab === 'gold' ? {
+          style={tab === 'labgrown' ? {
             backgroundImage: [
               'linear-gradient(to right, transparent 0%, rgba(180,110,140,0.25) 30%, rgba(180,110,140,0.25) 70%, transparent 100%)',
               'linear-gradient(to right, transparent 0%, rgba(180,110,140,0.25) 30%, rgba(180,110,140,0.25) 70%, transparent 100%)',
@@ -207,7 +233,7 @@ export default function Categories({ goldLive, silverLive, goldPlan, silverPlan 
         >
           <p className="text-[12px] md:text-[13.5px] text-navy">
             <span className="font-bold block sm:inline">{plan.badge} </span>
-            <span className={`font-extrabold ${tab === 'gold' ? 'text-coral' : 'text-slate-500'}`}>
+            <span className={`font-extrabold ${tab === 'labgrown' ? 'text-coral' : 'text-slate-500'}`}>
               {plan.installment}
             </span>
             <span className="font-bold"> {plan.suffix}</span>
@@ -217,7 +243,7 @@ export default function Categories({ goldLive, silverLive, goldPlan, silverPlan 
             href={plan.btnLink}
             className={`shrink-0 px-6 py-2 rounded-lg text-[13px] font-bold text-white
               transition-all hover:opacity-90 active:scale-95 shadow-sm
-              ${tab === 'gold' ? 'bg-coral' : 'bg-slate-500'}`}
+              ${tab === 'labgrown' ? 'bg-coral' : 'bg-slate-500'}`}
           >
             {plan.btnText}
           </a>

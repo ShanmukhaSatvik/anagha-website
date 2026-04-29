@@ -1,82 +1,36 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { TESTIMONIAL_REVIEWS } from '@/lib/data';
 
-const REVIEWS = [
-  {
-    name: 'Akanksha Khanna, 27',
-    text: 'Delighted with my engagement ring from Sri Sresta! It’s my dream ring, fits perfectly and is stunning to look at. Thanks, Sri Sresta, for helping us find the perfect symbol of love!',
-    img: '/images/testimonials/t1.png',
-    rotate: 'rotate-2',
-    translateY: 'translate-y-04',
-  },
-  {
-    name: 'Diksha Singh, 29',
-    text: 'I was worried about finding good quality fine jewellery pieces online, but Sri Sresta’s customer service gave me full assurance and the delivery was super quick. Their jewellery is certified.',
-    img: '/images/testimonials/t2.png',
-    rotate: 'rotate-2',
-    translateY: 'translate-y-0',
-  },
-  {
-    name: 'Nutan Mishra, 33',
-    text: 'I got a Nazariya for my baby boy from Sri Sresta. It’s so cute seeing it on my little one’s wrist, and it gives me a sense of security knowing it’s there. Thanks, Sri Sresta, for making such lovely pieces!',
-    img: '/images/testimonials/t3.png',
-    rotate: '-rotate-2',
-    translateY: '-translate-y-4',
-  },
-  {
-    name: 'Divya Mishra, 26',
-    text: 'On Valentine’s Day, my husband gifted me a necklace from Sri Sresta, and I haven’t taken it off ever since. Everyone asks me where it’s from, and I just LOVE how nice it looks on me.',
-    img: '/images/testimonials/t4.png',
-    rotate: 'rotate-3',
-    translateY: 'translate-y-6',
-  },
-  {
-    name: 'Anuska Ananya, 24',
-    text: 'Sri Sresta is my go-to place for jewellery. I love that I can wear their jewellery to work, dates, parties and brunches; it goes with everything and makes my outfits look stylish and trendy.',
-    img: '/images/testimonials/t6.png', // Swapped with Priya
-    rotate: '-rotate-6',
-    translateY: 'translate-y-2',
-  },
-  {
-    name: 'Priya Singh, 34',
-    text: 'I had trouble finding jewellery that suited my minimalist style, but Sri Sresta’s sleek and elegant designs were exactly what I was looking for. They have pieces for every style and occasion.',
-    img: '/images/testimonials/t5.png', // Swapped with Anuska
-    rotate: 'rotate-1',
-    translateY: 'translate-y-10',
-  },
-  {
-    name: 'Avni Sharma, 27',
-    text: 'Me and my friends love Sri Sresta’s unique designs, especially their enamel jewellery. I love how their enamel pieces add a pop of colour to my outfits. Their jewellery is stylish, modern.',
-    img: '/images/testimonials/t7.png',
-    rotate: '-rotate-3',
-    translateY: '-translate-y-2',
-  },
-  {
-    name: 'Sonaalee Semwal, 28',
-    text: 'I bought a bracelet from Sri Sresta as a birthday gift from me to me. I love how versatile it is. If you want to buy yourself a gift, Sri Sresta is the place to go!',
-    img: '/images/testimonials/t8.png',
-    rotate: 'rotate-3',
-    translateY: 'translate-y-4',
-  }
-];
+interface Props {
+  live?: {
+    images: (string | null)[];
+    names: (string | null)[];
+    texts: (string | null)[];
+  };
+}
 
-export default function Testimonials() {
+export default function Testimonials({ live }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  const [imagesOverride, setImagesOverride] = useState<(string|null)[]>(new Array(8).fill(null));
-  const [namesOverride,  setNamesOverride]  = useState<(string|null)[]>(new Array(8).fill(null));
-  const [textsOverride,  setTextsOverride]  = useState<(string|null)[]>(new Array(8).fill(null));
+  const liveImages = live?.images || [];
+  const liveNames  = live?.names || [];
+  const liveTexts  = live?.texts || [];
 
-  useEffect(() => {
-    fetch('/api/upload/testimonials').then(r => r.json()).then(d => {
-      if (d.images) setImagesOverride(d.images.map((f:string|null) => f ? `/uploads/${f}` : null));
-      if (d.names)  setNamesOverride(d.names);
-      if (d.texts)  setTextsOverride(d.texts);
-    }).catch(() => {});
-  }, []);
+  const count = Math.max(liveNames.length, TESTIMONIAL_REVIEWS.length);
+  const items = Array.from({ length: count }).map((_, i) => {
+    const d = TESTIMONIAL_REVIEWS[i];
+    return {
+      name: liveNames[i] || d?.name || '',
+      text: liveTexts[i] || d?.text || '',
+      img:  liveImages[i] ? `/uploads/${liveImages[i]}` : (d?.img || ''),
+      rotate: d?.rotate || (i % 2 === 0 ? 'rotate-2' : '-rotate-2'),
+      translateY: d?.translateY || 'translate-y-0',
+    };
+  }).filter(it => it.name || it.text);
 
   const handleScroll = () => {
     if (!scrollRef.current) return;
@@ -85,21 +39,28 @@ export default function Testimonials() {
     setScrollProgress(progress);
   };
 
-  useEffect(() => {
-    handleScroll();
-    window.addEventListener('resize', handleScroll);
-    return () => window.removeEventListener('resize', handleScroll);
-  }, []);
-
   return (
-    <section className="bg-white pt-16 pb-8 overflow-hidden relative">
+    <section className="bg-[#ffdfe8] pt-16 pb-8 overflow-hidden relative">
       <motion.div 
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
         className="w-full mb-12 relative"
       >
-        {/* Scrollable Container with Slide-in Animation */}
+        {/* Title */}
+        <div className="container mx-auto px-6 mb-16">
+          <motion.h2 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-4xl md:text-5xl font-display font-bold text-navy text-center md:text-left"
+          >
+            What our clients say
+          </motion.h2>
+        </div>
+
+        {/* Scrollable Container */}
         <motion.div 
           variants={{
             hidden: { x: "50%", opacity: 0 },
@@ -110,45 +71,39 @@ export default function Testimonials() {
           className="flex gap-10 overflow-x-auto pb-16 pt-10 px-8 lg:px-12 snap-x snap-mandatory z-10 relative scrollbar-hide"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {REVIEWS.map((review, idx) => {
-            const displayImg = imagesOverride[idx] || review.img;
-            const displayName = namesOverride[idx] || review.name;
-            const displayText = textsOverride[idx] || review.text;
-
-            return (
-              <div 
-                key={idx} 
-                className={`relative min-w-[280px] w-[280px] shrink-0 snap-center transition-transform hover:scale-105 duration-300 ${review.rotate} ${review.translateY} shadow-lg rounded-sm`}
-                style={{ backgroundColor: '#ffeff3' }}
-              >
-                {/* Pin */}
-                <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-8 h-10 z-20 drop-shadow-sm">
-                  <img src="/images/pin.webp" alt="Pin" className="w-full h-full object-contain" />
-                </div>
-
-                {/* Polaroid Frame */}
-                <div className="p-3 pb-8 h-full flex flex-col">
-                  <div className="w-full aspect-[4/3] bg-white mb-4 relative overflow-hidden">
-                    <img src={displayImg} alt={displayName} className="w-full h-full object-contain p-2" draggable={false} />
-                  </div>
-                  
-                  <h4 className="text-[#032C5E] font-medium text-[15px] mb-2">{displayName}</h4>
-                  <p className="text-gray-400 text-[12px] leading-relaxed italic">
-                    {displayText}
-                  </p>
-                </div>
+          {items.map((item, idx) => (
+            <div 
+              key={idx} 
+              className={`relative min-w-[280px] w-[280px] shrink-0 snap-center transition-transform hover:scale-105 duration-300 ${item.rotate} ${item.translateY} shadow-lg rounded-sm`}
+              style={{ backgroundColor: '#ffffff' }}
+            >
+              {/* Pin */}
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-8 h-10 z-20 drop-shadow-sm">
+                <img src="/images/pin.webp" alt="Pin" className="w-full h-full object-contain" />
               </div>
-            );
-          })}
+
+              {/* Polaroid Frame */}
+              <div className="p-3 pb-8 h-full flex flex-col">
+                <div className="w-full aspect-[4/3] bg-gray-50 mb-4 relative overflow-hidden">
+                  <img src={item.img} alt={item.name} className="w-full h-full object-contain p-2" draggable={false} />
+                </div>
+                
+                <h4 className="text-[#032C5E] font-medium text-[15px] mb-2">{item.name}</h4>
+                <p className="text-gray-400 text-[12px] leading-relaxed italic">
+                  {item.text}
+                </p>
+              </div>
+            </div>
+          ))}
         </motion.div>
 
-        {/* Custom Styled Scrollbar indicator matching exact Testimonial background color */}
+        {/* Custom Styled Scrollbar indicator */}
         <motion.div 
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.8 }}
           transition={{ delay: 1, duration: 0.5 }}
-          className="max-w-[280px] mx-auto mt-10 relative h-[4px] bg-gray-200 rounded-full overflow-hidden"
+          className="max-w-[280px] mx-auto mt-10 relative h-[4px] bg-white rounded-full overflow-hidden"
         >
           <div 
             className="absolute top-0 left-0 h-full rounded-full transition-all duration-75"

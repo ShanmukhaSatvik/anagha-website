@@ -3,57 +3,31 @@
 import { useState, useEffect } from 'react';
 import { motion, Variants } from 'framer-motion';
 import Link from 'next/link';
+import { CURATED_STYLES_CARDS } from '@/lib/data';
 
-const CARDS = [
-  {
-    title: 'Layered Necklaces',
-    desc: 'Elevate your style with chic layered necklaces for a trendy look.',
-    images: [
-      '/images/curated/layered_necklace_1.png',
-      '/images/curated/layered_necklace_2.png',
-      '/images/curated/layered_necklace_3.png',
-      '/images/curated/layered_necklace.png',
-    ],
-    link: '/jewellery/necklaces'
-  },
-  {
-    title: 'Coveted Styles',
-    desc: "A curated selection of Sri Sresta's most coveted jewels.",
-    images: [
-      '/images/curated/bracelet_2.png',
-      '/images/curated/chain_3.png',
-      '/images/curated/ear_rings_4.png',
-      '/images/curated/pendant_1.png',
-    ],
-    link: '/jewellery/bracelets'
-  },
-  {
-    title: 'Sri Sresta Man',
-    desc: "Shop the perfect pieces to enhance your man's unique style.",
-    images: [
-      '/images/curated/men_jewellery_1.png',
-      '/images/curated/men_jewellery_2.png',
-      '/images/curated/men_jewellery_3.png',
-      '/images/curated/men_jewellery_4.png',
-    ],
-    link: '/jewellery/mens-jewellery'
-  }
-];
+interface Props {
+  liveSlots?: (string | null)[];
+  liveTitles?: (string | null)[];
+}
 
-export default function CuratedStyles() {
+export default function CuratedStyles({ liveSlots, liveTitles }: Props) {
   const [index0, setIndex0] = useState(0);
   const [index1, setIndex1] = useState(0);
   const [index2, setIndex2] = useState(0);
-  const [overrides, setOverrides] = useState<(string | null)[]>(new Array(12).fill(null));
+  const [overrides, setOverrides] = useState<(string | null)[]>(liveSlots ? liveSlots.map(f => f ? `/uploads/${f}` : null) : new Array(12).fill(null));
+  const [titles,    setTitles]    = useState<(string | null)[]>(liveTitles || []);
 
   useEffect(() => {
-    fetch('/api/upload/curated')
-      .then(r => r.json())
-      .then(d => {
-        if (d.slots) setOverrides(d.slots.map((file: string | null) => file ? `/uploads/${file}` : null));
-      })
-      .catch(() => {});
-  }, []);
+    if (!liveSlots && !liveTitles) {
+      fetch('/api/upload/curated')
+        .then(r => r.json())
+        .then(d => {
+          if (d.slots) setOverrides(d.slots.map((file: string | null) => file ? `/uploads/${file}` : null));
+          if (d.titles) setTitles(d.titles);
+        })
+        .catch(() => {});
+    }
+  }, [liveSlots, liveTitles]);
 
   useEffect(() => {
     const timers: NodeJS.Timeout[] = [];
@@ -99,7 +73,7 @@ export default function CuratedStyles() {
         
         {/* LEFT COMPONENT: 3 Cards Grid */}
         <div className="lg:w-[55%] grid grid-cols-1 md:grid-cols-3 gap-5 lg:pr-8 mb-8 lg:mb-0">
-          {CARDS.map((card, idx) => (
+          {CURATED_STYLES_CARDS.map((card, idx) => (
             <motion.div variants={itemVariants} key={idx}>
               <Link href={card.link} className="block group">
                 <div className="bg-[#fff5f8] p-[10px] rounded-[18px] flex flex-col h-full hover:shadow-md transition-shadow">
@@ -124,7 +98,7 @@ export default function CuratedStyles() {
                   {/* Text Content */}
                   <div className="px-1 pb-2 flex-grow">
                     <h3 className="text-[#032C5E] font-domine text-[15px] font-semibold border-b-[1.5px] border-[#032C5E]/50 inline-block mb-2 group-hover:border-[#032C5E] transition-colors">
-                      {card.title}
+                      {titles[idx] || card.title}
                     </h3>
                     <p className="text-[12.5px] text-gray-500 leading-snug">
                       {card.desc}

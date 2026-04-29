@@ -43,14 +43,23 @@ export async function POST(req: NextRequest) {
 /* DELETE ?index=N — reset slot to default */
 export async function DELETE(req: NextRequest) {
   const index = Number(new URL(req.url).searchParams.get('index'));
+  const mode  = new URL(req.url).searchParams.get('mode');
   const meta  = await readMeta();
   const offers: (string | null)[] = meta.offers ?? new Array(4).fill(null);
 
-  const old = offers[index];
-  if (old) {
-    try { await unlink(path.join(UPLOAD, old)); } catch {}
+  if (index !== null && !isNaN(index)) {
+    const old = offers[index];
+    if (old) {
+      try { await unlink(path.join(UPLOAD, old)); } catch {}
+    }
+    if (mode === 'delete') {
+      offers.splice(index, 1);
+    } else {
+      offers[index] = null;
+    }
+  } else {
+    meta.offers = [];
   }
-  offers[index] = null;
   meta.offers = offers;
   await writeMeta(meta);
   revalidatePath('/');

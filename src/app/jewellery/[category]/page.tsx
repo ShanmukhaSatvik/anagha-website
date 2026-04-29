@@ -4,11 +4,8 @@ import JewelleryListing from '@/components/JewelleryListing';
 import { PRODUCTS } from '@/lib/data';
 import { notFound } from 'next/navigation';
 
-// All known category slugs for static generation
-export function generateStaticParams() {
-  const categories = [...new Set(PRODUCTS.map((p) => p.category))];
-  return categories.map((category) => ({ category }));
-}
+// Disable static generation to support dynamic categories
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }) {
   const { category } = await params;
@@ -22,9 +19,23 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
 export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
   const { category } = await params;
 
-  // Validate the category exists in our data
-  const exists = PRODUCTS.some((p) => p.category === category);
-  if (!exists) notFound();
+  // Validate the category exists in our data (check both hardcoded and dynamic)
+  let categories = [...new Set(PRODUCTS.map((p) => p.category))];
+  try {
+    const fs = require('fs/promises');
+    const path = require('path');
+    const metaPath = path.join(process.cwd(), 'public', 'uploads', 'metadata.json');
+    const raw = await fs.readFile(metaPath, 'utf-8');
+    const meta = JSON.parse(raw);
+    if (meta.jewelleryCategories) {
+      const dynamicSlugs = meta.jewelleryCategories.map((c: any) => c.name.toLowerCase().replace(/ /g, '-'));
+      categories = [...new Set([...categories, ...dynamicSlugs])];
+    }
+  } catch (e) {}
+
+  if (!categories.includes(category)) {
+    notFound();
+  }
 
   return (
     <>
