@@ -4,12 +4,9 @@ import { motion } from 'framer-motion';
 
 export default function AboutCompany() {
   return (
-    <section className="bg-[#fffbfa] pt-8 pb-16 relative overflow-hidden">
+    <section className="bg-[#fffbfa] pt-4 pb-16 relative overflow-hidden">
       <div className="max-w-[1300px] mx-auto px-4 lg:px-8 relative z-10">
         
-        {/* Horizontal Line connecting icons (visible on desktop) */}
-        <div className="hidden md:block absolute top-[28px] left-[15%] right-[15%] h-[1px] bg-[#e5e7eb] z-[-1]" />
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10">
           
           {/* Column 1 */}

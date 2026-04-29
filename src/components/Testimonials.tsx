@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { TESTIMONIAL_REVIEWS } from '@/lib/data';
 
@@ -39,8 +39,14 @@ export default function Testimonials({ live }: Props) {
     setScrollProgress(progress);
   };
 
+  useEffect(() => {
+    handleScroll();
+    window.addEventListener('resize', handleScroll);
+    return () => window.removeEventListener('resize', handleScroll);
+  }, []);
+
   return (
-    <section className="bg-[#ffdfe8] pt-16 pb-8 overflow-hidden relative">
+    <section className="bg-white pt-16 pb-4 relative overflow-hidden">
       <motion.div 
         initial="hidden"
         whileInView="visible"
@@ -48,17 +54,15 @@ export default function Testimonials({ live }: Props) {
         className="w-full mb-12 relative"
       >
         {/* Title */}
-        <div className="container mx-auto px-6 mb-16">
-          <motion.h2 
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-4xl md:text-5xl font-display font-bold text-navy text-center md:text-left"
-          >
-            What our clients say
-          </motion.h2>
-        </div>
+        <motion.h2 
+          variants={{
+            hidden: { opacity: 0, y: 40 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+          }}
+          className="text-center text-[28px] font-domine text-[#032C5E] tracking-wide mb-6"
+        >
+          Customer Testimonials
+        </motion.h2>
 
         {/* Scrollable Container */}
         <motion.div 
@@ -75,7 +79,7 @@ export default function Testimonials({ live }: Props) {
             <div 
               key={idx} 
               className={`relative min-w-[280px] w-[280px] shrink-0 snap-center transition-transform hover:scale-105 duration-300 ${item.rotate} ${item.translateY} shadow-lg rounded-sm`}
-              style={{ backgroundColor: '#ffffff' }}
+              style={{ backgroundColor: '#ffeff3' }}
             >
               {/* Pin */}
               <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-8 h-10 z-20 drop-shadow-sm">
@@ -84,7 +88,7 @@ export default function Testimonials({ live }: Props) {
 
               {/* Polaroid Frame */}
               <div className="p-3 pb-8 h-full flex flex-col">
-                <div className="w-full aspect-[4/3] bg-gray-50 mb-4 relative overflow-hidden">
+                <div className="w-full aspect-[4/3] bg-white mb-4 relative overflow-hidden">
                   <img src={item.img} alt={item.name} className="w-full h-full object-contain p-2" draggable={false} />
                 </div>
                 
@@ -103,7 +107,7 @@ export default function Testimonials({ live }: Props) {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.8 }}
           transition={{ delay: 1, duration: 0.5 }}
-          className="max-w-[280px] mx-auto mt-10 relative h-[4px] bg-white rounded-full overflow-hidden"
+          className="max-w-[280px] mx-auto mt-10 relative h-[4px] bg-gray-200 rounded-full overflow-hidden"
         >
           <div 
             className="absolute top-0 left-0 h-full rounded-full transition-all duration-75"
