@@ -4,8 +4,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const NAV = [
-  'WATCH JEWELLERY','RINGS','EARRINGS',
-  'PENDANTS','SOLITAIRES','ALL JEWELLERY','GIFTS','GOLD COINS','OFFERS',
+  'RINGS','EARRINGS',
+  'PENDANTS','SOLITAIRES','ALL JEWELLERY',
 ];
 
 /* ── tiny SVGs ─────────────────────────────────────────── */
@@ -43,7 +43,7 @@ export default function Header() {
           <button aria-label="Menu" className="text-navy" onClick={() => setMobileMenuOpen(true)}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
-          <img src="/images/logo_icon.png" alt="Logo" className="w-8 h-8 object-contain rounded-full border border-gray-100" />
+          <img src="/images/logo_icon.png" alt="Logo" className="w-8 h-8 object-contain rounded-full border border-gray-300" />
         </div>
         <Link href="/" className="font-display text-[16px] font-bold tracking-[3px] text-navy">
           SRI SRESTA
@@ -59,7 +59,7 @@ export default function Header() {
       ══════════════════════════════════════════════════════ */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 bg-white z-[200] flex flex-col lg:hidden overflow-hidden">
-          <div className="flex items-center justify-between p-4 border-b border-gray-100">
+          <div className="flex items-center justify-between p-4 border-b border-gray-300">
             <span className="font-display text-[16px] font-bold tracking-[3px] text-navy">SRI SRESTA</span>
             <button aria-label="Close Menu" onClick={() => setMobileMenuOpen(false)} className="text-navy p-1">
               <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -112,12 +112,6 @@ export default function Header() {
 
             {/* Row 1 — utility text links */}
             <div className="flex items-center h-[33px]">
-              <span className={`${ITEM1} font-semibold text-gray-900`}>
-                <PhoneIcon /> 18004190066
-              </span>
-              <span className={VDIV} />
-              <Link href="/video-call" className={`${ITEM2} hover:text-navy`}>Video Call Cart</Link>
-              <span className={VDIV} />
               <Link href="/upload"     className={`${ITEM3} hover:text-navy`}>Login</Link>
               <span className={VDIV} />
               <Link href="/signup"     className={`${ITEM4} hover:text-navy`}>Signup</Link>
@@ -125,12 +119,6 @@ export default function Header() {
 
             {/* Row 2 — action icons */}
             <div className="flex items-center h-[33px]">
-              {/* Recently Viewed */}
-              <div className={`${ITEM1} flex-row items-center gap-1.5 text-navy font-semibold text-[10px] leading-tight`}>
-                <ClockIcon />
-                <span>Recently<br />Viewed</span>
-              </div>
-              <span className={VDIV} />
               {/* Locate Store */}
               <div className={`${ITEM2} flex-row items-center gap-1.5 text-navy font-semibold text-[10px] leading-tight`}>
                 <PinIcon />
@@ -186,7 +174,7 @@ export default function Header() {
         </div>
 
         {/* Nav links — pl clears the scrolled logo (34px) with a small gap */}
-        <ul className="flex items-center h-full w-full justify-start gap-2 xl:gap-6 pl-[50px] xl:pl-[60px] list-none">
+        <ul className="flex items-center h-full w-full justify-center gap-2 xl:gap-6 list-none">
           {NAV.map(n => (
             <li
               key={n}
@@ -195,12 +183,10 @@ export default function Header() {
               {(() => {
                 const NAV_LINKS: Record<string, string> = {
                   'ALL JEWELLERY':   '/jewellery',
-                  'WATCH JEWELLERY': '/jewellery/watch-jewellery',
                   'RINGS':           '/jewellery/rings',
                   'EARRINGS':        '/jewellery/earrings',
                   'PENDANTS':        '/jewellery/pendants',
                   'SOLITAIRES':      '/jewellery/solitaires',
-                  'GOLD COINS':      '/jewellery/coins',
                 };
                 const href = NAV_LINKS[n];
                 return href ? (
@@ -214,109 +200,28 @@ export default function Header() {
                 );
               })()}
               
-              {n === 'WATCH JEWELLERY' && (
-                <div className="absolute top-full left-0 bg-white shadow-2xl w-[900px] py-10 rounded-b-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] border-t-2 border-navy translate-y-2 group-hover:translate-y-0">
-                  <div className="px-10 grid grid-cols-3 gap-10">
-                    <div className="flex flex-col items-center text-center">
-                      <h4 className="text-navy font-bold text-[16px] mb-4 w-full text-left border-b border-dotted border-gray-200 pb-2 uppercase tracking-wide">Watch Charms</h4>
-                      <div className="h-[180px] w-full flex items-center justify-center mb-6 p-4">
-                        <img src="/images/header/watch_charm.webp" alt="Watch Charm" className="max-h-full max-w-full object-contain" />
-                      </div>
-                      <button className="w-full py-2.5 px-4 border border-navy rounded text-navy text-[13px] font-medium hover:bg-navy hover:text-white transition-all">
-                        Shop Charms
-                      </button>
-                    </div>
-                    <div className="flex flex-col items-center text-center">
-                      <h4 className="text-navy font-bold text-[16px] mb-4 w-full text-left border-b border-dotted border-gray-200 pb-2 uppercase tracking-wide">Watch Bands</h4>
-                      <div className="h-[180px] w-full flex items-center justify-center mb-6 p-4">
-                        <img src="/images/header/watch_band.webp" alt="Watch Band" className="max-h-full max-w-full object-contain" />
-                      </div>
-                      <button className="w-full py-2.5 px-4 border border-navy rounded text-navy text-[13px] font-medium hover:bg-navy hover:text-white transition-all">
-                        Shop Bands
-                      </button>
-                    </div>
-                    <div className="flex flex-col items-center text-center">
-                      <h4 className="text-navy font-bold text-[16px] mb-4 w-full text-left border-b border-dotted border-gray-200 pb-2 uppercase tracking-wide">Watch Pins</h4>
-                      <div className="h-[180px] w-full flex items-center justify-center mb-6 p-4">
-                        <img src="/images/header/watch_pin.webp" alt="Watch Pin" className="max-h-full max-w-full object-contain" />
-                      </div>
-                      <button className="w-full py-2.5 px-4 border border-navy rounded text-navy text-[13px] font-medium hover:bg-navy hover:text-white transition-all">
-                        Shop Pins
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
               
-              {n === 'OFFERS' && (
-                <div className="absolute top-full right-[-80px] bg-white shadow-xl min-w-[260px] py-5 rounded-b-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] border-t-2 border-navy translate-y-2 group-hover:translate-y-0">
-                  <div className="px-6">
-                    <div className="text-[#334155] text-[13px] font-medium leading-[1.4] py-2 hover:text-[#f1592a] transition-colors">
-                      Up To 50% Off On<br />Making Charges On Diamond Jewellery
-                    </div>
-                    <div className="border-t border-dotted border-gray-300 my-2" />
-                    <div className="text-[#334155] text-[13px] font-medium leading-[1.4] py-2 hover:text-[#f1592a] transition-colors">
-                      Up To 20% Off On<br />Making Charges On Plain Gold Jewellery
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {n === 'GOLD COINS' && (
-                <div className="absolute top-full right-[-100px] bg-white shadow-xl min-w-[320px] py-6 rounded-b-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] border-t-2 border-navy translate-y-2 group-hover:translate-y-0">
-                  <div className="px-8 grid grid-cols-2 gap-8">
-                    {/* 24 Kt Section */}
-                    <div>
-                      <h4 className="text-navy font-bold text-[13px] mb-3 border-b border-gray-100 pb-1 uppercase tracking-tight">24 Kt (995)</h4>
-                      <ul className="space-y-2">
-                        {['0.5 gram', '1 gram', '2 gram', '5 gram', '10 gram', '20 gram', '50 gram'].map(weight => (
-                          <li key={weight} className="text-[#334155] text-[12px] hover:text-[#f1592a] transition-colors">{weight}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    {/* 22 Kt Section */}
-                    <div>
-                      <h4 className="text-navy font-bold text-[13px] mb-3 border-b border-gray-100 pb-1 uppercase tracking-tight">22 Kt (916)</h4>
-                      <ul className="space-y-2">
-                        {['1 gram', '2 gram', '5 gram', '10 gram', '20 gram', '50 gram'].map(weight => (
-                          <li key={weight} className="text-[#334155] text-[12px] hover:text-[#f1592a] transition-colors">{weight}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              )}
 
               {n === 'RINGS' && (
-                <div className="absolute top-full left-[-100px] bg-white shadow-2xl w-[950px] py-10 rounded-b-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] border-t-2 border-navy translate-y-2 group-hover:translate-y-0">
-                  <div className="px-12 grid grid-cols-3 gap-12 text-left">
-                    {/* Column 1: Types */}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-2xl w-[700px] py-10 rounded-b-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] border-t-2 border-navy translate-y-2 group-hover:translate-y-0">
+                  <div className="px-12 grid grid-cols-2 gap-12 text-left">
+                    {/* Column 1: Price Range */}
                     <div>
-                      <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">Popular Ring Types</h4>
-                      <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 mb-8">
-                        {['Engagement', 'Diamond', 'Couple Bands', 'Plain Gold', 'Office Wear', 'Gemstone', 'Stackable', 'Solitaire', 'Slider', 'Cocktail', 'Religious', 'Multi-finger', 'Platinum Bands', 'Navaratna', 'For Men', 'Pearl', 'For Gift'].map(item => (
-                          <div key={item} className="text-[#334155] text-[13px] hover:text-[#f1592a] transition-colors cursor-pointer">{item}</div>
-                        ))}
-                      </div>
-                      <button className="w-full py-2.5 px-4 border border-gray-100 rounded text-navy text-[13px] font-medium hover:border-navy transition-colors">
-                        View All Rings
-                      </button>
-                    </div>
-
-                    {/* Column 2: Price Range */}
-                    <div>
-                      <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">By Price Range</h4>
+                      <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-300 pb-2">By Price Range</h4>
                       <ul className="space-y-3">
                         {['Below 10,000', 'Between 10k-20k', 'Between 20k-30k', 'Between 30k-40k', 'Between 40k-50k', '50,000 and above'].map(item => (
                           <li key={item} className="text-[#334155] text-[13px] hover:text-[#f1592a] transition-colors cursor-pointer">{item}</li>
                         ))}
                       </ul>
+                      <button className="w-full mt-8 py-2.5 px-4 border border-gray-300 rounded text-navy text-[13px] font-medium hover:border-navy transition-colors">
+                        View All Rings
+                      </button>
                     </div>
 
-                    {/* Column 3: Metals & Stones + Callout */}
+                    {/* Column 2: Metals & Stones + Callout */}
                     <div className="flex flex-col">
                       <div>
-                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">By Metals & Stones</h4>
+                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-300 pb-2">By Metals & Stones</h4>
                         <ul className="space-y-3 mb-10">
                           {['Diamond Rings', 'Gold Rings', 'White Gold Rings', 'Rose Gold Rings', 'Platinum Rings'].map(item => (
                             <li key={item} className="text-[#334155] text-[13px] hover:text-[#f1592a] transition-colors cursor-pointer">{item}</li>
@@ -324,10 +229,10 @@ export default function Header() {
                         </ul>
                       </div>
                       
-                      <div className="mt-auto border-t border-gray-100 pt-6 flex items-center gap-4 group/callout cursor-pointer overflow-hidden">
+                      <div className="mt-auto border-t border-gray-300 pt-6 flex items-center gap-4 group/callout cursor-pointer overflow-hidden">
                         <div className="flex-1">
                           <h5 className="text-navy font-bold text-[14px] group-hover/callout:text-[#f1592a] transition-colors">Buy Solitaire Rings</h5>
-                          <p className="text-gray-400 text-[12px]">Starting at Rs. 30,000/-</p>
+                          <p className="text-gray-500 text-[12px]">Starting at Rs. 30,000/-</p>
                         </div>
                         <div className="w-24 h-20 shrink-0">
                           <img src="/images/header/menu-solitaire-ring.v1.webp" alt="Solitaire Ring" className="w-full h-full object-contain object-right" />
@@ -339,35 +244,25 @@ export default function Header() {
               )}
 
               {n === 'EARRINGS' && (
-                <div className="absolute top-full left-[-200px] bg-white shadow-2xl w-[950px] py-10 rounded-b-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] border-t-2 border-navy translate-y-2 group-hover:translate-y-0">
-                  <div className="px-12 grid grid-cols-3 gap-12 text-left">
-                    {/* Column 1: Types */}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-2xl w-[700px] py-10 rounded-b-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] border-t-2 border-navy translate-y-2 group-hover:translate-y-0">
+                  <div className="px-12 grid grid-cols-2 gap-12 text-left">
+                    {/* Column 1: Price Range */}
                     <div>
-                      <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">Popular Earring Types</h4>
-                      <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 mb-8">
-                        {['Studs', 'Hoops', 'Drops', 'Multi Pierced', 'Sui Dhaga', 'Pearl', 'Jhumkas', 'Plain Gold', 'Chandbali', 'Diamond', 'Front Back', 'Gemstone', 'Ear Cuffs', 'For Kids', 'Danglers', 'For Men', 'Navaratna Earrings', 'For Gift'].map(item => (
-                          <div key={item} className="text-[#334155] text-[13px] hover:text-[#f1592a] transition-colors cursor-pointer">{item}</div>
-                        ))}
-                      </div>
-                      <button className="w-full py-2.5 px-4 border border-gray-100 rounded text-navy text-[13px] font-medium hover:border-navy transition-colors">
-                        View All Earrings
-                      </button>
-                    </div>
-
-                    {/* Column 2: Price Range */}
-                    <div>
-                      <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">By Price Range</h4>
+                      <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-300 pb-2">By Price Range</h4>
                       <ul className="space-y-3">
                         {['Below 10,000', 'Between 10k-20k', 'Between 20k-30k', 'Between 30k-40k', 'Between 40k-50k', '50,000 and above'].map(item => (
                           <li key={item} className="text-[#334155] text-[13px] hover:text-[#f1592a] transition-colors cursor-pointer">{item}</li>
                         ))}
                       </ul>
+                      <button className="w-full mt-8 py-2.5 px-4 border border-gray-300 rounded text-navy text-[13px] font-medium hover:border-navy transition-colors">
+                        View All Earrings
+                      </button>
                     </div>
 
-                    {/* Column 3: Metals & Stones + Callout */}
+                    {/* Column 2: Metals & Stones + Callout */}
                     <div className="flex flex-col">
                       <div>
-                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">By Metals & Stones</h4>
+                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-300 pb-2">By Metals & Stones</h4>
                         <ul className="space-y-3 mb-10">
                           {['Diamond Earrings', 'Gold Earrings', 'White Gold Earrings', 'Rose Gold Earrings', 'Gemstone Earrings'].map(item => (
                             <li key={item} className="text-[#334155] text-[13px] hover:text-[#f1592a] transition-colors cursor-pointer">{item}</li>
@@ -375,10 +270,10 @@ export default function Header() {
                         </ul>
                       </div>
                       
-                      <div className="mt-auto border-t border-gray-100 pt-6 flex items-center gap-4 group/callout cursor-pointer">
+                      <div className="mt-auto border-t border-gray-300 pt-6 flex items-center gap-4 group/callout cursor-pointer">
                         <div className="flex-1">
                           <h5 className="text-navy font-bold text-[14px] group-hover/callout:text-[#f1592a] transition-colors">Buy Solitaire Earrings</h5>
-                          <p className="text-gray-400 text-[12px]">Starting at Rs. 45,000/-</p>
+                          <p className="text-gray-500 text-[12px]">Starting at Rs. 45,000/-</p>
                         </div>
                         <div className="w-20 h-20 shrink-0">
                           <img src="/images/header/menu-solitaire-earring.v1.webp" alt="Solitaire Earring" className="w-full h-full object-contain" />
@@ -390,35 +285,25 @@ export default function Header() {
               )}
 
               {n === 'PENDANTS' && (
-                <div className="absolute top-full left-[-300px] bg-white shadow-2xl w-[950px] py-10 rounded-b-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] border-t-2 border-navy translate-y-2 group-hover:translate-y-0">
-                  <div className="px-12 grid grid-cols-3 gap-12 text-left">
-                    {/* Column 1: Types */}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-2xl w-[700px] py-10 rounded-b-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] border-t-2 border-navy translate-y-2 group-hover:translate-y-0">
+                  <div className="px-12 grid grid-cols-2 gap-12 text-left">
+                    {/* Column 1: Price Range */}
                     <div>
-                      <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">Popular Pendant Types</h4>
-                      <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 mb-8">
-                        {['Alphabet', 'Mangalsutra', 'Religious', 'Diamond', 'Fashion', 'Pearl', 'Heart Shaped', 'Gemstone', 'Lockets', 'Plain Gold', 'Office Wear', 'For Men', 'For Kids', 'Navaratna', 'For Gift'].map(item => (
-                          <div key={item} className="text-[#334155] text-[13px] hover:text-[#f1592a] transition-colors cursor-pointer">{item}</div>
-                        ))}
-                      </div>
-                      <button className="w-full py-2.5 px-4 border border-gray-100 rounded text-navy text-[13px] font-medium hover:border-navy transition-colors">
-                        View All Pendants
-                      </button>
-                    </div>
-
-                    {/* Column 2: Price Range */}
-                    <div>
-                      <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">By Price Range</h4>
+                      <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-300 pb-2">By Price Range</h4>
                       <ul className="space-y-3">
                         {['Below 10,000', 'Between 10k-20k', 'Between 20k-30k', 'Between 30k-40k', 'Between 40k-50k', '50,000 and above'].map(item => (
                           <li key={item} className="text-[#334155] text-[13px] hover:text-[#f1592a] transition-colors cursor-pointer">{item}</li>
                         ))}
                       </ul>
+                      <button className="w-full mt-8 py-2.5 px-4 border border-gray-300 rounded text-navy text-[13px] font-medium hover:border-navy transition-colors">
+                        View All Pendants
+                      </button>
                     </div>
 
-                    {/* Column 3: Metals & Stones + Callout */}
+                    {/* Column 2: Metals & Stones + Callout */}
                     <div className="flex flex-col">
                       <div>
-                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">By Metals & Stones</h4>
+                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-300 pb-2">By Metals & Stones</h4>
                         <ul className="space-y-3 mb-10">
                           {['Diamond Pendants', 'Gold Pendants', 'White Gold Pendants', 'Rose Gold Pendants', 'Gemstone Pendants'].map(item => (
                             <li key={item} className="text-[#334155] text-[13px] hover:text-[#f1592a] transition-colors cursor-pointer">{item}</li>
@@ -426,10 +311,10 @@ export default function Header() {
                         </ul>
                       </div>
                       
-                      <div className="mt-auto border-t border-gray-100 pt-6 flex items-center gap-4 group/callout cursor-pointer">
+                      <div className="mt-auto border-t border-gray-300 pt-6 flex items-center gap-4 group/callout cursor-pointer">
                         <div className="flex-1">
                           <h5 className="text-navy font-bold text-[14px] group-hover/callout:text-[#f1592a] transition-colors">Buy Solitaire Pendants</h5>
-                          <p className="text-gray-400 text-[12px]">Starting at Rs. 40,000/-</p>
+                          <p className="text-gray-500 text-[12px]">Starting at Rs. 40,000/-</p>
                         </div>
                         <div className="w-20 h-20 shrink-0">
                           <img src="/images/header/menu-solitaire-pendant.v1.webp" alt="Solitaire Pendant" className="w-full h-full object-contain" />
@@ -441,7 +326,7 @@ export default function Header() {
               )}
 
               {n === 'SOLITAIRES' && (
-                <div className="absolute top-full left-[-400px] bg-white shadow-2xl w-[900px] py-10 rounded-b-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] border-t-2 border-navy translate-y-2 group-hover:translate-y-0">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-2xl w-[900px] py-10 rounded-b-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] border-t-2 border-navy translate-y-2 group-hover:translate-y-0">
                   <div className="px-10 grid grid-cols-3 gap-10">
                     {/* Rings */}
                     <div className="flex flex-col items-center text-center">
@@ -452,7 +337,7 @@ export default function Header() {
                       <button className="w-full py-2.5 px-4 border border-gray-200 rounded text-navy text-[13px] font-medium hover:border-navy transition-colors mb-4">
                         Make your own Solitaire Ring
                       </button>
-                      <div className="text-gray-400 text-[11px] mb-4">-- or --</div>
+                      <div className="text-gray-500 text-[11px] mb-4">-- or --</div>
                       <button className="w-full py-2.5 px-4 border border-navy rounded text-navy text-[13px] font-medium flex items-center justify-center gap-2 hover:bg-navy hover:text-white transition-all group/btn">
                         View All Preset Solitaire Rings <span className="text-[16px] transition-transform group-hover/btn:translate-x-1">→</span>
                       </button>
@@ -467,7 +352,7 @@ export default function Header() {
                       <button className="w-full py-2.5 px-4 border border-gray-200 rounded text-navy text-[13px] font-medium hover:border-navy transition-colors mb-4">
                         Make your own Solitaire Pendant
                       </button>
-                      <div className="text-gray-400 text-[11px] mb-4">-- or --</div>
+                      <div className="text-gray-500 text-[11px] mb-4">-- or --</div>
                       <button className="w-full py-2.5 px-4 border border-navy rounded text-navy text-[13px] font-medium flex items-center justify-center gap-2 hover:bg-navy hover:text-white transition-all group/btn">
                         View All Preset Solitaire Pendants <span className="text-[16px] transition-transform group-hover/btn:translate-x-1">→</span>
                       </button>
@@ -482,7 +367,7 @@ export default function Header() {
                       <button className="w-full py-2.5 px-4 border border-gray-200 rounded text-navy text-[13px] font-medium hover:border-navy transition-colors mb-4">
                         Make your own Solitaire Earring
                       </button>
-                      <div className="text-gray-400 text-[11px] mb-4">-- or --</div>
+                      <div className="text-gray-500 text-[11px] mb-4">-- or --</div>
                       <button className="w-full py-2.5 px-4 border border-navy rounded text-navy text-[13px] font-medium flex items-center justify-center gap-2 hover:bg-navy hover:text-white transition-all group/btn">
                         View All Preset Solitaire Earrings <span className="text-[16px] transition-transform group-hover/btn:translate-x-1">→</span>
                       </button>
@@ -492,14 +377,14 @@ export default function Header() {
               )}
 
               {n === 'ALL JEWELLERY' && (
-                <div className="absolute top-full left-[-350px] bg-white shadow-2xl w-[1000px] py-10 rounded-b-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] border-t-2 border-navy translate-y-2 group-hover:translate-y-0">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-2xl w-[1000px] py-10 rounded-b-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] border-t-2 border-navy translate-y-2 group-hover:translate-y-0">
                   <div className="px-12 grid grid-cols-4 gap-12 text-left">
                     {/* Column 1: Shop By Category */}
                     <div>
-                      <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">Shop By Category</h4>
+                      <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-300 pb-2">Shop By Category</h4>
                       <ul className="space-y-2.5">
                         {[
-                          { name: 'Bangles' }, { name: 'Bracelets' }, { name: 'Earrings' }, { name: 'Gold Chains' }, { name: 'Gold Coins' }, { name: 'Kadas' }, { name: 'Mangalsutras' },
+                          { name: 'Bangles' }, { name: 'Bracelets' }, { name: 'Earrings' }, { name: 'Gold Chains' }, { name: 'Kadas' }, { name: 'Mangalsutras' },
                           { name: 'Mangalsutra Bracelets', isNew: true }, { name: 'Mangalsutra Chains' }, { name: 'Necklaces' }, { name: 'Nose Pins' },
                           { name: 'Nose Rings', isNew: true }, { name: 'Nose Screws' }, { name: 'Pendants' }, { name: 'Rings' }, { name: 'Charms', isNew: true }
                         ].map(item => (
@@ -514,7 +399,7 @@ export default function Header() {
                     {/* Column 2: Men / Kids / Platinum */}
                     <div className="space-y-10">
                       <div>
-                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">Men's Jewellery</h4>
+                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-300 pb-2">Men's Jewellery</h4>
                         <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                           {['Bracelets', 'Studs', 'Kadas', 'Pendants', 'Rings', 'Cufflinks', 'Chains'].map(item => (
                             <div key={item} className="text-[#334155] text-[13px] hover:text-[#f1592a] transition-colors">{item}</div>
@@ -522,7 +407,7 @@ export default function Header() {
                         </div>
                       </div>
                       <div>
-                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">Kids Jewellery</h4>
+                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-300 pb-2">Kids Jewellery</h4>
                         <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                           {['Earrings', 'Pendants', 'Necklaces', 'Bracelets', { name: 'Nazariyas', isNew: true }].map(item => (
                             <div key={typeof item === 'string' ? item : item.name} className="flex items-center gap-1.5 text-[#334155] text-[13px] hover:text-[#f1592a] transition-colors whitespace-nowrap">
@@ -533,7 +418,7 @@ export default function Header() {
                         </div>
                       </div>
                       <div>
-                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">Platinum Jewellery</h4>
+                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-300 pb-2">Platinum Jewellery</h4>
                         <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                           {['Rings', 'Earrings', 'Pendants', 'Chains'].map(item => (
                             <div key={item} className="text-[#334155] text-[13px] hover:text-[#f1592a] transition-colors">{item}</div>
@@ -545,7 +430,7 @@ export default function Header() {
                     {/* Column 3: Gold / Gemstone */}
                     <div className="space-y-10">
                       <div>
-                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">Gold Jewellery</h4>
+                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-300 pb-2">Gold Jewellery</h4>
                         <div className="space-y-2">
                           {['Bangles', 'Bracelets', 'Chains', 'Earrings', 'Mangalsutras', 'Necklaces', 'Nose Pins', 'Pendants', 'Rings'].map(item => (
                             <div key={item} className="text-[#334155] text-[13px] hover:text-[#f1592a] transition-colors">{item}</div>
@@ -554,7 +439,7 @@ export default function Header() {
                         <div className="mt-4 text-navy font-bold text-[12px] hover:text-[#f1592a] transition-colors cursor-pointer">View All ▸</div>
                       </div>
                       <div>
-                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">Gemstone Jewellery</h4>
+                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-300 pb-2">Gemstone Jewellery</h4>
                         <div className="space-y-2">
                           {['Rings', 'Earrings'].map(item => (
                             <div key={item} className="text-[#334155] text-[13px] hover:text-[#f1592a] transition-colors">{item}</div>
@@ -567,7 +452,7 @@ export default function Header() {
                     {/* Column 4: Diamond / Pearl */}
                     <div className="space-y-10">
                       <div>
-                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">Diamond Jewellery</h4>
+                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-300 pb-2">Diamond Jewellery</h4>
                         <div className="space-y-2">
                           {['Bangles', 'Bracelets', 'Cufflinks', 'Earrings', 'Mangalsutras', 'Necklaces', 'Nose Pins', 'Pendants', 'Rings'].map(item => (
                             <div key={item} className="text-[#334155] text-[13px] hover:text-[#f1592a] transition-colors">{item}</div>
@@ -576,7 +461,7 @@ export default function Header() {
                         <div className="mt-4 text-navy font-bold text-[12px] hover:text-[#f1592a] transition-colors cursor-pointer">View All ▸</div>
                       </div>
                       <div>
-                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-100 pb-2">Pearl Jewellery</h4>
+                        <h4 className="text-navy font-bold text-[15px] mb-5 border-b border-gray-300 pb-2">Pearl Jewellery</h4>
                         <div className="space-y-2">
                           {['Earrings', 'Necklaces'].map(item => (
                             <div key={item} className="text-[#334155] text-[13px] hover:text-[#f1592a] transition-colors">{item}</div>
@@ -589,50 +474,6 @@ export default function Header() {
                 </div>
               )}
 
-              {n === 'GIFTS' && (
-                <div className="absolute top-full right-[-200px] bg-white shadow-xl min-w-[700px] py-8 rounded-b-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] border-t-2 border-navy translate-y-2 group-hover:translate-y-0">
-                  <div className="px-10 grid grid-cols-3 gap-10">
-                    {/* Occasion */}
-                    <div>
-                      <h4 className="text-navy font-bold text-[13px] mb-4 border-b border-gray-100 pb-1 uppercase tracking-tight">Gifts by Occasion</h4>
-                      <ul className="space-y-2.5">
-                        {['Anniversary', 'Birthday', 'Engagement', 'Wedding'].map(item => (
-                          <li key={item} className="text-[#334155] text-[12.5px] hover:text-[#f1592a] transition-colors">{item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    {/* Price Range */}
-                    <div>
-                      <h4 className="text-navy font-bold text-[13px] mb-4 border-b border-gray-100 pb-1 uppercase tracking-tight">By Price Range</h4>
-                      <ul className="space-y-2.5">
-                        {['Below 10,000', 'Between 10k-20k', 'Between 20k-30k', 'Between 30k-40k', 'Between 40k-50k', '50,000 and above'].map(item => (
-                          <li key={item} className="text-[#334155] text-[12.5px] hover:text-[#f1592a] transition-colors">{item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    {/* Special Someone */}
-                    <div>
-                      <h4 className="text-navy font-bold text-[13px] mb-4 border-b border-gray-100 pb-1 uppercase tracking-tight">Gifts for special someone</h4>
-                      <ul className="space-y-3.5">
-                        {[
-                          { label: 'For HER', price: '2,861/-' },
-                          { label: 'For HIM', price: '5,820/-' },
-                          { label: 'For SISTER', price: '5,746/-' },
-                          { label: 'For BROTHER', price: '5,820/-' },
-                          { label: 'For MOTHER', price: '5,805/-' },
-                          { label: 'For FATHER', price: '5,820/-' },
-                          { label: 'For FRIENDS', price: '4,221/-' },
-                        ].map(item => (
-                          <li key={item.label} className="group/item cursor-pointer">
-                            <div className="text-navy font-bold text-[11px] group-hover/item:text-[#f1592a] transition-colors uppercase tracking-wider">{item.label}</div>
-                            <div className="text-gray-400 text-[10px]">Starting at Rs. {item.price}</div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              )}
             </li>
           ))}
         </ul>

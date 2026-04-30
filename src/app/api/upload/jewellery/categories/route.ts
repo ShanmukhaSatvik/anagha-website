@@ -3,7 +3,7 @@ import { readFile, writeFile, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { revalidatePath } from 'next/cache';
 
-const META   = path.join(process.cwd(), 'public', 'uploads', 'metadata.json');
+const META = path.join(process.cwd(), 'public', 'uploads', 'metadata.json');
 const UPLOAD = path.join(process.cwd(), 'public', 'uploads');
 
 const DEFAULT_CATS = [
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
 
     const meta = await readMeta();
     const cats = meta.jewelleryCategories ?? [...DEFAULT_CATS];
-    
+
     if (indexStr !== null) {
       const idx = Number(indexStr);
       if (idx >= 0 && idx < cats.length) {
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
           const oldName = cats[idx].name;
           const oldSlug = oldName.toLowerCase().replace(/ /g, '-');
           const newSlug = name.toLowerCase().replace(/ /g, '-');
-          
+
           cats[idx].name = name;
 
           // Sync products
@@ -72,10 +72,10 @@ export async function POST(req: NextRequest) {
           const filename = `jewel_cat_${idx}_${Date.now()}.${ext}`;
           const buf = Buffer.from(await file.arrayBuffer());
           await writeFile(path.join(UPLOAD, filename), buf);
-          
+
           // Cleanup old image if it was a custom upload
           if (cats[idx].image?.startsWith('/uploads/')) {
-            try { await unlink(path.join(process.cwd(), 'public', cats[idx].image)); } catch {}
+            try { await unlink(path.join(process.cwd(), 'public', cats[idx].image)); } catch { }
           }
           cats[idx].image = `/uploads/${filename}`;
         }
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
       // Add new
       cats.push({ name, image: null });
     }
-    
+
     meta.jewelleryCategories = cats;
     await writeMeta(meta);
     revalidatePath('/');
@@ -101,22 +101,22 @@ export async function DELETE(req: NextRequest) {
 
   const meta = await readMeta();
   let cats = meta.jewelleryCategories ?? [...DEFAULT_CATS];
-  
+
   const target = cats.find((c: any) => c.name === name);
   if (target?.image?.startsWith('/uploads/')) {
-    try { await unlink(path.join(process.cwd(), 'public', target.image)); } catch {}
+    try { await unlink(path.join(process.cwd(), 'public', target.image)); } catch { }
   }
 
   const slug = name.toLowerCase().replace(/ /g, '-');
   cats = cats.filter((c: any) => c.name !== name);
-  
+
   // Cleanup products
   if (meta.jewelleryProducts) {
     // Optional: Clean up images of deleted products too
     const toDelete = meta.jewelleryProducts.filter((p: any) => p.category === slug);
     for (const p of toDelete) {
       if (p.image?.startsWith('/uploads/')) {
-        try { await unlink(path.join(process.cwd(), 'public', p.image)); } catch {}
+        try { await unlink(path.join(process.cwd(), 'public', p.image)); } catch { }
       }
     }
     meta.jewelleryProducts = meta.jewelleryProducts.filter((p: any) => p.category !== slug);

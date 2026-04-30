@@ -5,37 +5,11 @@ import { motion } from 'framer-motion';
 const ITEMS = [
   {
     icon: (
-      <div className="flex flex-col items-center justify-center leading-none">
-        <span className="font-bold text-[22px]">300+</span>
-        <span className="text-[8.5px] uppercase tracking-wider mt-1">Stores</span>
-      </div>
-    ),
-    label: '125+ Cities Nationwide',
-  },
-  {
-    icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M12 15l-3-3m0 0l3-3m-3 3h8M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"/>
       </svg>
     ),
     label: '100% Certified Jewellery',
-  },
-  {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M4.5 12h15m-15 0l4.5-4.5m-4.5 4.5l4.5 4.5M19.5 12l-4.5-4.5m4.5 4.5l-4.5 4.5"/>
-      </svg>
-    ),
-    label: 'Lifetime Exchange & Buyback',
-  },
-  {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <rect x="3" y="6" width="18" height="12" rx="2" />
-        <circle cx="12" cy="12" r="2" />
-      </svg>
-    ),
-    label: '30 Days Money Back',
   },
   {
     icon: (
@@ -125,7 +99,7 @@ export default function SriSrestaPromise() {
                     {/* Label */}
                     <h4 
                       className={`text-[#032C5E]/90 text-[13px] md:text-[14.5px] leading-tight font-medium mx-auto font-sans ${
-                        item.label === 'Lifetime Exchange & Buyback' || item.label === 'Personalised Video Consultations' 
+                        item.label === 'Personalised Video Consultations' 
                         ? 'max-w-[160px] whitespace-normal' 
                         : 'w-full whitespace-normal lg:whitespace-nowrap'
                       }`}
