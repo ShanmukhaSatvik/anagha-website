@@ -31,10 +31,13 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
       const dynamicSlugs = meta.jewelleryCategories.map((c: any) => c.name.toLowerCase().replace(/ /g, '-'));
       categories = [...new Set([...categories, ...dynamicSlugs])];
     }
-  } catch (e) {}
+  } catch (e) { }
 
   if (!categories.includes(category)) {
-    notFound();
+    // Also allow parent haram slug — it shows all haram subcategory products
+    const haramSlugs = ['guttapusala-haram', 'kasulaperu-haram', 'gundla-haram', 'pachala-haram', 'nakshi-haram'];
+    const isHaramParent = category === 'haram' && haramSlugs.some(s => categories.includes(s));
+    if (!isHaramParent) notFound();
   }
 
   return (

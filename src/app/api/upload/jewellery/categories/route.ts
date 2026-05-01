@@ -22,7 +22,8 @@ const DEFAULT_CATS = [
   { name: 'Kadas', image: '/images/category/gold_kada.png' },
   { name: 'Coins', image: '/images/category/gold_coins.png' },
   { name: 'Solitaires', image: '/images/category/solitaire_gold.png' },
-  { name: 'Watch Jewellery', image: '/images/category/watch_jewellery_gold.png' }
+  { name: 'Watch Jewellery', image: '/images/category/watch_jewellery_gold.png' },
+  { name: 'Haram', image: '/images/category/guttapusala_haram1.png' }
 ];
 
 async function readMeta() {

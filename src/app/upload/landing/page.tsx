@@ -2,10 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Header from '@/components/Header';
-import { 
-  TESTIMONIAL_REVIEWS, 
-  CURATED_STYLES_CARDS, 
-  DESIGN_LED_ITEMS, 
+import {
+  TESTIMONIAL_REVIEWS,
+  CURATED_STYLES_CARDS,
+  DESIGN_LED_ITEMS,
   CATEGORY_DEFAULTS,
   PLAN_DEFAULTS,
   HERO_DEFAULT,
@@ -13,15 +13,15 @@ import {
   STANDALONE_BANNER_DEFAULT
 } from '@/lib/data';
 
-const ACCEPTED     = 'image/jpeg,image/png,image/gif,image/webp,image/avif,video/mp4,video/webm';
+const ACCEPTED = 'image/jpeg,image/png,image/gif,image/webp,image/avif,video/mp4,video/webm';
 const ACCEPTED_IMG = 'image/jpeg,image/png,image/webp,image/gif,image/avif';
 
 /* ─── Category grid sub-component ──────────────────────────── */
 function CategoryGrid({ type }: { type: 'gold' | 'silver' }) {
-  const [files,    setFiles]    = useState<(File | null)[]>([]);
+  const [files, setFiles] = useState<(File | null)[]>([]);
   const [previews, setPreviews] = useState<(string | null)[]>([]);
-  const [names,    setNames]    = useState<string[]>([]);
-  const [saving,   setSaving]   = useState<string | null>(null);
+  const [names, setNames] = useState<string[]>([]);
+  const [saving, setSaving] = useState<string | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ function CategoryGrid({ type }: { type: 'gold' | 'silver' }) {
 
   const loadFile = (f: File, i: number) => {
     setPreviews(prev => { const n = [...prev]; n[i] = URL.createObjectURL(f); return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = f; return n; });
+    setFiles(prev => { const n = [...prev]; n[i] = f; return n; });
   };
 
   const save = async (i: number) => {
@@ -59,8 +59,8 @@ function CategoryGrid({ type }: { type: 'gold' | 'silver' }) {
     await fetch(`/api/upload/categories?type=${type}&index=${i}`, { method: 'DELETE' });
     const defs = CATEGORY_DEFAULTS[type];
     setPreviews(prev => { const n = [...prev]; n[i] = defs[i]?.img || null; return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = null; return n; });
-    setNames(prev    => { const n = [...prev]; n[i] = defs[i]?.name || ''; return n; });
+    setFiles(prev => { const n = [...prev]; n[i] = null; return n; });
+    setNames(prev => { const n = [...prev]; n[i] = defs[i]?.name || ''; return n; });
   };
 
   const removeItem = async (i: number) => {
@@ -117,7 +117,7 @@ function CategoryGrid({ type }: { type: 'gold' | 'silver' }) {
         {names.map((_, i) => (
           <div key={i} className="flex flex-col items-center gap-2 relative group/item">
             {/* Delete button (X) - Always Visible */}
-            <button 
+            <button
               onClick={() => removeItem(i)}
               className="absolute -top-3 -right-3 w-6 h-6 bg-rose-400 border border-white rounded-full flex items-center justify-center text-[10px] text-white shadow-md z-10 hover:bg-rose-500 transition-all font-bold"
               title="Remove Item"
@@ -176,11 +176,11 @@ function CategoryGrid({ type }: { type: 'gold' | 'silver' }) {
 
 /* ─── Main upload page ─────────────────────────────────────── */
 export default function UploadPage() {
-  const [heroFile,    setHeroFile]    = useState<File | null>(null);
+  const [heroFile, setHeroFile] = useState<File | null>(null);
   const [heroPreview, setHeroPreview] = useState<string | null>(null);
   const [heroIsVideo, setHeroIsVideo] = useState(false);
-  const [heroSaving,  setHeroSaving]  = useState(false);
-  const [heroMsg,     setHeroMsg]     = useState('');
+  const [heroSaving, setHeroSaving] = useState(false);
+  const [heroMsg, setHeroMsg] = useState('');
   const heroInputRef = useRef<HTMLInputElement>(null);
   const [heroLoading, setHeroLoading] = useState(true);
 
@@ -262,9 +262,9 @@ export default function UploadPage() {
                 </div>
               </>
             ) : (
-               <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                 <span className="text-gray-300 font-bold uppercase tracking-widest">No Image</span>
-               </div>
+              <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                <span className="text-gray-300 font-bold uppercase tracking-widest">No Image</span>
+              </div>
             )}
           </div>
         </section>
@@ -299,6 +299,9 @@ export default function UploadPage() {
         {/* ── TESTIMONIALS ── */}
         <TestimonialsEditor />
 
+        {/* ── HEADER CUSTOMIZATION ── */}
+        <HeaderEditor />
+
       </div>
     </div>
   );
@@ -306,23 +309,23 @@ export default function UploadPage() {
 
 /* ─── Offer Plan Editor ─────────────────────────────────────── */
 function PlanEditor({ type }: { type: 'gold' | 'silver' }) {
-  const [badge,       setBadge]       = useState(PLAN_DEFAULTS[type].badge);
+  const [badge, setBadge] = useState(PLAN_DEFAULTS[type].badge);
   const [installment, setInstallment] = useState(PLAN_DEFAULTS[type].installment);
-  const [suffix,      setSuffix]      = useState(PLAN_DEFAULTS[type].suffix);
-  const [desc,        setDesc]        = useState(PLAN_DEFAULTS[type].desc);
-  const [btnText,     setBtnText]     = useState(PLAN_DEFAULTS[type].btnText);
-  const [btnLink,     setBtnLink]     = useState(PLAN_DEFAULTS[type].btnLink);
-  const [saving,      setSaving]      = useState(false);
-  const [msg,         setMsg]         = useState('');
+  const [suffix, setSuffix] = useState(PLAN_DEFAULTS[type].suffix);
+  const [desc, setDesc] = useState(PLAN_DEFAULTS[type].desc);
+  const [btnText, setBtnText] = useState(PLAN_DEFAULTS[type].btnText);
+  const [btnLink, setBtnLink] = useState(PLAN_DEFAULTS[type].btnLink);
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState('');
 
   useEffect(() => {
     fetch(`/api/upload/offer-plan?type=${type}`).then(r => r.json()).then(d => {
-      if (d.badge)       setBadge(d.badge);
+      if (d.badge) setBadge(d.badge);
       if (d.installment) setInstallment(d.installment);
-      if (d.suffix)      setSuffix(d.suffix);
-      if (d.desc)        setDesc(d.desc);
-      if (d.btnText)     setBtnText(d.btnText);
-      if (d.btnLink)     setBtnLink(d.btnLink);
+      if (d.suffix) setSuffix(d.suffix);
+      if (d.desc) setDesc(d.desc);
+      if (d.btnText) setBtnText(d.btnText);
+      if (d.btnLink) setBtnLink(d.btnLink);
     });
   }, [type]);
 
@@ -355,7 +358,7 @@ function PlanEditor({ type }: { type: 'gold' | 'silver' }) {
   const accent = type === 'gold' ? 'from-amber-400 to-yellow-500' : 'from-slate-400 to-gray-500';
   const bannerBg = type === 'gold' ? 'bg-[#fff0f3]' : 'bg-[#f0f3ff]';
   const highlight = type === 'gold' ? 'text-coral' : 'text-slate-400';
-  const btnColor  = type === 'gold' ? 'bg-coral' : 'bg-slate-500';
+  const btnColor = type === 'gold' ? 'bg-coral' : 'bg-slate-500';
 
   return (
     <div className="space-y-5">
@@ -383,18 +386,18 @@ function PlanEditor({ type }: { type: 'gold' | 'silver' }) {
             'linear-gradient(to right, transparent 0%, rgba(180,110,140,0.25) 30%, rgba(180,110,140,0.25) 70%, transparent 100%)',
             'linear-gradient(to right, #ffffff 0%, #fffafa 20%, #fff5f5 50%, #fffafa 80%, #ffffff 100%)',
           ].join(','),
-          backgroundSize:     '100% 1px, 100% 1px, 100% 100%',
+          backgroundSize: '100% 1px, 100% 1px, 100% 100%',
           backgroundPosition: 'top, bottom, center',
-          backgroundRepeat:   'no-repeat',
+          backgroundRepeat: 'no-repeat',
         } : {
           backgroundImage: [
             'linear-gradient(to right, transparent 0%, rgba(100,120,155,0.2) 30%, rgba(100,120,155,0.2) 70%, transparent 100%)',
             'linear-gradient(to right, transparent 0%, rgba(100,120,155,0.2) 30%, rgba(100,120,155,0.2) 70%, transparent 100%)',
             'linear-gradient(to right, #f8fafc 0%, #f2f5f9 20%, #e8eef5 50%, #f2f5f9 80%, #f8fafc 100%)',
           ].join(','),
-          backgroundSize:     '100% 1px, 100% 1px, 100% 100%',
+          backgroundSize: '100% 1px, 100% 1px, 100% 100%',
           backgroundPosition: 'top, bottom, center',
-          backgroundRepeat:   'no-repeat',
+          backgroundRepeat: 'no-repeat',
         }}
         className="flex items-center justify-center gap-6 w-full py-3.5"
       >
@@ -435,9 +438,9 @@ function PlanEditor({ type }: { type: 'gold' | 'silver' }) {
 const OFFER_FALLBACKS = OFFER_DEFAULTS;
 
 function OffersEditor() {
-  const [files,    setFiles]    = useState<(File | null)[]>([]);
+  const [files, setFiles] = useState<(File | null)[]>([]);
   const [previews, setPreviews] = useState<(string | null)[]>([]);
-  const [saving,   setSaving]   = useState<number | null>(null);
+  const [saving, setSaving] = useState<number | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
@@ -450,7 +453,7 @@ function OffersEditor() {
 
   const loadFile = (f: File, i: number) => {
     setPreviews(prev => { const n = [...prev]; n[i] = URL.createObjectURL(f); return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = f; return n; });
+    setFiles(prev => { const n = [...prev]; n[i] = f; return n; });
   };
 
   const save = async (i: number) => {
@@ -468,7 +471,7 @@ function OffersEditor() {
     if (!confirm(`Reset offer ${i + 1} to default?`)) return;
     await fetch(`/api/upload/offers?index=${i}`, { method: 'DELETE' });
     setPreviews(prev => { const n = [...prev]; n[i] = OFFER_FALLBACKS[i]; return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = null; return n; });
+    setFiles(prev => { const n = [...prev]; n[i] = null; return n; });
   };
 
   const removeSlide = async (i: number) => {
@@ -511,7 +514,7 @@ function OffersEditor() {
         {previews.map((_, i) => (
           <div key={i} className="flex flex-col gap-2 relative group/item">
             {/* Delete button (X) - Always Visible */}
-            <button 
+            <button
               onClick={() => removeSlide(i)}
               className="absolute -top-3 -right-3 w-7 h-7 bg-rose-400 border-2 border-white rounded-full flex items-center justify-center text-xs text-white shadow-lg z-10 hover:bg-rose-500 transition-all font-bold"
               title="Remove Slide"
@@ -533,7 +536,7 @@ function OffersEditor() {
                 ? <img src={previews[i]!} alt="" className="w-full h-full object-cover" />
                 : (
                   <div className="flex flex-col items-center gap-1 text-gray-300">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="3" /><path d="M3 15l5-5 4 4 3-3 6 6" /><circle cx="8.5" cy="8.5" r="1.5" /></svg>
                     <p className="text-[10px] font-bold uppercase tracking-widest">Drop image</p>
                   </div>
                 )}
@@ -577,15 +580,15 @@ const COLLECTION_DEFAULTS = [
 const COLLECTION_LABELS = ['Left Card', 'Center Card (Featured)', 'Right Card'];
 
 function CollectionsEditor() {
-  const [files,    setFiles]    = useState<(File | null)[]>(new Array(3).fill(null));
+  const [files, setFiles] = useState<(File | null)[]>(new Array(3).fill(null));
   const [previews, setPreviews] = useState<(string | null)[]>(new Array(3).fill(null).map((_, i) => COLLECTION_DEFAULTS[i]));
-  const [btnLink,  setBtnLink]  = useState('#');
-  const [saving,   setSaving]   = useState<number | null>(null);
-  const [msg,      setMsg]      = useState('');
+  const [btnLink, setBtnLink] = useState('#');
+  const [saving, setSaving] = useState<number | null>(null);
+  const [msg, setMsg] = useState('');
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    fetch('/api/upload/collections').then(r => r.json()).then((d: { slots: (string|null)[], btnLink?: string }) => {
+    fetch('/api/upload/collections').then(r => r.json()).then((d: { slots: (string | null)[], btnLink?: string }) => {
       if (d.slots) setPreviews(new Array(3).fill(null).map((_, i) => d.slots[i] ? `/uploads/${d.slots[i]}` : COLLECTION_DEFAULTS[i]));
       if (d.btnLink) setBtnLink(d.btnLink);
     });
@@ -593,7 +596,7 @@ function CollectionsEditor() {
 
   const loadFile = (f: File, i: number) => {
     setPreviews(prev => { const n = [...prev]; n[i] = URL.createObjectURL(f); return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = f; return n; });
+    setFiles(prev => { const n = [...prev]; n[i] = f; return n; });
   };
 
   const save = async (i: number) => {
@@ -613,7 +616,7 @@ function CollectionsEditor() {
     if (!confirm(`Reset ${COLLECTION_LABELS[i]} to default?`)) return;
     await fetch(`/api/upload/collections?index=${i}`, { method: 'DELETE' });
     setPreviews(prev => { const n = [...prev]; n[i] = COLLECTION_DEFAULTS[i]; return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = null; return n; });
+    setFiles(prev => { const n = [...prev]; n[i] = null; return n; });
   };
 
   return (
@@ -628,7 +631,7 @@ function CollectionsEditor() {
           <button
             onClick={async () => {
               if (!confirm('Reset all collection slots to defaults?')) return;
-              await Promise.all([0,1,2].map(i => fetch(`/api/upload/collections?index=${i}`, { method: 'DELETE' })));
+              await Promise.all([0, 1, 2].map(i => fetch(`/api/upload/collections?index=${i}`, { method: 'DELETE' })));
               setPreviews(new Array(3).fill(null));
               setFiles(new Array(3).fill(null));
             }}
@@ -667,7 +670,7 @@ function CollectionsEditor() {
                 ? <img src={previews[i]!} alt="" className="w-full h-full object-cover" />
                 : (
                   <div className="flex flex-col items-center gap-1 text-gray-300">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="3" /><path d="M3 15l5-5 4 4 3-3 6 6" /><circle cx="8.5" cy="8.5" r="1.5" /></svg>
                     <p className="text-[10px] font-bold uppercase tracking-widest">Drop image</p>
                   </div>
                 )}
@@ -697,15 +700,15 @@ const CURATED_LABELS = CURATED_STYLES_CARDS.map(c => c.title);
 const ACCEPTED_IMG_CURATED = 'image/jpeg,image/png,image/webp,image/gif,image/avif';
 
 function CuratedStylesEditor() {
-  const [files,    setFiles]    = useState<(File | null)[]>(new Array(12).fill(null));
+  const [files, setFiles] = useState<(File | null)[]>(new Array(12).fill(null));
   const [previews, setPreviews] = useState<(string | null)[]>(new Array(12).fill(null));
-  const [titles,   setTitles]   = useState<string[]>([...CURATED_LABELS]);
-  const [saving,   setSaving]   = useState<number | null>(null);
+  const [titles, setTitles] = useState<string[]>([...CURATED_LABELS]);
+  const [saving, setSaving] = useState<number | null>(null);
   const [savingTitle, setSavingTitle] = useState<number | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    fetch('/api/upload/curated').then(r => r.json()).then((d: { slots: (string|null)[], titles: string[] }) => {
+    fetch('/api/upload/curated').then(r => r.json()).then((d: { slots: (string | null)[], titles: string[] }) => {
       if (d.slots) {
         setPreviews(new Array(12).fill(null).map((_, i) => {
           if (d.slots[i]) return `/uploads/${d.slots[i]}`;
@@ -714,13 +717,13 @@ function CuratedStylesEditor() {
           return CURATED_STYLES_CARDS[groupIdx].images[subIdx];
         }));
       }
-      if (d.titles) setTitles(d.titles.map((t:string, i:number) => t || CURATED_LABELS[i]));
+      if (d.titles) setTitles(d.titles.map((t: string, i: number) => t || CURATED_LABELS[i]));
     });
   }, []);
 
   const loadFile = (f: File, i: number) => {
     setPreviews(prev => { const n = [...prev]; n[i] = URL.createObjectURL(f); return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = f; return n; });
+    setFiles(prev => { const n = [...prev]; n[i] = f; return n; });
   };
 
   const save = async (i: number) => {
@@ -746,14 +749,14 @@ function CuratedStylesEditor() {
   const reset = async (i: number) => {
     if (!confirm(`Reset slot ${i + 1} to default?`)) return;
     await fetch(`/api/upload/curated?index=${i}`, { method: 'DELETE' });
-    setPreviews(prev => { 
-      const n = [...prev]; 
+    setPreviews(prev => {
+      const n = [...prev];
       const groupIdx = Math.floor(i / 4);
       const subIdx = i % 4;
       n[i] = CURATED_STYLES_CARDS[groupIdx].images[subIdx];
-      return n; 
+      return n;
     });
-    setFiles(prev    => { const n = [...prev]; n[i] = null; return n; });
+    setFiles(prev => { const n = [...prev]; n[i] = null; return n; });
   };
 
   return (
@@ -767,7 +770,7 @@ function CuratedStylesEditor() {
         <button
           onClick={async () => {
             if (!confirm('Reset all 12 slots to defaults?')) return;
-            await Promise.all(Array.from({length:12}).map((_, i) => fetch(`/api/upload/curated?index=${i}`, { method: 'DELETE' })));
+            await Promise.all(Array.from({ length: 12 }).map((_, i) => fetch(`/api/upload/curated?index=${i}`, { method: 'DELETE' })));
             setPreviews(new Array(12).fill(null));
             setFiles(new Array(12).fill(null));
           }}
@@ -831,14 +834,14 @@ function CuratedStylesEditor() {
 const DESIGN_LED_DEFAULT_LABELS = DESIGN_LED_ITEMS.map(i => i.label);
 
 function DesignLedEditor() {
-  const [files,    setFiles]    = useState<(File | null)[]>(new Array(6).fill(null));
+  const [files, setFiles] = useState<(File | null)[]>(new Array(6).fill(null));
   const [previews, setPreviews] = useState<(string | null)[]>(new Array(6).fill(null).map((_, i) => {
     const groupIdx = Math.floor(i / 2);
     const isSmall = i % 2 === 1;
     return isSmall ? DESIGN_LED_ITEMS[groupIdx].smallImg : DESIGN_LED_ITEMS[groupIdx].largeImg;
   }));
-  const [labels,   setLabels]   = useState<string[]>([...DESIGN_LED_DEFAULT_LABELS]);
-  const [saving,   setSaving]   = useState<number | null>(null);
+  const [labels, setLabels] = useState<string[]>([...DESIGN_LED_DEFAULT_LABELS]);
+  const [saving, setSaving] = useState<number | null>(null);
   const [savingLabel, setSavingLabel] = useState<number | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -852,13 +855,13 @@ function DesignLedEditor() {
           return isSmall ? DESIGN_LED_ITEMS[groupIdx].smallImg : DESIGN_LED_ITEMS[groupIdx].largeImg;
         }));
       }
-      if (d.labels) setLabels(d.labels.map((L:string, i:number) => L || DESIGN_LED_DEFAULT_LABELS[i]));
+      if (d.labels) setLabels(d.labels.map((L: string, i: number) => L || DESIGN_LED_DEFAULT_LABELS[i]));
     });
   }, []);
 
   const loadFile = (f: File, i: number) => {
     setPreviews(prev => { const n = [...prev]; n[i] = URL.createObjectURL(f); return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = f; return n; });
+    setFiles(prev => { const n = [...prev]; n[i] = f; return n; });
   };
 
   const saveContent = async (i: number, isImage: boolean) => {
@@ -886,9 +889,9 @@ function DesignLedEditor() {
     if (!confirm('Reset DesignLed entirely?')) return;
     await fetch(`/api/upload/design-led`, { method: 'DELETE' });
     setPreviews(new Array(6).fill(null).map((_, i) => {
-       const groupIdx = Math.floor(i / 2);
-       const isSmall = i % 2 === 1;
-       return isSmall ? DESIGN_LED_ITEMS[groupIdx].smallImg : DESIGN_LED_ITEMS[groupIdx].largeImg;
+      const groupIdx = Math.floor(i / 2);
+      const isSmall = i % 2 === 1;
+      return isSmall ? DESIGN_LED_ITEMS[groupIdx].smallImg : DESIGN_LED_ITEMS[groupIdx].largeImg;
     }));
     setFiles(new Array(6).fill(null));
     setLabels([...DESIGN_LED_DEFAULT_LABELS]);
@@ -922,7 +925,7 @@ function DesignLedEditor() {
                 </button>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-3 mt-2">
               {/* Large and Small Images side-by-side */}
               {[0, 1].map(sub => {
@@ -1029,11 +1032,11 @@ const TESTIMONIAL_DEFAULT_NAMES = TESTIMONIAL_REVIEWS.map(r => r.name);
 const TESTIMONIAL_DEFAULT_TEXTS = TESTIMONIAL_REVIEWS.map(r => r.text);
 
 function TestimonialsEditor() {
-  const [files,    setFiles]    = useState<(File | null)[]>([]);
+  const [files, setFiles] = useState<(File | null)[]>([]);
   const [previews, setPreviews] = useState<(string | null)[]>([]);
-  const [names,    setNames]    = useState<string[]>([]);
-  const [texts,    setTexts]    = useState<string[]>([]);
-  const [saving,   setSaving]   = useState<number | null>(null);
+  const [names, setNames] = useState<string[]>([]);
+  const [texts, setTexts] = useState<string[]>([]);
+  const [saving, setSaving] = useState<number | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
@@ -1048,7 +1051,7 @@ function TestimonialsEditor() {
 
   const loadFile = (f: File, i: number) => {
     setPreviews(prev => { const n = [...prev]; n[i] = URL.createObjectURL(f); return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = f; return n; });
+    setFiles(prev => { const n = [...prev]; n[i] = f; return n; });
   };
 
   const save = async (i: number) => {
@@ -1077,9 +1080,9 @@ function TestimonialsEditor() {
     await fetch(`/api/upload/testimonials?index=${i}`, { method: 'DELETE' });
     const d = TESTIMONIAL_REVIEWS[i];
     setPreviews(prev => { const n = [...prev]; n[i] = d?.img || null; return n; });
-    setNames(prev    => { const n = [...prev]; n[i] = d?.name || ''; return n; });
-    setTexts(prev    => { const n = [...prev]; n[i] = d?.text || ''; return n; });
-    setFiles(prev    => { const n = [...prev]; n[i] = null; return n; });
+    setNames(prev => { const n = [...prev]; n[i] = d?.name || ''; return n; });
+    setTexts(prev => { const n = [...prev]; n[i] = d?.text || ''; return n; });
+    setFiles(prev => { const n = [...prev]; n[i] = null; return n; });
   };
 
   const addTestimonial = () => {
@@ -1121,7 +1124,7 @@ function TestimonialsEditor() {
         {names.map((_, i) => (
           <div key={i} className="flex flex-col gap-3 relative group/item">
             {/* Delete button (X) - Always Visible */}
-            <button 
+            <button
               onClick={() => removeTestimonial(i)}
               className="absolute -top-3 -right-3 w-7 h-7 bg-rose-400 border-2 border-white rounded-full flex items-center justify-center text-xs text-white shadow-lg z-10 hover:bg-rose-500 transition-all font-bold"
               title="Remove Testimonial"
@@ -1141,7 +1144,7 @@ function TestimonialsEditor() {
                 <span className="text-white text-[10px] font-bold opacity-0 group-hover:opacity-100 bg-black/40 px-3 py-1 rounded-full uppercase">Replace</span>
               </div>
             </div>
-            
+
             <div className="flex flex-col gap-2">
               <input value={names[i] || ''} onChange={e => setNames(prev => { const n = [...prev]; n[i] = e.target.value; return n; })} placeholder="NAME" className="text-[11px] font-black text-navy border-b border-gray-100 outline-none py-1 focus:border-indigo-300 w-full" />
               <textarea value={texts[i] || ''} onChange={e => setTexts(prev => { const t = [...prev]; t[i] = e.target.value; return t; })} placeholder="TESTIMONIAL TEXT" rows={3} className="text-[10px] text-gray-500 border border-gray-100 rounded-lg p-2 outline-none focus:border-indigo-300 resize-none w-full" />
@@ -1154,6 +1157,304 @@ function TestimonialsEditor() {
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Header Editor ─────────────────────────────────────────── */
+
+type CategoryItem = { name: string; link: string };
+type Callout = { title: string; desc: string; image: string };
+type Dropdown = { categories: { title: string; items: CategoryItem[] }; callout: Callout } | null;
+type NavItem = { label: string; slug: string; dropdown: Dropdown };
+
+const ACCEPTED_IMG_HEADER = 'image/jpeg,image/png,image/webp,image/gif,image/avif';
+
+const DEFAULT_NAV: NavItem[] = [
+  { label: 'RINGS', slug: 'rings', dropdown: { categories: { title: 'By Categories', items: [{ name: 'Diamond Rings', link: '/jewellery/rings' }, { name: 'Gold Rings', link: '/jewellery/rings' }, { name: 'White Gold Rings', link: '/jewellery/rings' }, { name: 'Rose Gold Rings', link: '/jewellery/rings' }, { name: 'Platinum Rings', link: '/jewellery/rings' }] }, callout: { title: 'Buy Solitaire Rings', desc: 'Starting at Rs. 30,000/-', image: '/images/header/menu-solitaire-ring.v1.webp' } } },
+  { label: 'EARRINGS', slug: 'earrings', dropdown: { categories: { title: 'By Categories', items: [{ name: 'Diamond Earrings', link: '/jewellery/earrings' }, { name: 'Gold Earrings', link: '/jewellery/earrings' }, { name: 'White Gold Earrings', link: '/jewellery/earrings' }, { name: 'Rose Gold Earrings', link: '/jewellery/earrings' }, { name: 'Gemstone Earrings', link: '/jewellery/earrings' }] }, callout: { title: 'Buy Solitaire Earrings', desc: 'Starting at Rs. 45,000/-', image: '/images/header/menu-solitaire-earring.v1.webp' } } },
+  { label: 'PENDANTS', slug: 'pendants', dropdown: { categories: { title: 'By Categories', items: [{ name: 'Diamond Pendants', link: '/jewellery/pendants' }, { name: 'Gold Pendants', link: '/jewellery/pendants' }, { name: 'White Gold Pendants', link: '/jewellery/pendants' }, { name: 'Rose Gold Pendants', link: '/jewellery/pendants' }, { name: 'Gemstone Pendants', link: '/jewellery/pendants' }] }, callout: { title: 'Buy Solitaire Pendants', desc: 'Starting at Rs. 40,000/-', image: '/images/header/menu-solitaire-pendant.v1.webp' } } },
+  { label: 'HARAM', slug: 'haram', dropdown: { categories: { title: 'By Categories', items: [{ name: 'Guttapusala Haram', link: '/jewellery/haram#guttapusala-haram' }, { name: 'Kasulaperu Haram', link: '/jewellery/haram#kasulaperu-haram' }, { name: 'Pachala Haram', link: '/jewellery/haram#pachala-haram' }, { name: 'Nakshi Haram', link: '/jewellery/haram#nakshi-haram' }, { name: 'Gundla Haram', link: '/jewellery/haram#gundla-haram' }] }, callout: { title: 'Shop Silver Haram', desc: 'Explore our collection', image: '/images/header/silver-haram.jpg' } } },
+  { label: 'VADDANAM', slug: 'vaddanam', dropdown: { categories: { title: 'By Categories', items: [{ name: 'Lakshmi Vaddanam', link: '/jewellery/vaddanam' }, { name: 'Nakshi Vaddanam', link: '/jewellery/vaddanam' }, { name: 'Peacock (Mayil) Vaddanam', link: '/jewellery/vaddanam' }, { name: 'Polki Vaddanam', link: '/jewellery/vaddanam' }, { name: 'Lightweight Vaddanam', link: '/jewellery/vaddanam' }] }, callout: { title: 'Shop Silver Vaddanam', desc: 'Explore our collection', image: '/images/header/silver-vaddanam.png' } } },
+  { label: 'BANGLES', slug: 'bangles', dropdown: { categories: { title: 'By Categories', items: [{ name: 'Nakshi Bangles', link: '/jewellery/bangles' }, { name: 'Kundan Bangles', link: '/jewellery/bangles' }, { name: 'Glass Bangles', link: '/jewellery/bangles' }, { name: 'Antique Finish Bangles', link: '/jewellery/bangles' }, { name: 'Meenakari Bangles', link: '/jewellery/bangles' }] }, callout: { title: 'Shop Silver Bangles', desc: 'Explore our collection', image: '/images/header/silver-bangle.jpg' } } },
+  { label: 'SOLITAIRES', slug: 'solitaires', dropdown: { categories: { title: 'By Categories', items: [{ name: 'Solitaire Rings', link: '/jewellery/solitaires' }, { name: 'Solitaire Earrings', link: '/jewellery/solitaires' }, { name: 'Solitaire Pendants', link: '/jewellery/solitaires' }] }, callout: { title: 'Shop Solitaires', desc: 'Premium Diamond Collection', image: '/images/header/solitaire-ring.v1.webp' } } },
+  { label: 'ALL JEWELLERY', slug: 'all-jewellery', dropdown: null },
+];
+
+function HeaderEditor() {
+  const [navItems, setNavItems] = useState<NavItem[]>([]);
+  const [expandedTab, setExpandedTab] = useState<number | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState('');
+  const calloutImgRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  /* Load from API */
+  useEffect(() => {
+    fetch('/api/upload/header')
+      .then(r => r.json())
+      .then((data: NavItem[]) => {
+        setNavItems(data.length ? data : DEFAULT_NAV);
+      })
+      .catch(() => setNavItems(DEFAULT_NAV));
+  }, []);
+
+  /* ── helpers ── */
+  const updateLabel = (i: number, val: string) =>
+    setNavItems(prev => prev.map((item, idx) => idx === i ? { ...item, label: val } : item));
+
+  const removeTab = (i: number) => {
+    if (!confirm(`Remove tab "${navItems[i].label}"?`)) return;
+    setNavItems(prev => prev.filter((_, idx) => idx !== i));
+    if (expandedTab === i) setExpandedTab(null);
+    else if (expandedTab !== null && expandedTab > i) setExpandedTab(expandedTab - 1);
+  };
+
+  const addTab = () => {
+    const newItem: NavItem = {
+      label: 'NEW TAB',
+      slug: `new-tab-${Date.now()}`,
+      dropdown: {
+        categories: { title: 'By Categories', items: [{ name: 'Category 1', link: '#' }] },
+        callout: { title: 'Callout Title', desc: 'Callout description', image: '' },
+      },
+    };
+    setNavItems(prev => [...prev, newItem]);
+    setExpandedTab(navItems.length);
+  };
+
+  const updateCategoryItem = (tabIdx: number, catIdx: number, field: 'name' | 'link', val: string) => {
+    setNavItems(prev => prev.map((item, i) => {
+      if (i !== tabIdx || !item.dropdown) return item;
+      const newItems = item.dropdown.categories.items.map((c, ci) =>
+        ci === catIdx ? { ...c, [field]: val } : c
+      );
+      return { ...item, dropdown: { ...item.dropdown, categories: { ...item.dropdown.categories, items: newItems } } };
+    }));
+  };
+
+  const addCategoryItem = (tabIdx: number) => {
+    setNavItems(prev => prev.map((item, i) => {
+      if (i !== tabIdx || !item.dropdown) return item;
+      if (item.dropdown.categories.items.length >= 5) return item; // max 5
+      const newItems = [...item.dropdown.categories.items, { name: 'New Category', link: '#' }];
+      return { ...item, dropdown: { ...item.dropdown, categories: { ...item.dropdown.categories, items: newItems } } };
+    }));
+  };
+
+  const removeCategoryItem = (tabIdx: number, catIdx: number) => {
+    setNavItems(prev => prev.map((item, i) => {
+      if (i !== tabIdx || !item.dropdown) return item;
+      const newItems = item.dropdown.categories.items.filter((_, ci) => ci !== catIdx);
+      return { ...item, dropdown: { ...item.dropdown, categories: { ...item.dropdown.categories, items: newItems } } };
+    }));
+  };
+
+  const updateCallout = (tabIdx: number, field: keyof Callout, val: string) => {
+    setNavItems(prev => prev.map((item, i) => {
+      if (i !== tabIdx || !item.dropdown) return item;
+      return { ...item, dropdown: { ...item.dropdown, callout: { ...item.dropdown.callout, [field]: val } } };
+    }));
+  };
+
+  const uploadCalloutImage = async (tabIdx: number, file: File) => {
+    /* Optimistic preview */
+    const objectUrl = URL.createObjectURL(file);
+    updateCallout(tabIdx, 'image', objectUrl);
+
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('navIndex', String(tabIdx));
+    const res = await fetch('/api/upload/header?action=upload-callout-image&navIndex=' + tabIdx, { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.filename) {
+      updateCallout(tabIdx, 'image', `/uploads/${data.filename}`);
+    }
+  };
+
+  const save = async () => {
+    setSaving(true);
+    await fetch('/api/upload/header', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(navItems),
+    });
+    setSaving(false);
+    setMsg('Saved!');
+    setTimeout(() => setMsg(''), 2500);
+  };
+
+  const resetAll = async () => {
+    if (!confirm('Reset header navigation to defaults?')) return;
+    await fetch('/api/upload/header', { method: 'DELETE' });
+    setNavItems(DEFAULT_NAV);
+    setExpandedTab(null);
+    setMsg('Reset to defaults.');
+    setTimeout(() => setMsg(''), 2500);
+  };
+
+  return (
+    <div className="space-y-6 border-t border-gray-100 pt-20">
+      {/* Section header */}
+      <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+        <div className="flex items-center gap-3">
+          <span className="w-3 h-3 rounded-full bg-gradient-to-r from-navy to-blue-600" />
+          <h2 className="text-xl font-display font-bold text-navy uppercase tracking-widest">Header</h2>
+          <span className="text-xs text-gray-300 font-medium">({navItems.length} tabs)</span>
+        </div>
+        <div className="flex items-center gap-3">
+          {msg && <span className="text-xs text-green-500 font-bold">{msg}</span>}
+          <button onClick={resetAll} className="px-5 py-1.5 rounded-full border border-gray-200 text-[10px] font-black text-gray-400 uppercase hover:bg-gray-50 transition-all">
+            Reset All
+          </button>
+          <button onClick={addTab} className="px-4 py-1.5 rounded-full border border-navy/30 text-[10px] font-black text-navy uppercase hover:bg-navy/5 transition-all">
+            + Add Tab
+          </button>
+        </div>
+      </div>
+
+      {/* Tab list */}
+      <div className="space-y-3">
+        {navItems.map((item, tabIdx) => (
+          <div key={tabIdx} className="border border-gray-100 rounded-xl overflow-hidden bg-white shadow-sm">
+            {/* Tab row */}
+            <div className="flex items-center gap-3 px-5 py-3">
+              {/* Drag handle visual */}
+              <span className="text-gray-200 text-lg select-none cursor-grab">⠿</span>
+
+              {/* Label input */}
+              <input
+                value={item.label}
+                onChange={e => updateLabel(tabIdx, e.target.value)}
+                className="flex-1 text-[13px] font-black text-navy border-b border-gray-200 focus:border-navy outline-none bg-transparent py-0.5 uppercase tracking-widest"
+              />
+
+              {/* Expand / collapse toggle */}
+              {item.dropdown && (
+                <button
+                  onClick={() => setExpandedTab(expandedTab === tabIdx ? null : tabIdx)}
+                  className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-3 py-1 rounded-full border border-gray-200 hover:border-navy/30 hover:text-navy transition-all"
+                >
+                  {expandedTab === tabIdx ? 'Collapse ▲' : 'Edit Dropdown ▼'}
+                </button>
+              )}
+
+              {/* Remove tab */}
+              <button
+                onClick={() => removeTab(tabIdx)}
+                className="w-7 h-7 rounded-full bg-rose-50 hover:bg-rose-400 text-rose-400 hover:text-white flex items-center justify-center text-xs font-bold transition-all"
+                title="Remove tab"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Dropdown editor — expanded */}
+            {expandedTab === tabIdx && item.dropdown && (
+              <div className="border-t border-gray-100 px-5 py-5 bg-gray-50/60 grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                {/* ── By Categories ── */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-[11px] font-black text-navy uppercase tracking-widest">By Categories</h4>
+                    <button
+                      onClick={() => addCategoryItem(tabIdx)}
+                      disabled={item.dropdown.categories.items.length >= 5}
+                      className="text-[9px] font-black text-teal-500 border border-teal-200 px-2 py-1 rounded-full hover:bg-teal-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all uppercase"
+                    >
+                      + Add (max 5)
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    {item.dropdown.categories.items.map((cat, catIdx) => (
+                      <div key={catIdx} className="flex items-center gap-2 bg-white rounded-lg px-3 py-2 border border-gray-100">
+                        <span className="text-[10px] font-black text-gray-300 w-4 shrink-0">{catIdx + 1}</span>
+                        <input
+                          value={cat.name}
+                          onChange={e => updateCategoryItem(tabIdx, catIdx, 'name', e.target.value)}
+                          placeholder="Category name"
+                          className="flex-1 text-[12px] text-navy font-semibold outline-none bg-transparent border-b border-transparent focus:border-navy/30 py-0.5"
+                        />
+                        <button
+                          onClick={() => removeCategoryItem(tabIdx, catIdx)}
+                          className="w-5 h-5 rounded-full bg-rose-50 hover:bg-rose-400 text-rose-400 hover:text-white flex items-center justify-center text-[9px] font-bold transition-all shrink-0"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                    {item.dropdown.categories.items.length === 0 && (
+                      <p className="text-[11px] text-gray-300 italic px-2">No categories yet. Click "+ Add" to add one.</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* ── Callout image & text ── */}
+                <div className="space-y-3">
+                  <h4 className="text-[11px] font-black text-navy uppercase tracking-widest">Callout</h4>
+
+                  {/* Image upload */}
+                  <div className="flex items-center gap-3">
+                    <div
+                      onClick={() => calloutImgRefs.current[tabIdx]?.click()}
+                      className="relative w-36 h-28 rounded-lg overflow-hidden cursor-pointer bg-gray-100 border-2 border-dashed border-gray-200 hover:border-navy/30 group transition-all flex items-center justify-center shrink-0"
+                    >
+                      <input
+                        ref={el => { calloutImgRefs.current[tabIdx] = el; }}
+                        type="file"
+                        accept={ACCEPTED_IMG_HEADER}
+                        className="hidden"
+                        onChange={e => { const f = e.target.files?.[0]; if (f) uploadCalloutImage(tabIdx, f); }}
+                      />
+                      {item.dropdown.callout.image ? (
+                        <>
+                          <img src={item.dropdown.callout.image} alt="" className="w-full h-full object-contain" />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center">
+                            <span className="text-white text-[9px] font-bold opacity-0 group-hover:opacity-100">REPLACE</span>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="flex flex-col items-center gap-1 text-gray-300">
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="3" /><path d="M3 15l5-5 4 4 3-3 6 6" /><circle cx="8.5" cy="8.5" r="1.5" /></svg>
+                          <p className="text-[9px] font-bold uppercase">Upload</p>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-gray-400">Click to upload<br />callout image</p>
+                  </div>
+
+                  {/* Callout title & desc */}
+                  <div className="space-y-2">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[9px] font-black text-gray-400 uppercase tracking-wider">Callout Title</label>
+                      <input
+                        value={item.dropdown.callout.title}
+                        onChange={e => updateCallout(tabIdx, 'title', e.target.value)}
+                        className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-navy font-semibold outline-none focus:border-navy/40 bg-white"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[9px] font-black text-gray-400 uppercase tracking-wider">Callout Description</label>
+                      <input
+                        value={item.dropdown.callout.desc}
+                        onChange={e => updateCallout(tabIdx, 'desc', e.target.value)}
+                        className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-500 outline-none focus:border-navy/40 bg-white"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom save reminder */}
+      <div className="flex justify-end pt-2">
+        <button onClick={save} disabled={saving} className="px-8 py-2.5 rounded-full bg-navy text-white text-[11px] font-black uppercase shadow-md hover:bg-navy/90 transition-all disabled:opacity-50">
+          {saving ? 'Saving…' : 'Save Header'}
+        </button>
       </div>
     </div>
   );

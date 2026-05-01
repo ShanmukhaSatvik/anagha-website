@@ -3,6 +3,7 @@ import { readFile, writeFile, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { revalidatePath } from 'next/cache';
 import { PRODUCTS } from '@/lib/data';
+import crypto from 'crypto';
 
 const META   = path.join(process.cwd(), 'public', 'uploads', 'metadata.json');
 const UPLOAD = path.join(process.cwd(), 'public', 'uploads');
@@ -17,7 +18,17 @@ async function writeMeta(data: object) {
 export async function GET(req: NextRequest) {
   const category = new URL(req.url).searchParams.get('category');
   const meta = await readMeta();
-  let products = meta.jewelleryProducts ?? PRODUCTS;
+  
+  // Primary source: metadata
+  const uploadedProducts = meta.jewelleryProducts ?? [];
+  
+  // Merge with hardcoded PRODUCTS to pick up any newly added items in code
+  // Use a Map to ensure unique IDs, preferring uploaded versions if they clash
+  const productMap = new Map();
+  PRODUCTS.forEach((p: any) => productMap.set(p.id, p));
+  uploadedProducts.forEach((p: any) => productMap.set(p.id, p));
+  
+  let products = Array.from(productMap.values());
   
   if (category) {
     products = products.filter((p: any) => p.category === category);
@@ -46,7 +57,7 @@ export async function POST(req: NextRequest) {
     const products = meta.jewelleryProducts ?? [...PRODUCTS];
     
     const newProduct = {
-      id: Date.now(),
+      id: crypto.randomUUID(),
       category,
       name,
       price,
@@ -69,7 +80,7 @@ export async function POST(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     const form = await req.formData();
-    const id = Number(form.get('id'));
+    const id = form.get('id') as string;
     const name = form.get('name') as string;
     const category = form.get('category') as string;
     const price = form.get('price') as string;
@@ -78,7 +89,7 @@ export async function PATCH(req: NextRequest) {
     const offer = form.get('offer') as string;
     const file = form.get('file') as File | null;
 
-    if (isNaN(id)) return NextResponse.json({ error: 'ID required' }, { status: 400 });
+    if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
 
     const meta = await readMeta();
     let products = meta.jewelleryProducts ?? [...PRODUCTS];
@@ -116,8 +127,8 @@ export async function PATCH(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const id = Number(new URL(req.url).searchParams.get('id'));
-  if (isNaN(id)) return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+  const id = new URL(req.url).searchParams.get('id');
+  if (!id) return NextResponse.json({ error: 'ID is required' }, { status: 400 });
 
   const meta = await readMeta();
   let products = meta.jewelleryProducts ?? [...PRODUCTS];

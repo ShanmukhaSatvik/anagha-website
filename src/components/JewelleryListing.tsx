@@ -22,17 +22,56 @@ const FilterGroup = ({ title, items, showMore }: { title: string; items: { label
     {showMore && <button className="text-[#e2574c] text-[12px] mt-3 hover:underline">{showMore}</button>}
   </div>
 );
+const ProductCard = ({ product }: { product: any }) => (
+  <Link
+    href={`/jewellery/${product.category}/${product.id}`}
+    className="group flex flex-col bg-white rounded-lg overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow duration-300 h-full"
+  >
+    {/* Image Area (Bulletproof 1:1 Aspect Ratio) */}
+    <div className="relative w-full pt-[100%] bg-[#fafafa] overflow-hidden">
+      <div className="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-500 mix-blend-multiply"
+        />
+      </div>
+    </div>
+    {/* Details Area */}
+    <div className="p-4 flex flex-col flex-1 items-start text-left bg-white">
+      <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+        <span className="font-bold text-[#222] text-[15px] md:text-[16px]">₹{product.price}</span>
+        <span className="text-gray-400 text-[12px] md:text-[13px] line-through">₹{product.originalPrice}</span>
+      </div>
+      <h3 className="text-[#666] text-[12px] md:text-[13px] line-clamp-2 leading-snug h-[38px] w-full">
+        {product.name}
+      </h3>
+    </div>
+  </Link>
+);
 
 export default function JewelleryListing({ category }: Props) {
-  const [dynamicCategories, setDynamicCategories] = useState<{name: string, image: string | null}[]>([]);
+  const [dynamicCategories, setDynamicCategories] = useState<{ name: string, image: string | null }[]>([]);
   const [dynamicProducts, setDynamicProducts] = useState<any[]>(PRODUCTS);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!loading && typeof window !== 'undefined' && window.location.hash) {
+      const id = window.location.hash.substring(1);
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    }
+  }, [loading]);
+
+  useEffect(() => {
     let isMounted = true;
     Promise.all([
-      fetch('/api/upload/jewellery/categories').then(r => r.json()),
-      fetch('/api/upload/jewellery/products').then(r => r.json())
+      fetch('/api/upload/jewellery/categories', { cache: 'no-store' }).then(r => r.ok ? r.json() : []),
+      fetch('/api/upload/jewellery/products', { cache: 'no-store' }).then(r => r.ok ? r.json() : PRODUCTS)
     ]).then(([cats, prods]) => {
       if (!isMounted) return;
       setDynamicCategories(cats);
@@ -44,12 +83,18 @@ export default function JewelleryListing({ category }: Props) {
     return () => { isMounted = false; };
   }, []);
 
+  const HARAM_SLUGS = ['guttapusala-haram', 'kasulaperu-haram', 'pachala-haram', 'nakshi-haram', 'gundla-haram'];
+
   const displayProducts = category
-    ? dynamicProducts.filter((p) => p.category === category)
+    ? category === 'haram'
+      ? dynamicProducts.filter((p) => p.category === 'haram')
+      : HARAM_SLUGS.includes(category)
+        ? dynamicProducts.filter((p) => p.category === 'haram' && p.subcategory === category)
+        : dynamicProducts.filter((p) => p.category === category)
     : dynamicProducts;
 
   const title = category
-    ? category.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+    ? category.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) + (category === 'haram' ? ' Collection' : ' Collection')
     : 'All Jewellery';
 
   const count = displayProducts.length;
@@ -58,9 +103,10 @@ export default function JewelleryListing({ category }: Props) {
     <main className="w-full bg-[#f9f9f9] min-h-screen font-sans pb-20">
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 mt-6">
         {/* Page Title */}
-        <div className="mb-6">
-          <h1 className="font-domine text-[#222] text-2xl font-bold">{title}</h1>
-          <p className="text-gray-400 text-[13px] mt-1">{count} product{count !== 1 ? 's' : ''} found</p>
+        <div className="mb-10 mt-4">
+          <h2 className="text-center text-[28px] font-domine text-[#032C5E] tracking-wide font-bold">
+            {title}
+          </h2>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8 items-start">
@@ -133,7 +179,12 @@ export default function JewelleryListing({ category }: Props) {
 
           {/* Right Content (Product Grid) */}
           <div className="flex-1 w-full">
-            {displayProducts.length === 0 ? (
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-32 text-center">
+                <div className="w-12 h-12 border-4 border-[#2e6da4] border-t-transparent rounded-full animate-spin mb-4" />
+                <p className="text-gray-400 font-medium">Loading products...</p>
+              </div>
+            ) : displayProducts.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 text-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-200 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -142,35 +193,46 @@ export default function JewelleryListing({ category }: Props) {
                 <p className="text-gray-400 text-sm">We couldn&apos;t find any items in this category.</p>
                 <Link href="/jewellery" className="mt-6 text-[#2e6da4] text-sm font-medium hover:underline">Browse All Jewellery →</Link>
               </div>
+            ) : category === 'haram' ? (
+              <div className="space-y-16">
+                {HARAM_SLUGS.map(slug => {
+                  const subProducts = displayProducts.filter(p => p.subcategory === slug);
+                  if (subProducts.length === 0) return null;
+                  
+                  return (
+                    <div key={slug} id={slug} className="space-y-6 scroll-mt-24">
+                      <div>
+                        <h3 className="font-domine text-[20px] text-[#032C5E] font-bold capitalize">
+                          {slug.replace(/-/g, ' ')}
+                        </h3>
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {subProducts.map((product) => (
+                          <ProductCard key={product.id} product={product} />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+                
+                {/* Fallback for haram products without subcategory mapping */}
+                {displayProducts.filter(p => !p.subcategory || !HARAM_SLUGS.includes(p.subcategory)).length > 0 && (
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="font-domine text-[20px] text-[#032C5E] font-bold">Other Haram Styles</h3>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                      {displayProducts.filter(p => !p.subcategory || !HARAM_SLUGS.includes(p.subcategory)).map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
                 {displayProducts.map((product) => (
-                  <Link
-                    href={`/jewellery/${product.category}/${product.id}`}
-                    key={product.id}
-                    className="group flex flex-col bg-white rounded-lg overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow duration-300 h-full"
-                  >
-                    {/* Image Area (Bulletproof 1:1 Aspect Ratio) */}
-                    <div className="relative w-full pt-[100%] bg-[#fafafa] overflow-hidden">
-                      <div className="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-500 mix-blend-multiply"
-                        />
-                      </div>
-                    </div>
-                    {/* Details Area */}
-                    <div className="p-4 flex flex-col flex-1 items-start text-left bg-white">
-                      <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                        <span className="font-bold text-[#222] text-[15px] md:text-[16px]">₹{product.price}</span>
-                        <span className="text-gray-400 text-[12px] md:text-[13px] line-through">₹{product.originalPrice}</span>
-                      </div>
-                      <h3 className="text-[#666] text-[12px] md:text-[13px] line-clamp-2 leading-snug h-[38px] w-full">
-                        {product.name}
-                      </h3>
-                    </div>
-                  </Link>
+                  <ProductCard key={product.id} product={product} />
                 ))}
               </div>
             )}

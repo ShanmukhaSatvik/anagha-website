@@ -122,11 +122,15 @@
     {
       "name": "Watch Jewellery",
       "image": "/images/category/watch_jewellery_gold.png"
+    },
+    {
+      "name": "Haram",
+      "image": "/images/header/silver-haram.jpg"
     }
   ],
   "jewelleryProducts": [
     {
-      "id": 29,
+      "id": "32df53db-d062-495b-b555-7dad7e1fb3b2",
       "category": "rings",
       "name": "Solitaire Gold",
       "price": "1,20,000",
@@ -134,7 +138,7 @@
       "image": "/images/category/solitaire_gold.png"
     },
     {
-      "id": 6,
+      "id": "70388cef-ccab-46c4-93df-229568002f68",
       "category": "earrings",
       "name": "Gold Earrings",
       "price": "13,886",
@@ -142,7 +146,7 @@
       "image": "/images/category/gold_earrings.png"
     },
     {
-      "id": 36,
+      "id": "3c797dda-5ad6-4a0f-9286-04be2331437e",
       "category": "necklaces",
       "name": "Layered Necklace",
       "price": "95,000",
@@ -150,7 +154,7 @@
       "image": "/images/curated/layered_necklace.png"
     },
     {
-      "id": 13,
+      "id": "db7de8d3-9c24-4d0c-bcf5-7e279469173c",
       "category": "mangalsutra",
       "name": "Mangalsutra Gold",
       "price": "55,000",
@@ -158,7 +162,7 @@
       "image": "/images/category/mangalsutra_gold.png"
     },
     {
-      "id": 40,
+      "id": "b3c74eed-6768-415c-b3b0-cc8bf6d37c0d",
       "category": "mens-jewellery",
       "name": "Men Jewellery 1",
       "price": "42,000",
@@ -166,7 +170,7 @@
       "image": "/images/curated/men_jewellery_1.png"
     },
     {
-      "id": 10,
+      "id": "abbf6c5c-ac23-4b17-97fe-d9ad39de9ee8",
       "category": "rings",
       "name": "Gold Rings",
       "price": "34,500",
@@ -174,7 +178,7 @@
       "image": "/images/category/gold_rings.png"
     },
     {
-      "id": 22,
+      "id": "7ec4486e-2a0b-4881-a86b-c2bfce03afe6",
       "category": "chains",
       "name": "Silver Chain",
       "price": "9,000",
@@ -182,7 +186,7 @@
       "image": "/images/category/silver_chain.png"
     },
     {
-      "id": 44,
+      "id": "98a9ff94-4089-4e8a-9d1c-10054c9c6ee3",
       "category": "pendants",
       "name": "Curated Pendant",
       "price": "25,000",
@@ -190,7 +194,7 @@
       "image": "/images/curated/pendant_1.png"
     },
     {
-      "id": 1,
+      "id": "45e66d61-86ea-47b3-9601-15c71d9ee167",
       "category": "anklets",
       "name": "Gold Anklet",
       "price": "30,603",
@@ -198,7 +202,7 @@
       "image": "/images/category/gold_anklet.png"
     },
     {
-      "id": 33,
+      "id": "71aa9d3d-708e-4e00-ad14-151856079300",
       "category": "bracelets",
       "name": "Curated Bracelet",
       "price": "28,000",
@@ -206,7 +210,7 @@
       "image": "/images/curated/bracelet_2.png"
     },
     {
-      "id": 15,
+      "id": "04ad725c-3a45-4803-9cec-5fce3e5850bf",
       "category": "mens-jewellery",
       "name": "Mens Jewellery Gold",
       "price": "75,000",
@@ -214,7 +218,7 @@
       "image": "/images/category/mens_jewellery_gold.png"
     },
     {
-      "id": 28,
+      "id": "844d531b-9979-4d0c-9d67-1a4383de5e02",
       "category": "rings",
       "name": "Silver Ring",
       "price": "3,500",
@@ -222,7 +226,7 @@
       "image": "/images/category/silver_ring.png"
     },
     {
-      "id": 38,
+      "id": "82717d0f-49b4-41f5-b380-8b105d0d25b1",
       "category": "necklaces",
       "name": "Layered Necklace 2",
       "price": "1,05,000",
@@ -230,7 +234,7 @@
       "image": "/images/curated/layered_necklace_2.png"
     },
     {
-      "id": 2,
+      "id": "f27a1677-8fd2-4689-85ae-8fc4862ae1c7",
       "category": "bangles",
       "name": "Gold Bangles",
       "price": "20,664",
@@ -238,7 +242,7 @@
       "image": "/images/category/gold_bangles.png"
     },
     {
-      "id": 11,
+      "id": "c24db1a2-6bae-4ca3-bfa4-361450b0e387",
       "category": "kids-jewellery",
       "name": "Kids Jewellery Gold",
       "price": "12,303",
@@ -246,7 +250,7 @@
       "image": "/images/category/kids_jewellery_gold.png"
     },
     {
-      "id": 34,
+      "id": "97745be4-5354-4d98-901b-79f1a839ceeb",
       "category": "chains",
       "name": "Curated Chain",
       "price": "33,000",
@@ -254,7 +258,7 @@
       "image": "/images/curated/chain_3.png"
     },
     {
-      "id": 17,
+      "id": "6d6bceab-a325-4506-99cf-71279f0583f1",
       "category": "nose-pins",
       "name": "Nose Pin Gold",
       "price": "5,000",
@@ -262,7 +266,7 @@
       "image": "/images/category/nose_pin_gold.png"
     },
     {
-      "id": 42,
+      "id": "b43f28fd-2de2-49a9-b5b5-30f240c15a0b",
       "category": "mens-jewellery",
       "name": "Men Jewellery 3",
       "price": "45,000",
@@ -270,7 +274,7 @@
       "image": "/images/curated/men_jewellery_3.png"
     },
     {
-      "id": 7,
+      "id": "ba45fa7f-9fd2-41d5-9e67-2a99237e9622",
       "category": "kadas",
       "name": "Gold Kada",
       "price": "85,400",
@@ -278,7 +282,7 @@
       "image": "/images/category/gold_kada.png"
     },
     {
-      "id": 23,
+      "id": "3b0ff8ee-0bcf-447d-86ab-e222a90a3d79",
       "category": "coins",
       "name": "Silver Coins",
       "price": "5,500",
@@ -286,7 +290,7 @@
       "image": "/images/category/silver_coins.png"
     },
     {
-      "id": 39,
+      "id": "d9c7b81c-c3fd-4c6f-9946-6fa0bbddfcdf",
       "category": "necklaces",
       "name": "Layered Necklace 3",
       "price": "1,15,000",
@@ -294,7 +298,7 @@
       "image": "/images/curated/layered_necklace_3.png"
     },
     {
-      "id": 3,
+      "id": "608ea1e2-babf-49b5-bc5d-2d148228fbf9",
       "category": "bracelets",
       "name": "Gold Bracelet",
       "price": "45,299",
@@ -302,7 +306,7 @@
       "image": "/images/category/gold_bracelet.png"
     },
     {
-      "id": 20,
+      "id": "59837789-6ae0-4fb7-b267-81b29da28f3e",
       "category": "bangles",
       "name": "Silver Bangle",
       "price": "12,000",
@@ -310,7 +314,7 @@
       "image": "/images/category/silver_bangle.png"
     },
     {
-      "id": 35,
+      "id": "8168e8e2-5803-4565-8fb8-88299eed7c3b",
       "category": "earrings",
       "name": "Curated Earrings",
       "price": "19,000",
@@ -318,7 +322,7 @@
       "image": "/images/curated/ear_rings_4.png"
     },
     {
-      "id": 18,
+      "id": "edb8e770-252d-4706-b542-452d0c5887b4",
       "category": "nose-pins",
       "name": "Nose Pin Silver",
       "price": "2,000",
@@ -326,7 +330,7 @@
       "image": "/images/category/nose_pin_silver.png"
     },
     {
-      "id": 41,
+      "id": "ff3fd08f-cf1f-49c0-9de0-16dcdb1f158f",
       "category": "mens-jewellery",
       "name": "Men Jewellery 2",
       "price": "38,000",
@@ -334,7 +338,7 @@
       "image": "/images/curated/men_jewellery_2.png"
     },
     {
-      "id": 8,
+      "id": "29befc9d-b8ed-4410-9a4f-0c3487ba2169",
       "category": "necklaces",
       "name": "Gold Necklace",
       "price": "28,900",
@@ -342,7 +346,7 @@
       "image": "/images/category/gold_neckalce.png"
     },
     {
-      "id": 25,
+      "id": "665a1187-8f37-47af-ac89-b49d054d75bf",
       "category": "silver-jewellery",
       "name": "Silver Image",
       "price": "14,000",
@@ -350,7 +354,7 @@
       "image": "/images/category/silver_image.png"
     },
     {
-      "id": 37,
+      "id": "2d5f227a-8332-4e0f-8c4e-c0642f042616",
       "category": "necklaces",
       "name": "Layered Necklace 1",
       "price": "88,000",
@@ -358,7 +362,7 @@
       "image": "/images/curated/layered_necklace_1.png"
     },
     {
-      "id": 4,
+      "id": "e012739f-1fd3-45dc-b217-a15ea5026fa7",
       "category": "chains",
       "name": "Gold Chain",
       "price": "47,067",
@@ -366,7 +370,7 @@
       "image": "/images/category/gold_chain.png"
     },
     {
-      "id": 12,
+      "id": "e3d5ed90-baf2-49d2-86e3-e6f8858a1bb5",
       "category": "kids-jewellery",
       "name": "Kids Jewellery Silver",
       "price": "9,500",
@@ -374,7 +378,7 @@
       "image": "/images/category/kids_jewellery_silver.png"
     },
     {
-      "id": 31,
+      "id": "b3828758-6b0f-4de7-9c0c-a573884c2d31",
       "category": "watch-jewellery",
       "name": "Watch Jewellery Gold",
       "price": "35,000",
@@ -382,7 +386,7 @@
       "image": "/images/category/watch_jewellery_gold.png"
     },
     {
-      "id": 21,
+      "id": "20eb29a3-c380-4c95-88e0-c78b1119568e",
       "category": "bracelets",
       "name": "Silver Bracelet",
       "price": "10,500",
@@ -390,7 +394,7 @@
       "image": "/images/category/silver_bracelet.png"
     },
     {
-      "id": 43,
+      "id": "a7eb37cd-18d8-4fd7-997f-529523cfbe0c",
       "category": "mens-jewellery",
       "name": "Men Jewellery 4",
       "price": "32,000",
@@ -398,7 +402,7 @@
       "image": "/images/curated/men_jewellery_4.png"
     },
     {
-      "id": 9,
+      "id": "4d4d8fbf-c297-4fbb-a908-7f233309147f",
       "category": "pendants",
       "name": "Gold Pendant",
       "price": "64,200",
@@ -406,7 +410,7 @@
       "image": "/images/category/gold_pendant.png"
     },
     {
-      "id": 26,
+      "id": "0fd935df-0252-40a3-a7b1-fc444fe328e0",
       "category": "kadas",
       "name": "Silver Kada",
       "price": "16,000",
@@ -414,7 +418,7 @@
       "image": "/images/category/silver_kada.png"
     },
     {
-      "id": 14,
+      "id": "30c46f07-05be-41f7-9825-2a191ccd7369",
       "category": "mangalsutra",
       "name": "Mangalsutra Silver",
       "price": "15,000",
@@ -422,7 +426,7 @@
       "image": "/images/category/mangalsutra_silver.png"
     },
     {
-      "id": 30,
+      "id": "6567a64e-cf54-45ed-b90b-eff8aefce47b",
       "category": "solitaires",
       "name": "Solitaire Silver",
       "price": "45,000",
@@ -430,7 +434,7 @@
       "image": "/images/category/solitaire_silver.png"
     },
     {
-      "id": 5,
+      "id": "163dc8b9-e072-4e81-a20d-ab483756161c",
       "category": "coins",
       "name": "Gold Coins",
       "price": "11,435",
@@ -438,7 +442,7 @@
       "image": "/images/category/gold_coins.png"
     },
     {
-      "id": 16,
+      "id": "13876ff0-cc43-4656-9b09-7bf6bff47ca2",
       "category": "mens-jewellery",
       "name": "Mens Jewellery Silver",
       "price": "25,000",
@@ -446,7 +450,7 @@
       "image": "/images/category/mens_jewellery_silver.png"
     },
     {
-      "id": 24,
+      "id": "bc9f6240-5e24-45be-bb55-465db89da17a",
       "category": "earrings",
       "name": "Silver Earrings",
       "price": "4,500",
@@ -454,7 +458,7 @@
       "image": "/images/category/silver_earrings.png"
     },
     {
-      "id": 19,
+      "id": "cebffe3f-45fe-4214-ac55-eaa8ef042735",
       "category": "anklets",
       "name": "Silver Anklet",
       "price": "8,000",
@@ -462,7 +466,7 @@
       "image": "/images/category/silver_anklet.png"
     },
     {
-      "id": 32,
+      "id": "70aeaecd-29e2-4ca3-b7f6-79982c4bc580",
       "category": "watch-jewellery",
       "name": "Watch Jewellery Silver",
       "price": "15,000",
@@ -470,12 +474,481 @@
       "image": "/images/category/watch_jewellery_silver.png"
     },
     {
-      "id": 27,
+      "id": "85984800-63ea-4bf0-ae12-9fe93d0247bd",
       "category": "necklaces",
       "name": "Silver Necklace",
       "price": "22,000",
       "originalPrice": "26,000",
       "image": "/images/category/silver_neckalce.png"
+    },
+    {
+      "id": "24faf328-9aee-44be-8839-4d9d688c47af",
+      "category": "haram",
+      "name": "Guttapusala Haram 1",
+      "price": "85,000",
+      "originalPrice": "98,000",
+      "image": "/images/category/guttapusala_haram1.png",
+      "subcategory": "guttapusala-haram"
+    },
+    {
+      "id": "fa06495f-a0be-4bc5-8f11-9ea67811b962",
+      "category": "haram",
+      "name": "Guttapusala Haram 2",
+      "price": "92,000",
+      "originalPrice": "1,05,000",
+      "image": "/images/category/guttapusala_haram2.png",
+      "subcategory": "guttapusala-haram"
+    },
+    {
+      "id": "94ae7245-93ee-4338-b4ca-384b7a575ca7",
+      "category": "haram",
+      "name": "Guttapusala Haram 3",
+      "price": "78,000",
+      "originalPrice": "90,000",
+      "image": "/images/category/guttapusala_haram3.png",
+      "subcategory": "guttapusala-haram"
+    },
+    {
+      "id": "747c5227-9b79-4ea7-8b25-de2d48400c43",
+      "category": "haram",
+      "name": "Guttapusala Haram 4",
+      "price": "1,10,000",
+      "originalPrice": "1,25,000",
+      "image": "/images/category/guttapusala_haram4.png",
+      "subcategory": "guttapusala-haram"
+    },
+    {
+      "id": "daef9c0a-3a39-4ee7-8967-6995c6b0ce08",
+      "category": "haram",
+      "name": "Kasulaperu Haram 1",
+      "price": "95,000",
+      "originalPrice": "1,10,000",
+      "image": "/images/category/kasulaperu_1.webp",
+      "subcategory": "kasulaperu-haram"
+    },
+    {
+      "id": "31f5f890-18e3-496a-a259-b59ef5118711",
+      "category": "haram",
+      "name": "Kasulaperu Haram 2",
+      "price": "1,05,000",
+      "originalPrice": "1,20,000",
+      "image": "/images/category/kasulaperu_2.png",
+      "subcategory": "kasulaperu-haram"
+    },
+    {
+      "id": "8066a54e-c507-4e9e-aa7c-0ecdd3d3836f",
+      "category": "haram",
+      "name": "Kasulaperu Haram 3",
+      "price": "88,000",
+      "originalPrice": "1,00,000",
+      "image": "/images/category/kasulaperu_3.webp",
+      "subcategory": "kasulaperu-haram"
+    },
+    {
+      "id": "0d523fa3-5d5d-4e0f-87e7-a4ac8f3a7ee6",
+      "category": "haram",
+      "name": "Kasulaperu Haram 4",
+      "price": "1,15,000",
+      "originalPrice": "1,30,000",
+      "image": "/images/category/kasulaperu_4.png",
+      "subcategory": "kasulaperu-haram"
+    },
+    {
+      "id": "ed0b6266-ba74-46b7-86ac-99d06ae9b339",
+      "category": "haram",
+      "name": "Gundla Haram 1",
+      "price": "65,000",
+      "originalPrice": "75,000",
+      "image": "/images/category/lightweight-gundla-mala1.png",
+      "subcategory": "gundla-haram"
+    },
+    {
+      "id": "3636e8cc-0893-4436-876f-690c7096e888",
+      "category": "haram",
+      "name": "Gundla Haram 2",
+      "price": "72,000",
+      "originalPrice": "82,000",
+      "image": "/images/category/lightweight-gundla-mala2.png",
+      "subcategory": "gundla-haram"
+    },
+    {
+      "id": "ada4c7b7-2969-45b1-87a0-1aded06cdea1",
+      "category": "haram",
+      "name": "Gundla Haram 3",
+      "price": "58,000",
+      "originalPrice": "68,000",
+      "image": "/images/category/lightweight-gundla-mala3.png",
+      "subcategory": "gundla-haram"
+    },
+    {
+      "id": "ba829105-9ed1-4f2b-9ca8-149e8aca681e",
+      "category": "haram",
+      "name": "Gundla Haram 4",
+      "price": "80,000",
+      "originalPrice": "92,000",
+      "image": "/images/category/lightweight-gundla-mala4.png",
+      "subcategory": "gundla-haram"
+    },
+    {
+      "id": "7bdcb39a-8078-4f8a-a350-a2ed18074128",
+      "category": "haram",
+      "name": "Pachala Haram 1",
+      "price": "70,000",
+      "originalPrice": "82,000",
+      "image": "/images/category/pachala_haram1.png",
+      "subcategory": "pachala-haram"
+    },
+    {
+      "id": "10ec69c3-e306-423e-8779-63ea039cdc34",
+      "category": "haram",
+      "name": "Pachala Haram 2",
+      "price": "82,000",
+      "originalPrice": "95,000",
+      "image": "/images/category/pachala_haram2.png",
+      "subcategory": "pachala-haram"
+    },
+    {
+      "id": "c2aff90a-90fd-4a63-b4ec-966ee05cf363",
+      "category": "haram",
+      "name": "Pachala Haram 3",
+      "price": "68,000",
+      "originalPrice": "78,000",
+      "image": "/images/category/pachala_haram3.png",
+      "subcategory": "pachala-haram"
+    },
+    {
+      "id": "8f938cc5-d638-4a58-94c1-2294a7b9ab0a",
+      "category": "haram",
+      "name": "Pachala Haram 4",
+      "price": "90,000",
+      "originalPrice": "1,05,000",
+      "image": "/images/category/pachala_haram4.png",
+      "subcategory": "pachala-haram"
+    },
+    {
+      "id": "39dbd103-f4d5-4ee6-b398-643934df7d3f",
+      "category": "haram",
+      "name": "Nakshi Haram 1",
+      "price": "75,000",
+      "originalPrice": "88,000",
+      "image": "/images/category/nakshi_1.png",
+      "subcategory": "nakshi-haram"
+    },
+    {
+      "id": "d5a0d64c-b9a0-404f-979e-3e9d09268ac4",
+      "category": "haram",
+      "name": "Nakshi Haram 2",
+      "price": "88,000",
+      "originalPrice": "1,02,000",
+      "image": "/images/category/nakshi_2.png",
+      "subcategory": "nakshi-haram"
+    },
+    {
+      "id": "d081d253-6a4c-48d7-8d8c-3143328f10ff",
+      "category": "haram",
+      "name": "Nakshi Haram 3",
+      "price": "62,000",
+      "originalPrice": "72,000",
+      "image": "/images/category/nakshi_3.png",
+      "subcategory": "nakshi-haram"
+    },
+    {
+      "id": "3f49ab3b-cb16-44fb-99d0-7edf25bc0139",
+      "category": "haram",
+      "name": "Nakshi Haram 4",
+      "price": "95,000",
+      "originalPrice": "1,10,000",
+      "image": "/images/category/nakshi_4.png",
+      "subcategory": "nakshi-haram"
+    },
+    {
+      "id": "b759d189-bb22-4bdb-bd75-733ec24bcffb",
+      "category": "haram",
+      "name": "Guttapusala Haram 5",
+      "price": "1,15,000",
+      "originalPrice": "1,30,000",
+      "image": "/images/category/guttapusala_haram5.png",
+      "subcategory": "guttapusala-haram"
+    },
+    {
+      "id": "9e380ae7-dfc4-48c0-bd82-960670354248",
+      "category": "haram",
+      "name": "Kasulaperu Haram 5",
+      "price": "1,25,000",
+      "originalPrice": "1,45,000",
+      "image": "/images/category/kasulaperu_5.png",
+      "subcategory": "kasulaperu-haram"
+    },
+    {
+      "id": "77099974-d68b-4b3d-8197-cd4c62d1869f",
+      "category": "haram",
+      "name": "Nakshi Haram 5",
+      "price": "1,05,000",
+      "originalPrice": "1,20,000",
+      "image": "/images/category/nakshi_5.png",
+      "subcategory": "nakshi-haram"
+    },
+    {
+      "id": "356b67de-5422-4899-96b1-87e74a541a3b",
+      "category": "haram",
+      "name": "Pachala Haram 5",
+      "price": "98,000",
+      "originalPrice": "1,15,000",
+      "image": "/images/category/pachala_haram5.png",
+      "subcategory": "pachala-haram"
     }
-  ]
+  ],
+  "header": {
+    "navItems": [
+      {
+        "label": "RINGS",
+        "slug": "rings",
+        "dropdown": {
+          "categories": {
+            "title": "By Categories",
+            "items": [
+              {
+                "name": "Diamond Rings",
+                "link": "/jewellery/rings"
+              },
+              {
+                "name": "Gold Rings",
+                "link": "/jewellery/rings"
+              },
+              {
+                "name": "White Gold Rings",
+                "link": "/jewellery/rings"
+              },
+              {
+                "name": "Rose Gold Rings",
+                "link": "/jewellery/rings"
+              },
+              {
+                "name": "Platinum Rings",
+                "link": "/jewellery/rings"
+              }
+            ]
+          },
+          "callout": {
+            "title": "Buy Solitaire Rings",
+            "desc": "Starting at Rs. 30,000/-",
+            "image": "/images/header/menu-solitaire-ring.v1.webp"
+          }
+        }
+      },
+      {
+        "label": "EARRINGS",
+        "slug": "earrings",
+        "dropdown": {
+          "categories": {
+            "title": "By Categories",
+            "items": [
+              {
+                "name": "Diamond Earrings",
+                "link": "/jewellery/earrings"
+              },
+              {
+                "name": "Gold Earrings",
+                "link": "/jewellery/earrings"
+              },
+              {
+                "name": "White Gold Earrings",
+                "link": "/jewellery/earrings"
+              },
+              {
+                "name": "Rose Gold Earrings",
+                "link": "/jewellery/earrings"
+              },
+              {
+                "name": "Gemstone Earrings",
+                "link": "/jewellery/earrings"
+              }
+            ]
+          },
+          "callout": {
+            "title": "Buy Solitaire Earrings",
+            "desc": "Starting at Rs. 45,000/-",
+            "image": "/images/header/menu-solitaire-earring.v1.webp"
+          }
+        }
+      },
+      {
+        "label": "PENDANTS",
+        "slug": "pendants",
+        "dropdown": {
+          "categories": {
+            "title": "By Categories",
+            "items": [
+              {
+                "name": "Diamond Pendants",
+                "link": "/jewellery/pendants"
+              },
+              {
+                "name": "Gold Pendants",
+                "link": "/jewellery/pendants"
+              },
+              {
+                "name": "White Gold Pendants",
+                "link": "/jewellery/pendants"
+              },
+              {
+                "name": "Rose Gold Pendants",
+                "link": "/jewellery/pendants"
+              },
+              {
+                "name": "Gemstone Pendants",
+                "link": "/jewellery/pendants"
+              }
+            ]
+          },
+          "callout": {
+            "title": "Buy Solitaire Pendants",
+            "desc": "Starting at Rs. 40,000/-",
+            "image": "/images/header/menu-solitaire-pendant.v1.webp"
+          }
+        }
+      },
+      {
+        "label": "HARAM",
+        "slug": "haram",
+        "dropdown": {
+          "categories": {
+            "title": "By Categories",
+            "items": [
+              {
+                "name": "Guttapusala Haram",
+                "link": "/jewellery/haram#guttapusala-haram"
+              },
+              {
+                "name": "Kasulaperu Haram",
+                "link": "/jewellery/haram#kasulaperu-haram"
+              },
+              {
+                "name": "Pachala Haram",
+                "link": "/jewellery/haram#pachala-haram"
+              },
+              {
+                "name": "Nakshi Haram",
+                "link": "/jewellery/haram#nakshi-haram"
+              },
+              {
+                "name": "Gundla Haram",
+                "link": "/jewellery/haram#gundla-haram"
+              }
+            ]
+          },
+          "callout": {
+            "title": "Shop Silver Haram",
+            "desc": "Explore our collection",
+            "image": "/images/header/silver-haram.jpg"
+          }
+        }
+      },
+      {
+        "label": "VADDANAM",
+        "slug": "vaddanam",
+        "dropdown": {
+          "categories": {
+            "title": "By Categories",
+            "items": [
+              {
+                "name": "Lakshmi Vaddanam",
+                "link": "/jewellery/vaddanam"
+              },
+              {
+                "name": "Nakshi Vaddanam",
+                "link": "/jewellery/vaddanam"
+              },
+              {
+                "name": "Peacock (Mayil) Vaddanam",
+                "link": "/jewellery/vaddanam"
+              },
+              {
+                "name": "Polki Vaddanam",
+                "link": "/jewellery/vaddanam"
+              },
+              {
+                "name": "Lightweight Vaddanam",
+                "link": "/jewellery/vaddanam"
+              }
+            ]
+          },
+          "callout": {
+            "title": "Shop Silver Vaddanam",
+            "desc": "Explore our collection",
+            "image": "/images/header/silver-vaddanam.png"
+          }
+        }
+      },
+      {
+        "label": "BANGLES",
+        "slug": "bangles",
+        "dropdown": {
+          "categories": {
+            "title": "By Categories",
+            "items": [
+              {
+                "name": "Nakshi Bangles",
+                "link": "/jewellery/bangles"
+              },
+              {
+                "name": "Kundan Bangles",
+                "link": "/jewellery/bangles"
+              },
+              {
+                "name": "Glass Bangles",
+                "link": "/jewellery/bangles"
+              },
+              {
+                "name": "Antique Finish Bangles",
+                "link": "/jewellery/bangles"
+              },
+              {
+                "name": "Meenakari Bangles",
+                "link": "/jewellery/bangles"
+              }
+            ]
+          },
+          "callout": {
+            "title": "Shop Silver Bangles",
+            "desc": "Explore our collection",
+            "image": "/images/header/silver-bangle.jpg"
+          }
+        }
+      },
+      {
+        "label": "SOLITAIRES",
+        "slug": "solitaires",
+        "dropdown": {
+          "categories": {
+            "title": "By Categories",
+            "items": [
+              {
+                "name": "Solitaire Rings",
+                "link": "/jewellery/solitaires"
+              },
+              {
+                "name": "Solitaire Earrings",
+                "link": "/jewellery/solitaires"
+              },
+              {
+                "name": "Solitaire Pendants",
+                "link": "/jewellery/solitaires"
+              }
+            ]
+          },
+          "callout": {
+            "title": "Shop Solitaires",
+            "desc": "Premium Diamond Collection",
+            "image": "/images/header/solitaire-ring.v1.webp"
+          }
+        }
+      },
+      {
+        "label": "ALL JEWELLERY",
+        "slug": "all-jewellery",
+        "dropdown": null
+      }
+    ]
+  }
 }
