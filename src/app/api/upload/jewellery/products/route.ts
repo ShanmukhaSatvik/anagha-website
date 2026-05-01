@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { PRODUCTS } from '@/lib/data';
 import crypto from 'crypto';
 
-const META   = path.join(process.cwd(), 'public', 'uploads', 'metadata.json');
+const META = path.join(process.cwd(), 'public', 'uploads', 'metadata.json');
 const UPLOAD = path.join(process.cwd(), 'public', 'uploads');
 
 async function readMeta() {
@@ -16,24 +16,32 @@ async function writeMeta(data: object) {
 }
 
 export async function GET(req: NextRequest) {
-  const category = new URL(req.url).searchParams.get('category');
+  const { searchParams } = new URL(req.url);
+  const category = searchParams.get('category');
+  const id = searchParams.get('id');
   const meta = await readMeta();
-  
+
   // Primary source: metadata
   const uploadedProducts = meta.jewelleryProducts ?? [];
-  
-  // Merge with hardcoded PRODUCTS to pick up any newly added items in code
-  // Use a Map to ensure unique IDs, preferring uploaded versions if they clash
+
+  // Merge with hardcoded PRODUCTS, preferring uploaded versions on ID clash
   const productMap = new Map();
-  PRODUCTS.forEach((p: any) => productMap.set(p.id, p));
-  uploadedProducts.forEach((p: any) => productMap.set(p.id, p));
-  
+  PRODUCTS.forEach((p: any) => productMap.set(String(p.id), p));
+  uploadedProducts.forEach((p: any) => productMap.set(String(p.id), p));
+
+  // Single product lookup by id
+  if (id) {
+    const product = productMap.get(id) ?? null;
+    if (!product) return NextResponse.json(null, { status: 404 });
+    return NextResponse.json(product);
+  }
+
   let products = Array.from(productMap.values());
-  
+
   if (category) {
     products = products.filter((p: any) => p.category === category);
   }
-  
+
   return NextResponse.json(products);
 }
 
@@ -55,7 +63,7 @@ export async function POST(req: NextRequest) {
 
     const meta = await readMeta();
     const products = meta.jewelleryProducts ?? [...PRODUCTS];
-    
+
     const newProduct = {
       id: crypto.randomUUID(),
       category,
@@ -69,7 +77,7 @@ export async function POST(req: NextRequest) {
     meta.jewelleryProducts = products;
     await writeMeta(meta);
     revalidatePath('/');
-    
+
     return NextResponse.json({ success: true, product: newProduct });
   } catch (err) {
     console.error(err);
@@ -107,7 +115,7 @@ export async function PATCH(req: NextRequest) {
     if (file) {
       // Clean old image if it was an upload
       if (product.image?.startsWith('/uploads/')) {
-        try { await unlink(path.join(process.cwd(), 'public', product.image)); } catch {}
+        try { await unlink(path.join(process.cwd(), 'public', product.image)); } catch { }
       }
       const ext = file.name.split('.').pop();
       const filename = `product_${Date.now()}.${ext}`;
@@ -132,16 +140,16 @@ export async function DELETE(req: NextRequest) {
 
   const meta = await readMeta();
   let products = meta.jewelleryProducts ?? [...PRODUCTS];
-  
+
   const target = products.find((p: any) => p.id === id);
   if (target?.image?.startsWith('/uploads/')) {
-    try { await unlink(path.join(process.cwd(), 'public', target.image)); } catch {}
+    try { await unlink(path.join(process.cwd(), 'public', target.image)); } catch { }
   }
 
   products = products.filter((p: any) => p.id !== id);
   meta.jewelleryProducts = products;
   await writeMeta(meta);
   revalidatePath('/');
-  
+
   return NextResponse.json({ success: true });
 }
