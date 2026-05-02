@@ -175,7 +175,15 @@ export async function POST(req: NextRequest) {
         const action = url.searchParams.get('action'); // 'save-nav' | 'upload-callout-image'
         const navIndex = parseInt(url.searchParams.get('navIndex') ?? '-1');
 
-        const meta = JSON.parse(await readFile(METADATA_PATH, 'utf8'));
+        let meta;
+        try {
+            const fileContent = await readFile(METADATA_PATH, 'utf8');
+            meta = JSON.parse(fileContent);
+        } catch (readErr) {
+            console.warn('[upload/header] Metadata file not found or invalid, using default structure.', readErr);
+            meta = { header: { navItems: [...DEFAULT_NAV_ITEMS] } };
+        }
+
         if (!meta.header) meta.header = { navItems: [...DEFAULT_NAV_ITEMS] };
         if (!meta.header.navItems) meta.header.navItems = [...DEFAULT_NAV_ITEMS];
 
@@ -207,9 +215,16 @@ export async function POST(req: NextRequest) {
         await writeFile(METADATA_PATH, JSON.stringify(meta, null, 2));
         revalidatePath('/');
         return NextResponse.json({ success: true });
-    } catch (err) {
-        console.error('[upload/header]', err);
-        return NextResponse.json({ error: 'Save failed' }, { status: 500 });
+    } catch (err: any) {
+        console.error('[upload/header] Error details:', err);
+        const errorMessage = err?.message || 'Save failed';
+        const isVercelReadOnly = errorMessage.includes('read-only file system') || err?.code === 'EROFS';
+        
+        return NextResponse.json({ 
+            error: isVercelReadOnly ? 'Vercel Deployment Error: Cannot write to file system. Please use a database or Vercel Blob.' : 'Save failed',
+            details: errorMessage,
+            code: err?.code
+        }, { status: 500 });
     }
 }
 

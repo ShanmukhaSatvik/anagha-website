@@ -13,7 +13,12 @@ function keyFor(type: string | null) {
 export async function GET(req: NextRequest) {
   try {
     const type = new URL(req.url).searchParams.get('type');
-    const meta = JSON.parse(await readFile(METADATA_PATH, 'utf8'));
+    let meta;
+    try {
+      meta = JSON.parse(await readFile(METADATA_PATH, 'utf8'));
+    } catch {
+      return NextResponse.json([]);
+    }
     return NextResponse.json(meta[keyFor(type)] || []);
   } catch {
     return NextResponse.json([]);
@@ -30,7 +35,14 @@ export async function POST(req: NextRequest) {
 
     if (isNaN(index)) return NextResponse.json({ error: 'Missing index' }, { status: 400 });
 
-    const meta = JSON.parse(await readFile(METADATA_PATH, 'utf8'));
+    let meta;
+    try {
+      meta = JSON.parse(await readFile(METADATA_PATH, 'utf8'));
+    } catch (readErr) {
+      console.warn('[upload/categories] Metadata file not found, initializing empty.', readErr);
+      meta = {};
+    }
+
     const key  = keyFor(type);
     if (!meta[key]) meta[key] = [];
 
@@ -53,9 +65,16 @@ export async function POST(req: NextRequest) {
     await writeFile(METADATA_PATH, JSON.stringify(meta, null, 2));
     revalidatePath('/');
     return NextResponse.json({ success: true, filename });
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+  } catch (err: any) {
+    console.error('[upload/categories] Error details:', err);
+    const errorMessage = err?.message || 'Upload failed';
+    const isVercelReadOnly = errorMessage.includes('read-only file system') || err?.code === 'EROFS';
+    
+    return NextResponse.json({ 
+      error: isVercelReadOnly ? 'Vercel Deployment Error: Cannot write to file system. Please use a database or Vercel Blob.' : 'Upload failed',
+      details: errorMessage,
+      code: err?.code
+    }, { status: 500 });
   }
 }
 

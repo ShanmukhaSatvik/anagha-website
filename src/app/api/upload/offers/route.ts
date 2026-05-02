@@ -7,10 +7,20 @@ const META   = path.join(process.cwd(), 'public', 'uploads', 'metadata.json');
 const UPLOAD = path.join(process.cwd(), 'public', 'uploads');
 
 async function readMeta() {
-  try { return JSON.parse(await readFile(META, 'utf8')); } catch { return {}; }
+  try { 
+    return JSON.parse(await readFile(META, 'utf8')); 
+  } catch (err) { 
+    console.warn('[upload/offers] Could not read metadata, using empty object.', err);
+    return {}; 
+  }
 }
 async function writeMeta(data: object) {
-  await writeFile(META, JSON.stringify(data, null, 2));
+  try {
+    await writeFile(META, JSON.stringify(data, null, 2));
+  } catch (err: any) {
+    console.error('[upload/offers] Write failed:', err);
+    throw err;
+  }
 }
 
 /* GET — return offers array */
@@ -21,23 +31,35 @@ export async function GET() {
 
 /* POST — upload one image at a given index */
 export async function POST(req: NextRequest) {
-  const form  = await req.formData();
-  const index = Number(form.get('index'));
-  const file  = form.get('file') as File | null;
-  if (!file || isNaN(index)) return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
+  try {
+    const form  = await req.formData();
+    const index = Number(form.get('index'));
+    const file  = form.get('file') as File | null;
+    if (!file || isNaN(index)) return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
 
-  const ext      = file.name.split('.').pop();
-  const filename = `offer_${index}.${ext}`;
-  const buf      = Buffer.from(await file.arrayBuffer());
-  await writeFile(path.join(UPLOAD, filename), buf);
+    const ext      = file.name.split('.').pop();
+    const filename = `offer_${index}.${ext}`;
+    const buf      = Buffer.from(await file.arrayBuffer());
+    await writeFile(path.join(UPLOAD, filename), buf);
 
-  const meta = await readMeta();
-  const offers: (string | null)[] = meta.offers ?? new Array(4).fill(null);
-  offers[index] = filename;
-  meta.offers = offers;
-  await writeMeta(meta);
-  revalidatePath('/');
-  return NextResponse.json({ success: true, filename });
+    const meta = await readMeta();
+    const offers: (string | null)[] = meta.offers ?? new Array(4).fill(null);
+    offers[index] = filename;
+    meta.offers = offers;
+    await writeMeta(meta);
+    revalidatePath('/');
+    return NextResponse.json({ success: true, filename });
+  } catch (err: any) {
+    console.error('[upload/offers] Error details:', err);
+    const errorMessage = err?.message || 'Upload failed';
+    const isVercelReadOnly = errorMessage.includes('read-only file system') || err?.code === 'EROFS';
+    
+    return NextResponse.json({ 
+      error: isVercelReadOnly ? 'Vercel Deployment Error: Cannot write to file system. Please use a database or Vercel Blob.' : 'Upload failed',
+      details: errorMessage,
+      code: err?.code
+    }, { status: 500 });
+  }
 }
 
 /* DELETE ?index=N — reset slot to default */
