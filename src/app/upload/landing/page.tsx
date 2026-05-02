@@ -1204,10 +1204,19 @@ function HeaderEditor() {
     setNavItems(prev => prev.map((item, idx) => idx === i ? { ...item, label: val } : item));
 
   const removeTab = (i: number) => {
-    if (!confirm(`Remove tab "${navItems[i].label}"?`)) return;
-    setNavItems(prev => prev.filter((_, idx) => idx !== i));
-    if (expandedTab === i) setExpandedTab(null);
-    else if (expandedTab !== null && expandedTab > i) setExpandedTab(expandedTab - 1);
+    const label = navItems[i]?.label || 'this tab';
+    if (!window.confirm(`Remove tab "${label}"?`)) return;
+    
+    setNavItems(prev => {
+      const next = prev.filter((_, idx) => idx !== i);
+      return next;
+    });
+
+    if (expandedTab === i) {
+      setExpandedTab(null);
+    } else if (expandedTab !== null && expandedTab > i) {
+      setExpandedTab(expandedTab - 1);
+    }
   };
 
   const addTab = () => {
@@ -1316,7 +1325,7 @@ function HeaderEditor() {
       {/* Tab list */}
       <div className="space-y-3">
         {navItems.map((item, tabIdx) => (
-          <div key={tabIdx} className="border border-gray-100 rounded-xl overflow-hidden bg-white shadow-sm">
+          <div key={item.slug || tabIdx} className="border border-gray-100 rounded-xl overflow-hidden bg-white shadow-sm">
             {/* Tab row */}
             <div className="flex items-center gap-3 px-5 py-3">
               {/* Drag handle visual */}
@@ -1339,9 +1348,12 @@ function HeaderEditor() {
                 </button>
               )}
 
-              {/* Remove tab */}
               <button
-                onClick={() => removeTab(tabIdx)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  removeTab(tabIdx);
+                }}
                 className="w-7 h-7 rounded-full bg-rose-50 hover:bg-rose-400 text-rose-400 hover:text-white flex items-center justify-center text-xs font-bold transition-all"
                 title="Remove tab"
               >
