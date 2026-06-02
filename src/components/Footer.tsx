@@ -34,7 +34,7 @@ const YouTubeIcon = () => (
 
 export default function Footer() {
   return (
-    <footer className="bg-[#041d36] text-white pt-16 pb-8 font-sans">
+    <footer className="bg-[#041d36] text-white pt-16 pb-8 font-sans overflow-x-clip w-full max-w-[100vw]">
       <div className="max-w-[1400px] mx-auto px-6 xl:px-12">
         {/* Top Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">

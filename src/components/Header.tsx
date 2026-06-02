@@ -106,9 +106,9 @@ export default function Header() {
       {/* ══════════════════════════════════════════════════════
           WHITE TOP SECTION   — scrolls away naturally
       ══════════════════════════════════════════════════════ */}
-      <div className="bg-white hidden lg:block">
+      <div className="bg-white hidden lg:block overflow-x-clip w-full max-w-[100vw]">
         {/* pl-[120px] leaves space for the logo icon that overlaps from below */}
-        <div className="flex items-end h-[76px] pl-[105px] xl:pl-[120px] pr-4 xl:pr-10 pb-[10px]">
+        <div className="flex items-end h-[76px] pl-[120px] xl:pl-[130px] pr-4 xl:pr-10 pb-[10px]">
 
           {/* Brand */}
           <Link href="/" className="flex items-center shrink-0 translate-y-2.5">
@@ -168,7 +168,7 @@ export default function Header() {
           Logo extends 85% into white section above; only the logo
           shrinks on scroll — zero other animation.
       ══════════════════════════════════════════════════════ */}
-      <nav className="sticky top-0 z-50 bg-navy h-[46px] hidden lg:flex items-center px-10 overflow-visible">
+      <nav className="sticky top-0 z-50 bg-navy h-[46px] hidden lg:flex items-center px-10 overflow-x-clip w-full max-w-[100vw]">
 
         {/* Logo: position absolute, 75px = 85% in white / 15% in blue.
             top = -(75 * 0.85) = -63.75 ≈ -[64px]

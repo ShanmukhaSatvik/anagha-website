@@ -29,7 +29,7 @@ export default async function Home() {
   return (
     <>
       <Header />
-      <main className="flex flex-col gap-y-8 md:gap-y-12 pb-8 md:pb-12">
+      <main className="flex flex-col gap-y-8 md:gap-y-12 pb-8 md:pb-12 overflow-x-clip w-full max-w-[100vw]">
         <Hero />
         <Categories
           goldLive={meta.goldCategories || []}
