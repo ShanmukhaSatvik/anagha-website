@@ -244,7 +244,7 @@ export default function JewelleryEditor() {
       </main>
 
       <footer className="py-8 text-center text-gray-400 text-[10px] tracking-widest uppercase border-t border-gray-50/50">
-        © 2026 Sri Sresta Administrative Portal
+        © 2026 Anagha Administrative Portal
       </footer>
     </div>
   );

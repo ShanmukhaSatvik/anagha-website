@@ -123,7 +123,7 @@ export default function AdminHome() {
       </main>
       
       <footer className="py-8 text-center text-gray-400 text-xs tracking-widest uppercase border-t border-gray-100">
-        © 2026 Sri Sresta Administrative Portal
+        © 2026 Anagha Administrative Portal
       </footer>
     </div>
   );

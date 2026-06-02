@@ -59,8 +59,8 @@ export default function ContactUsPage() {
                   <p className="text-gray-400">or</p>
                   <p>
                     Write to us at{' '}
-                    <a href="mailto:cs@srisresta.com" className="text-[#4a4a4a] hover:underline">
-                      cs@srisresta.com
+                    <a href="mailto:an@anagha.com" className="text-[#4a4a4a] hover:underline">
+                      an@anagha.com
                     </a>
                   </p>
                 </div>
@@ -88,14 +88,14 @@ export default function ContactUsPage() {
                 <div className="space-y-2 text-[14px] text-[#4a4a4a] leading-relaxed">
                   <p>
                     For all corporate sales related queries please write to us at{' '}
-                    <a href="mailto:corporate.sales@srisresta.com" className="text-[#4a4a4a] hover:underline">
-                      corporate.sales@srisresta.com
+                    <a href="mailto:corporate.sales@anagha.com" className="text-[#4a4a4a] hover:underline">
+                      corporate.sales@anagha.com
                     </a>
                   </p>
                   <p>
                     For bulk enquiries or sales associations please contact{' '}
-                    <a href="mailto:sales@srisresta.com" className="text-[#4a4a4a] hover:underline">
-                      sales@srisresta.com
+                    <a href="mailto:sales@anagha.com" className="text-[#4a4a4a] hover:underline">
+                      sales@anagha.com
                     </a>
                   </p>
                 </div>
@@ -110,7 +110,7 @@ export default function ContactUsPage() {
                       <PinIcon />
                       <span className="text-[#4a4a4a] font-semibold">Hyderabad</span>
                     </div>
-                    <p>Sri Sresta Jewellery and Lifestyle Limited</p>
+                    <p>Anagha Jewellery and Lifestyle Limited</p>
                     <p>No. 8-2-293/82/A/270, Road No. 36,</p>
                     <p>Jubilee Hills, Hyderabad – 500033</p>
                     <p>Telangana, India</p>
@@ -120,7 +120,7 @@ export default function ContactUsPage() {
                       <PinIcon />
                       <span className="text-[#4a4a4a] font-semibold">Mumbai</span>
                     </div>
-                    <p>Sri Sresta Jewellery and Lifestyle Limited</p>
+                    <p>Anagha Jewellery and Lifestyle Limited</p>
                     <p>302, Dhantak Plaza, Makwana Road,</p>
                     <p>Marol, Andheri (East)</p>
                     <p>Mumbai-59</p>

@@ -3,7 +3,7 @@ import Footer from '@/components/Footer';
 import JewelleryListing from '@/components/JewelleryListing';
 
 export const metadata = {
-  title: 'All Jewellery | Sri Sresta',
+  title: 'All Jewellery | Anagha',
   description: 'Explore our complete collection of exquisite jewellery.',
 };
 

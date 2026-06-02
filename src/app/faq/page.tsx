@@ -7,14 +7,14 @@ import Footer from '@/components/Footer';
 
 const FAQ_DATA = [
   {
-    section: 'About Sri Sresta',
+    section: 'About Anagha',
     items: [
       {
-        q: 'Who are we? What makes Sri Sresta different?',
-        a: "Sri Sresta is different because we offer you an exquisite range of fine jewellery designs from India and a unique and hassle-free online shopping experience that you are sure to enjoy.",
+        q: 'Who are we? What makes Anagha different?',
+        a: "Anagha is different because we offer you an exquisite range of fine jewellery designs from India and a unique and hassle-free online shopping experience that you are sure to enjoy.",
       },
       {
-        q: 'Where is Sri Sresta located?',
+        q: 'Where is Anagha located?',
         a: "We are located in Hyderabad, Telangana. We design and manufacture all our jewellery in India.",
       },
       {
@@ -27,7 +27,7 @@ const FAQ_DATA = [
       },
       {
         q: 'Do you sell gift cards or gift certificates?',
-        a: "You may contact our Customer Delight team at 18004190066 or cs@srisresta.com and they will help you with a customized gift card.",
+        a: "You may contact our Customer Delight team at 18004190066 or an@anagha.com and they will help you with a customized gift card.",
       },
     ],
   },
@@ -35,8 +35,8 @@ const FAQ_DATA = [
     section: 'Delivery',
     items: [
       {
-        q: 'How much does it cost to have a Sri Sresta product delivered to my home?',
-        a: "Sri Sresta provides free shipping on all items within India.",
+        q: 'How much does it cost to have a Anagha product delivered to my home?',
+        a: "Anagha provides free shipping on all items within India.",
       },
       {
         q: 'What is the estimated delivery time?',
@@ -73,10 +73,10 @@ const FAQ_DATA = [
       },
       {
         q: 'What is your Exchange and Buy-back Policy?',
-        a: "We offer a Lifetime Exchange and Buy-back on all purchases made from Sri Sresta, within India. The product along with the original product certificate can be returned for buy-back or exchanged based on its current market value, with deductions towards making charges.",
+        a: "We offer a Lifetime Exchange and Buy-back on all purchases made from Anagha, within India. The product along with the original product certificate can be returned for buy-back or exchanged based on its current market value, with deductions towards making charges.",
       },
       {
-        q: 'Does Sri Sresta deliver internationally?',
+        q: 'Does Anagha deliver internationally?',
         a: "Currently, we take orders for delivery only within India.",
       },
     ],
@@ -93,12 +93,12 @@ const FAQ_DATA = [
         a: "Yes, we have a selection of chains. After selecting a pendant, click on Buy Now. In the shopping bag, you will find an option to browse for chains. Note: the price near the pendant is for the pendant only.",
       },
       {
-        q: 'Does Sri Sresta sell Conflict Free diamonds?',
-        a: "Absolutely. Sri Sresta uses only conflict-free diamonds obtained from legitimate sources certified through the worldwide recognized Kimberley Process Certification Scheme (KPCS).",
+        q: 'Does Anagha sell Conflict Free diamonds?',
+        a: "Absolutely. Anagha uses only conflict-free diamonds obtained from legitimate sources certified through the worldwide recognized Kimberley Process Certification Scheme (KPCS).",
       },
       {
         q: 'Is my jewellery authentic and certified?',
-        a: "All diamond and gemstone jewellery from Sri Sresta is certified by SGL, IGI, GIA or HKD. All gold jewellery is BIS hallmarked, some of the most respected and trusted grading bodies in the world.",
+        a: "All diamond and gemstone jewellery from Anagha is certified by SGL, IGI, GIA or HKD. All gold jewellery is BIS hallmarked, some of the most respected and trusted grading bodies in the world.",
       },
       {
         q: 'Are your prices lower than a local jewellery store?',
@@ -127,7 +127,7 @@ const FAQ_DATA = [
       },
       {
         q: 'How do I track my order after it has been shipped?',
-        a: "Please log in to your Sri Sresta account and track your order in the Order History section of your account.",
+        a: "Please log in to your Anagha account and track your order in the Order History section of your account.",
       },
     ],
   },
@@ -135,16 +135,16 @@ const FAQ_DATA = [
     section: 'Payments',
     items: [
       {
-        q: 'How do I make a payment for a Sri Sresta purchase?',
-        a: "Sri Sresta offers multiple payment methods: Credit Card, Debit Card, Net Banking, UPI, and Cash on Delivery. All card details are protected using SSL encryption technology.",
+        q: 'How do I make a payment for a Anagha purchase?',
+        a: "Anagha offers multiple payment methods: Credit Card, Debit Card, Net Banking, UPI, and Cash on Delivery. All card details are protected using SSL encryption technology.",
       },
       {
         q: 'Are there any hidden costs?',
         a: "There are no hidden costs or additional shipping charges. The total price mentioned on the product page is the final price. What you see is what you pay.",
       },
       {
-        q: 'Are prices on srisresta.com subject to change?',
-        a: "Prices on srisresta.com are subject to change without notice. Please expect to be charged the price listed on the day of purchase.",
+        q: 'Are prices on anagha.com subject to change?',
+        a: "Prices on anagha.com are subject to change without notice. Please expect to be charged the price listed on the day of purchase.",
       },
       {
         q: 'How do I pay using a Credit or Debit card and is it safe?',
@@ -169,7 +169,7 @@ const FAQ_DATA = [
       },
       {
         q: 'Do you match prices if an item goes down in price later?',
-        a: "All sale prices are final and Sri Sresta does not price match. All our pricing is calculated using current precious metal and gem prices to give you the best possible value.",
+        a: "All sale prices are final and Anagha does not price match. All our pricing is calculated using current precious metal and gem prices to give you the best possible value.",
       },
       {
         q: 'Can I take a ring to my local jeweler to have it resized?',
@@ -190,15 +190,15 @@ const FAQ_DATA = [
       },
       {
         q: 'Lifetime Exchange and Buy-Back Policy',
-        a: "We offer a Lifetime Exchange and Buy-Back on all purchases from Sri Sresta, within India. The product along with the original certificate can be returned or exchanged for its current market value, with deductions towards making charges.",
+        a: "We offer a Lifetime Exchange and Buy-Back on all purchases from Anagha, within India. The product along with the original certificate can be returned or exchanged for its current market value, with deductions towards making charges.",
       },
       {
         q: 'Free Shipping Policy',
-        a: "Sri Sresta provides free delivery and shipping on all items within India. Same Day Shipping products are delivered within 2 to 10 business days; Made-to-Order products within 2 to 19 business days (excluding Sundays and festive holidays).",
+        a: "Anagha provides free delivery and shipping on all items within India. Same Day Shipping products are delivered within 2 to 10 business days; Made-to-Order products within 2 to 19 business days (excluding Sundays and festive holidays).",
       },
       {
         q: 'Transit Insurance',
-        a: "All goods will be fully insured by Sri Sresta until they reach you, so your purchase is 100% safe.",
+        a: "All goods will be fully insured by Anagha until they reach you, so your purchase is 100% safe.",
       },
       {
         q: '100% Refund Guarantee',
@@ -218,7 +218,7 @@ const FAQ_DATA = [
         a: "Yes, all our solitaires are certified by renowned institutions like GIA (Gemological Institute of America) and IGI (International Gemological Institute), ensuring authenticity and quality.",
       },
       {
-        q: 'Does Sri Sresta use Conflict Free diamonds?',
+        q: 'Does Anagha use Conflict Free diamonds?',
         a: "Yes. We source diamonds ethically from legitimate sources certified through the Kimberley Process Certification Scheme (KPCS), ensuring they are conflict-free and responsibly sourced.",
       },
       {
@@ -235,12 +235,12 @@ const FAQ_DATA = [
     section: 'Gift Card',
     items: [
       {
-        q: 'What are the terms and conditions of the Sri Sresta Gift Card?',
+        q: 'What are the terms and conditions of the Anagha Gift Card?',
         a: "Gift cards are valid for 6 months from the date of purchase. Multiple Gift Cards can be used in a single transaction and combined with other payment types. For returns, money will be credited back to the gift card. Gift cards cannot be replaced, refunded or exchanged for cash.",
       },
       {
         q: 'How do I redeem a Gift Card?',
-        a: "To redeem your gift card on srisresta.com, use the Gift Card option on the payment page and enter the card number and card pin while placing your order. Any balance left can be reused within the validity period.",
+        a: "To redeem your gift card on anagha.com, use the Gift Card option on the payment page and enter the card number and card pin while placing your order. Any balance left can be reused within the validity period.",
       },
       {
         q: 'Can I use multiple Gift Cards in one order?',
@@ -252,7 +252,7 @@ const FAQ_DATA = [
       },
       {
         q: 'What happens if my Gift Card is lost or stolen?',
-        a: "Sri Sresta is not responsible if the gift card is lost, stolen or used without permission. The gift cards cannot be replaced, refunded or exchanged for cash.",
+        a: "Anagha is not responsible if the gift card is lost, stolen or used without permission. The gift cards cannot be replaced, refunded or exchanged for cash.",
       },
     ],
   },
@@ -261,7 +261,7 @@ const FAQ_DATA = [
     items: [
       {
         q: "What is the Big Gold Upgrade?",
-        a: "The Big Gold Upgrade is an offer by Sri Sresta where you may get an instant 1% benefit over the current market gold rate on all purities by exchanging your old gold.",
+        a: "The Big Gold Upgrade is an offer by Anagha where you may get an instant 1% benefit over the current market gold rate on all purities by exchanging your old gold.",
       },
       {
         q: 'Where can I avail the Big Gold Upgrade?',
@@ -273,11 +273,11 @@ const FAQ_DATA = [
       },
       {
         q: 'What is the process to avail the Big Gold Upgrade?',
-        a: "Visit a store with your Old Gold. The gold purity will be assessed using our Karatmeters. Once all parties agree on purity, weight and valuation, the offered value will be credited to your Sri Sresta account as Blue Credits.",
+        a: "Visit a store with your Old Gold. The gold purity will be assessed using our Karatmeters. Once all parties agree on purity, weight and valuation, the offered value will be credited to your Anagha account as Blue Credits.",
       },
       {
         q: 'Can I return any product bought with Big Gold Upgrade?',
-        a: "Yes. Any product bought with the Big Gold Upgrade is eligible for Lifetime Exchange, Buyback and 30-Day Free Returns as per Sri Sresta standard terms.",
+        a: "Yes. Any product bought with the Big Gold Upgrade is eligible for Lifetime Exchange, Buyback and 30-Day Free Returns as per Anagha standard terms.",
       },
     ],
   },

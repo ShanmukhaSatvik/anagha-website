@@ -3,8 +3,8 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Shipping & Returns Policy | Sri Sresta',
-  description: 'Learn about Sri Sresta\'s 30-day money back policy, lifetime exchange, free shipping, and returns process.',
+  title: 'Shipping & Returns Policy | Anagha',
+  description: 'Learn about Anagha\'s 30-day money back policy, lifetime exchange, free shipping, and returns process.',
 };
 
 export default function ShippingReturnsPage() {
@@ -45,7 +45,7 @@ export default function ShippingReturnsPage() {
               <div>
                 <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2">30-day money back policy*</h2>
                 <p className="mb-3">
-                  Once the product is returned under our 30-day money back policy (* not applicable on Solitaires above INR 3 lakh, Coins and Customized orders) 100% refund will be credited to your Sri Sresta account.
+                  Once the product is returned under our 30-day money back policy (* not applicable on Solitaires above INR 3 lakh, Coins and Customized orders) 100% refund will be credited to your Anagha account.
                 </p>
                 <ul className="space-y-1 pl-1">
                   <li>- <strong>Blue Cash</strong> — You can refund the amount to your last payment sources or bank account as the case may be.</li>
@@ -62,18 +62,18 @@ export default function ShippingReturnsPage() {
 
               {/* How to return */}
               <div>
-                <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2">How do I return the product to Sri Sresta within 30 days?</h2>
+                <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2">How do I return the product to Anagha within 30 days?</h2>
                 <ol className="list-decimal pl-5 space-y-2">
                   <li>Select the item in your order that you want to return.</li>
                   <li>Ready your jewellery in the original packing material along with the certificate.
                     <ol className="list-[lower-alpha] pl-5 mt-1.5 space-y-1.5">
                       <li>If the product value is less than Rs. 35,000, then please hand over the product to the person coming for pickup.</li>
-                      <li>If the product value is Rs. 35,000 or above and a Sri Sresta employee is picking the product, then please hand over the product to the person coming for pickup.</li>
+                      <li>If the product value is Rs. 35,000 or above and a Anagha employee is picking the product, then please hand over the product to the person coming for pickup.</li>
                       <li>If the product value is Rs. 35,000 or above and if the return pickup has been arranged via one of our 3rd party logistics partners; first you will receive a tamper-proof packet from us. Please secure your jewellery in it and seal it before the pickup person arrives at your doorstep. Once sealed, the packet cannot be opened unless destroyed. We will arrange for the pickup once you have received the tamper-proof packet. On the date when the pickup is scheduled, please hand over the packet with the product to the person.</li>
                     </ol>
                   </li>
                   <li>Please collect an acknowledgement (pickup receipt on paper / photo of tracking number / SMS confirmation of pickup).</li>
-                  <li>Once we receive the product at our warehouse, your refund will be processed to your Sri Sresta account in 2–3 working days after a quality check.</li>
+                  <li>Once we receive the product at our warehouse, your refund will be processed to your Anagha account in 2–3 working days after a quality check.</li>
                 </ol>
               </div>
 
@@ -81,7 +81,7 @@ export default function ShippingReturnsPage() {
               <div>
                 <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2">Lifetime Exchange &amp; Buy-Back Policy</h2>
                 <p className="mb-3">
-                  We offer Lifetime Exchange &amp; Buy Back on all purchases* made from Sri Sresta within India, applicable after the expiry of return period under the 30-day money back policy. You may avail Lifetime Exchange &amp; Buy Back by presenting your purchase at a store or raising a request online. The exchange/buy back value will be calculated as per the current market value on the day the exchange request is raised. ₹500 processing charges for shipping and handling, along with any applicable deductions, will be applicable if the LTE/LBB is initiated online. If the product is handed over at the store, ₹500 processing charges will not be applicable.
+                  We offer Lifetime Exchange &amp; Buy Back on all purchases* made from Anagha within India, applicable after the expiry of return period under the 30-day money back policy. You may avail Lifetime Exchange &amp; Buy Back by presenting your purchase at a store or raising a request online. The exchange/buy back value will be calculated as per the current market value on the day the exchange request is raised. ₹500 processing charges for shipping and handling, along with any applicable deductions, will be applicable if the LTE/LBB is initiated online. If the product is handed over at the store, ₹500 processing charges will not be applicable.
                 </p>
                 <p className="mb-3">
                   If you received a discount or any gift while making your purchase, we will deduct the equivalent value, as applicable. You can also choose to return the gift received.
@@ -95,7 +95,7 @@ export default function ShippingReturnsPage() {
               <div>
                 <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2">Lifetime Exchange</h2>
                 <p>
-                  If you choose to avail Lifetime Exchange on your purchase, the final exchange value will be loaded as Blue Credits in your Sri Sresta account after Quality Check (QC). The Blue Credits will remain valid for 365 days and can be used to purchase jewellery (except Coins and Solitaires) with us. You cannot encash the amount.
+                  If you choose to avail Lifetime Exchange on your purchase, the final exchange value will be loaded as Blue Credits in your Anagha account after Quality Check (QC). The Blue Credits will remain valid for 365 days and can be used to purchase jewellery (except Coins and Solitaires) with us. You cannot encash the amount.
                 </p>
               </div>
 
@@ -103,7 +103,7 @@ export default function ShippingReturnsPage() {
               <div>
                 <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2">Lifetime Buy-Back</h2>
                 <p>
-                  If you choose to avail Lifetime Buy Back on your purchase, the final buy-back value will be loaded as Blue Cash in your Sri Sresta account after Quality Check (QC). The Blue Cash will remain valid for 365 days and can be used to purchase anything with us or be encashed.
+                  If you choose to avail Lifetime Buy Back on your purchase, the final buy-back value will be loaded as Blue Cash in your Anagha account after Quality Check (QC). The Blue Cash will remain valid for 365 days and can be used to purchase anything with us or be encashed.
                 </p>
               </div>
 
@@ -111,10 +111,10 @@ export default function ShippingReturnsPage() {
               <div>
                 <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2">Note</h2>
                 <ul className="list-disc pl-5 space-y-1.5">
-                  <li>You will be required to visit the Order History page within 15 days of receiving the valuation to approve or reject the calculation. Once you accept the valuation, the amount will be refunded to your Sri Sresta account. In case of non-approval beyond 15 days, the amount will be auto-refunded to your Sri Sresta account. In case of rejection, we will ship the jewellery back to you.</li>
+                  <li>You will be required to visit the Order History page within 15 days of receiving the valuation to approve or reject the calculation. Once you accept the valuation, the amount will be refunded to your Anagha account. In case of non-approval beyond 15 days, the amount will be auto-refunded to your Anagha account. In case of rejection, we will ship the jewellery back to you.</li>
                   <li>Based on our quality inspection, we reserve the right to change the exchange/buy back amount of the product.</li>
-                  <li>For Sri Sresta products not bought from Sri Sresta Stores/Website/App, an additional deduction of 5% would be charged over and above the above mentioned Lifetime Exchange &amp; Buy Back policy.</li>
-                  <li>Sri Sresta products bought from non-Sri Sresta Offline Stores will not be eligible for exchange/buy back.</li>
+                  <li>For Anagha products not bought from Anagha Stores/Website/App, an additional deduction of 5% would be charged over and above the above mentioned Lifetime Exchange &amp; Buy Back policy.</li>
+                  <li>Anagha products bought from non-Anagha Offline Stores will not be eligible for exchange/buy back.</li>
                 </ul>
               </div>
 
@@ -127,7 +127,7 @@ export default function ShippingReturnsPage() {
               {/* Transit Insurance */}
               <div>
                 <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2">Transit Insurance</h2>
-                <p>All goods will be fully insured by Sri Sresta until they reach you, so your purchase is 100% safe.</p>
+                <p>All goods will be fully insured by Anagha until they reach you, so your purchase is 100% safe.</p>
               </div>
 
               {/* Customer Delight */}
@@ -137,12 +137,12 @@ export default function ShippingReturnsPage() {
                 <p className="mb-2">We are listening and happy to do what we can to improve. Please let us know.</p>
                 <p className="mb-2">
                   We can be reached at{' '}
-                  <a href="mailto:cs@srisresta.com" className="underline">cs@srisresta.com</a>
+                  <a href="mailto:an@anagha.com" className="underline">an@anagha.com</a>
                   {' '}or at 18004190066 between 9 am–10 pm, 7 days a week.
                 </p>
                 <p className="mb-1">Our registered office address is:</p>
                 <p className="leading-[1.7]">
-                  Sri Sresta Jewellery and Lifestyle Limited<br />
+                  Anagha Jewellery and Lifestyle Limited<br />
                   No. 8-2-293/82/A/270, Road No. 36,<br />
                   Jubilee Hills, Hyderabad – 500033<br />
                   Telangana, India

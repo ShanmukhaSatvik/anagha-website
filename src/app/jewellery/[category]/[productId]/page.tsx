@@ -5,7 +5,7 @@ import { PRODUCTS } from '@/lib/data';
 import { notFound } from 'next/navigation';
 
 export const metadata = {
-  title: 'Product Detail | Sri Sresta',
+  title: 'Product Detail | Anagha',
   description: 'View details of our exquisite jewellery collection.',
 };
 

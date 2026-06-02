@@ -47,7 +47,7 @@ export default function Footer() {
               <li><Link href="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
               <li className="flex items-center gap-2">
                 <MailIcon />
-                <span>cs@srisresta.com</span>
+                <span>an@anagha.com</span>
               </li>
             </ul>
           </div>
@@ -90,7 +90,7 @@ export default function Footer() {
               <a href="#" aria-label="WhatsApp" className="w-8 h-8 rounded-full bg-white flex items-center justify-center hover:bg-gray-200 transition-colors">
                 <WhatsAppIcon />
               </a>
-              <a href="#" aria-label="Instagram" className="w-8 h-8 rounded-full bg-white flex items-center justify-center hover:bg-gray-200 transition-colors">
+              <a href="https://www.instagram.com/anaghasilver_92.5?igsh=dnRiOTY4YWlzb2oy" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-8 h-8 rounded-full bg-white flex items-center justify-center hover:bg-gray-200 transition-colors">
                 <InstagramIcon />
               </a>
               <a href="#" aria-label="YouTube" className="w-8 h-8 rounded-full bg-white flex items-center justify-center hover:bg-gray-200 transition-colors">
@@ -102,7 +102,7 @@ export default function Footer() {
 
           {/* Copyright */}
           <div className="text-right">
-            <p className="text-[12px] text-gray-400">© 2026 Sri Sresta. All Rights Reserved.</p>
+            <p className="text-[12px] text-gray-400">© 2026 Anagha. All Rights Reserved.</p>
             <p className="text-[11px] text-gray-500 mt-1">CIN: L72900KA2011PLC059678</p>
           </div>
 

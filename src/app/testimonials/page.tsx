@@ -3,49 +3,49 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Testimonials | Sri Sresta',
-  description: 'Read what our customers have to say about their experience with Sri Sresta.',
+  title: 'Testimonials | Anagha',
+  description: 'Read what our customers have to say about their experience with Anagha.',
 };
 
 const REVIEWS = [
   {
     name: 'Akanksha Khanna, 27',
-    text: 'Delighted with my engagement ring from Sri Sresta! It’s my dream ring, fits perfectly and is stunning to look at. Thanks, Sri Sresta, for helping us find the perfect symbol of love!',
+    text: 'Delighted with my engagement ring from Anagha! It’s my dream ring, fits perfectly and is stunning to look at. Thanks, Anagha, for helping us find the perfect symbol of love!',
     img: '/images/testimonials/t1.png',
   },
   {
     name: 'Diksha Singh, 29',
-    text: 'I was worried about finding good quality fine jewellery pieces online, but Sri Sresta’s customer service gave me full assurance and the delivery was super quick. Their jewellery is certified.',
+    text: 'I was worried about finding good quality fine jewellery pieces online, but Anagha’s customer service gave me full assurance and the delivery was super quick. Their jewellery is certified.',
     img: '/images/testimonials/t2.png',
   },
   {
     name: 'Nutan Mishra, 33',
-    text: 'I got a Nazariya for my baby boy from Sri Sresta. It’s so cute seeing it on my little one’s wrist, and it gives me a sense of security knowing it’s there. Thanks, Sri Sresta, for making such lovely pieces!',
+    text: 'I got a Nazariya for my baby boy from Anagha. It’s so cute seeing it on my little one’s wrist, and it gives me a sense of security knowing it’s there. Thanks, Anagha, for making such lovely pieces!',
     img: '/images/testimonials/t3.png',
   },
   {
     name: 'Divya Mishra, 26',
-    text: 'On Valentine’s Day, my husband gifted me a necklace from Sri Sresta, and I haven’t taken it off ever since. Everyone asks me where it’s from, and I just LOVE how nice it looks on me.',
+    text: 'On Valentine’s Day, my husband gifted me a necklace from Anagha, and I haven’t taken it off ever since. Everyone asks me where it’s from, and I just LOVE how nice it looks on me.',
     img: '/images/testimonials/t4.png',
   },
   {
     name: 'Anuska Ananya, 24',
-    text: 'Sri Sresta is my go-to place for jewellery. I love that I can wear their jewellery to work, dates, parties and brunches; it goes with everything and makes my outfits look stylish and trendy.',
+    text: 'Anagha is my go-to place for jewellery. I love that I can wear their jewellery to work, dates, parties and brunches; it goes with everything and makes my outfits look stylish and trendy.',
     img: '/images/testimonials/t6.png',
   },
   {
     name: 'Priya Singh, 34',
-    text: 'I had trouble finding jewellery that suited my minimalist style, but Sri Sresta’s sleek and elegant designs were exactly what I was looking for. They have pieces for every style and occasion.',
+    text: 'I had trouble finding jewellery that suited my minimalist style, but Anagha’s sleek and elegant designs were exactly what I was looking for. They have pieces for every style and occasion.',
     img: '/images/testimonials/t5.png',
   },
   {
     name: 'Avni Sharma, 27',
-    text: 'Me and my friends love Sri Sresta’s unique designs, especially their enamel jewellery. I love how their enamel pieces add a pop of colour to my outfits. Their jewellery is stylish, modern.',
+    text: 'Me and my friends love Anagha’s unique designs, especially their enamel jewellery. I love how their enamel pieces add a pop of colour to my outfits. Their jewellery is stylish, modern.',
     img: '/images/testimonials/t7.png',
   },
   {
     name: 'Sonaalee Semwal, 28',
-    text: 'I bought a bracelet from Sri Sresta as a birthday gift from me to me. I love how versatile it is. If you want to buy yourself a gift, Sri Sresta is the place to go!',
+    text: 'I bought a bracelet from Anagha as a birthday gift from me to me. I love how versatile it is. If you want to buy yourself a gift, Anagha is the place to go!',
     img: '/images/testimonials/t8.png',
   }
 ];

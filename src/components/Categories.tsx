@@ -113,7 +113,7 @@ interface Props {
 }
 
 export default function Categories({ goldLive, silverLive, goldPlan, silverPlan }: Props) {
-  const [tab, setTab] = useState<'labgrown' | 'silver'>('labgrown');
+  const [tab, setTab] = useState<'labgrown' | 'silver'>('silver');
 
   const goldItems   = buildItems(GOLD_DEFAULTS,   goldLive);
   const silverItems = buildItems(SILVER_DEFAULTS, silverLive);
@@ -130,7 +130,7 @@ export default function Categories({ goldLive, silverLive, goldPlan, silverPlan 
         {/* ── Tab Switcher ── */}
         <div className="flex items-center justify-center mb-10">
           <div className="relative inline-flex rounded-full bg-gray-100 p-1.5 gap-1">
-            {/* Lab Grown Diamonds tab */}
+            {/* Lab Grown Diamonds tab
             <button
               onClick={() => setTab('labgrown')}
               className={`relative z-10 px-6 py-3 rounded-full text-sm font-bold tracking-wide uppercase transition-all duration-300
@@ -142,6 +142,7 @@ export default function Categories({ goldLive, silverLive, goldPlan, silverPlan 
             >
               Lab Grown Diamonds
             </button>
+            */}
 
             {/* Silver tab */}
             <button

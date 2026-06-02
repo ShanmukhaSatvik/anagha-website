@@ -608,12 +608,12 @@ export const CATEGORY_DEFAULTS = {
   ]
 };
 
-export const PLAN_DEFAULTS = {
-  gold: {
+export const PLAN_DEFAULTS: Record<string, any> = {
+/*  gold: {
     badge: 'Lab Grown Diamonds', installment: '10 + 1', suffix: 'Monthly Plan',
     desc: 'Pay 10 installments, and get 100% off on the last one!',
     btnText: 'Enroll Now', btnLink: '#',
-  },
+  }, */
   silver: {
     badge: 'Silver Mine', installment: '10 + 1', suffix: 'Monthly Plan',
     desc: 'Pay 10 installments, and get 100% off on the last one!',
@@ -635,56 +635,56 @@ export const STANDALONE_BANNER_DEFAULT = '/images/banner_collection.webp';
 export const TESTIMONIAL_REVIEWS = [
   {
     name: 'Akanksha Khanna, 27',
-    text: 'Delighted with my engagement ring from Sri Sresta! It’s my dream ring, fits perfectly and is stunning to look at. Thanks, Sri Sresta, for helping us find the perfect symbol of love!',
+    text: 'Delighted with my engagement ring from Anagha! It’s my dream ring, fits perfectly and is stunning to look at. Thanks, Anagha, for helping us find the perfect symbol of love!',
     img: '/images/testimonials/t1.png',
     rotate: 'rotate-2',
     translateY: 'translate-y-04',
   },
   {
     name: 'Diksha Singh, 29',
-    text: 'I was worried about finding good quality fine jewellery pieces online, but Sri Sresta’s customer service gave me full assurance and the delivery was super quick. Their jewellery is certified.',
+    text: 'I was worried about finding good quality fine jewellery pieces online, but Anagha’s customer service gave me full assurance and the delivery was super quick. Their jewellery is certified.',
     img: '/images/testimonials/t2.png',
     rotate: 'rotate-2',
     translateY: 'translate-y-0',
   },
   {
     name: 'Nutan Mishra, 33',
-    text: 'I got a Nazariya for my baby boy from Sri Sresta. It’s so cute seeing it on my little one’s wrist, and it gives me a sense of security knowing it’s there. Thanks, Sri Sresta, for making such lovely pieces!',
+    text: 'I got a Nazariya for my baby boy from Anagha. It’s so cute seeing it on my little one’s wrist, and it gives me a sense of security knowing it’s there. Thanks, Anagha, for making such lovely pieces!',
     img: '/images/testimonials/t3.png',
     rotate: '-rotate-2',
     translateY: '-translate-y-4',
   },
   {
     name: 'Divya Mishra, 26',
-    text: 'On Valentine’s Day, my husband gifted me a necklace from Sri Sresta, and I haven’t taken it off ever since. Everyone asks me where it’s from, and I just LOVE how nice it looks on me.',
+    text: 'On Valentine’s Day, my husband gifted me a necklace from Anagha, and I haven’t taken it off ever since. Everyone asks me where it’s from, and I just LOVE how nice it looks on me.',
     img: '/images/testimonials/t4.png',
     rotate: 'rotate-3',
     translateY: 'translate-y-6',
   },
   {
     name: 'Anuska Ananya, 24',
-    text: 'Sri Sresta is my go-to place for jewellery. I love that I can wear their jewellery to work, dates, parties and brunches; it goes with everything and makes my outfits look stylish and trendy.',
+    text: 'Anagha is my go-to place for jewellery. I love that I can wear their jewellery to work, dates, parties and brunches; it goes with everything and makes my outfits look stylish and trendy.',
     img: '/images/testimonials/t6.png',
     rotate: '-rotate-6',
     translateY: 'translate-y-2',
   },
   {
     name: 'Priya Singh, 34',
-    text: 'I had trouble finding jewellery that suited my minimalist style, but Sri Sresta’s sleek and elegant designs were exactly what I was looking for. They have pieces for every style and occasion.',
+    text: 'I had trouble finding jewellery that suited my minimalist style, but Anagha’s sleek and elegant designs were exactly what I was looking for. They have pieces for every style and occasion.',
     img: '/images/testimonials/t5.png',
     rotate: 'rotate-1',
     translateY: 'translate-y-10',
   },
   {
     name: 'Avni Sharma, 27',
-    text: 'Me and my friends love Sri Sresta’s unique designs, especially their enamel jewellery. I love how their enamel pieces add a pop of colour to my outfits. Their jewellery is stylish, modern.',
+    text: 'Me and my friends love Anagha’s unique designs, especially their enamel jewellery. I love how their enamel pieces add a pop of colour to my outfits. Their jewellery is stylish, modern.',
     img: '/images/testimonials/t7.png',
     rotate: '-rotate-3',
     translateY: '-translate-y-2',
   },
   {
     name: 'Sonaalee Semwal, 28',
-    text: 'I bought a bracelet from Sri Sresta as a birthday gift from me to me. I love how versatile it is. If you want to buy yourself a gift, Sri Sresta is the place to go!',
+    text: 'I bought a bracelet from Anagha as a birthday gift from me to me. I love how versatile it is. If you want to buy yourself a gift, Anagha is the place to go!',
     img: '/images/testimonials/t8.png',
     rotate: 'rotate-3',
     translateY: 'translate-y-4',
@@ -705,7 +705,7 @@ export const CURATED_STYLES_CARDS = [
   },
   {
     title: 'Coveted Styles',
-    desc: "A curated selection of Sri Sresta's most coveted jewels.",
+    desc: "A curated selection of Anagha's most coveted jewels.",
     images: [
       '/images/curated/bracelet_2.png',
       '/images/curated/chain_3.png',
@@ -715,7 +715,7 @@ export const CURATED_STYLES_CARDS = [
     link: '/jewellery/bracelets'
   },
   {
-    title: 'Sri Sresta Man',
+    title: 'Anagha Man',
     desc: "Shop the perfect pieces to enhance your man's unique style.",
     images: [
       '/images/curated/men_jewellery_1.png',

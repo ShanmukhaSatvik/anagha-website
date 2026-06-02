@@ -270,10 +270,10 @@ export default function UploadPage() {
         </section>
 
         {/* ── LAB GROWN DIAMONDS CATEGORIES ── */}
-        <CategoryGrid type="gold" />
+        {/* <CategoryGrid type="gold" /> */}
 
         {/* ── LAB GROWN DIAMONDS OFFER PLAN ── */}
-        <PlanEditor type="gold" />
+        {/* <PlanEditor type="gold" /> */}
 
         {/* ── SILVER CATEGORIES ── */}
         <CategoryGrid type="silver" />

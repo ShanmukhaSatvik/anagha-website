@@ -44,7 +44,7 @@ export default async function Hero() {
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
           src={src}
-          alt="Sri Sresta Hero Banner"
+          alt="Anagha Hero Banner"
           className="absolute inset-0 w-full h-full object-cover"
         />
       )}

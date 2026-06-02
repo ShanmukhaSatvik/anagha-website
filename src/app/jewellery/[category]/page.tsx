@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   const { category } = await params;
   const title = category.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
   return {
-    title: `${title} | Sri Sresta`,
+    title: `${title} | Anagha`,
     description: `Shop our exclusive collection of ${title} jewellery. Handcrafted with precision and love.`,
   };
 }

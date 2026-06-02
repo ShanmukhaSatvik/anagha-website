@@ -3,8 +3,8 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Privacy Policy | Sri Sresta',
-  description: 'Read the Sri Sresta Privacy Policy to understand how we collect, use, and protect your personal information.',
+  title: 'Privacy Policy | Anagha',
+  description: 'Read the Anagha Privacy Policy to understand how we collect, use, and protect your personal information.',
 };
 
 export default function PrivacyPolicyPage() {
@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
               <div>
                 <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2">1. Introduction</h2>
                 <p className="mb-3">
-                  We, Sri Sresta Jewellery and Lifestyle Limited ("Sri Sresta", "we", "us" or "our"), carry out our business from our retail stores and our website (www.srisresta.com) and our mobile app (collectively "Platform"). At Sri Sresta, we respect your privacy and are committed to take reasonable precautions to protect your information and comply with our obligations related to privacy.
+                  We, Anagha Jewellery and Lifestyle Limited ("Anagha", "we", "us" or "our"), carry out our business from our retail stores and our website (www.anagha.com) and our mobile app (collectively "Platform"). At Anagha, we respect your privacy and are committed to take reasonable precautions to protect your information and comply with our obligations related to privacy.
                 </p>
                 <p className="mb-3">
                   This policy ("Privacy Policy") outlines the manner in which your information is collected by us through various interactions with you on the Platform, and the manner in which the information so collected is used by us.
@@ -54,7 +54,7 @@ export default function PrivacyPolicyPage() {
                   Please note that this Privacy Policy may be amended or updated from time to time to reflect changes in our practices with respect to processing of personal data or changes in applicable law. We encourage you to read this Privacy Policy carefully, and to regularly check it to review any changes that we might make to it.
                 </p>
                 <p>
-                  By accessing the services provided by the Platform, you agree to the collection, use, sharing and storage of your information by Sri Sresta in the manner provided in this Privacy Policy.
+                  By accessing the services provided by the Platform, you agree to the collection, use, sharing and storage of your information by Anagha in the manner provided in this Privacy Policy.
                 </p>
               </div>
 
@@ -155,7 +155,7 @@ export default function PrivacyPolicyPage() {
                 <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2">8. Your Rights</h2>
                 <p className="mb-3">
                   You have the right to access or correct the personal information that we collect. You are also entitled to restrict or object, at any time, to the further processing of your personal information. You may write to us at{' '}
-                  <a href="mailto:cs@srisresta.com" className="underline">cs@srisresta.com</a>
+                  <a href="mailto:an@anagha.com" className="underline">an@anagha.com</a>
                   {' '}regarding the personal information collected by us.
                 </p>
                 <p className="mb-3">
@@ -194,7 +194,7 @@ export default function PrivacyPolicyPage() {
               <div>
                 <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2">12. Profile Deactivation</h2>
                 <p>
-                  Our Platform enables you to temporarily freeze your profile. This temporary action will leave you without a Sri Sresta account and without access to speedy checkout, information about your past orders, wishlists, and all other personalised Sri Sresta products and services.
+                  Our Platform enables you to temporarily freeze your profile. This temporary action will leave you without a Anagha account and without access to speedy checkout, information about your past orders, wishlists, and all other personalised Anagha products and services.
                 </p>
               </div>
 
@@ -202,7 +202,7 @@ export default function PrivacyPolicyPage() {
               <div>
                 <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2">13. Profile Deletion</h2>
                 <p>
-                  Our Platform enables you to request to permanently erase your Sri Sresta account. Once requested to delete, all associated information like past orders, wishlists, saved addresses, and any pending benefits will no longer be accessible to you. The Profile Deletion will require you to forfeit future account creation with the same email address, any claims to policies like Lifetime Exchange & Buyback, 30-Day Returns and Refund, and any other policies or services offered by us. In the event that your account has any open orders, payments, grievances, shipments, or instalment plans, then we may refuse or delay the deletion of your account.
+                  Our Platform enables you to request to permanently erase your Anagha account. Once requested to delete, all associated information like past orders, wishlists, saved addresses, and any pending benefits will no longer be accessible to you. The Profile Deletion will require you to forfeit future account creation with the same email address, any claims to policies like Lifetime Exchange & Buyback, 30-Day Returns and Refund, and any other policies or services offered by us. In the event that your account has any open orders, payments, grievances, shipments, or instalment plans, then we may refuse or delay the deletion of your account.
                 </p>
               </div>
 
@@ -210,8 +210,8 @@ export default function PrivacyPolicyPage() {
               <div>
                 <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2">14. Grievance Officer</h2>
                 <p>
-                  Sri Sresta has appointed a Grievance Officer for addressing complaints or grievances relating to the processing of personal data. You may reach out to us at{' '}
-                  <a href="mailto:cs@srisresta.com" className="underline">cs@srisresta.com</a>.
+                  Anagha has appointed a Grievance Officer for addressing complaints or grievances relating to the processing of personal data. You may reach out to us at{' '}
+                  <a href="mailto:an@anagha.com" className="underline">an@anagha.com</a>.
                 </p>
               </div>
 

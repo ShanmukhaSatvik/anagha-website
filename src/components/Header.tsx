@@ -64,10 +64,12 @@ export default function Header() {
           <button aria-label="Menu" className="text-navy" onClick={() => setMobileMenuOpen(true)}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
-          <img src="/images/logo_icon.png" alt="Logo" className="w-8 h-8 object-contain rounded-full border border-gray-300" />
+          <div className="w-7 h-7 rounded-full overflow-hidden border border-gray-300 flex items-center justify-center bg-white shrink-0">
+            <img src="/images/logo_icon.png" alt="Logo" className="w-full h-full object-cover scale-110" />
+          </div>
         </div>
-        <Link href="/" className="font-display text-[16px] font-bold tracking-[3px] text-navy">
-          SRI SRESTA
+        <Link href="/" className="flex items-center">
+          <Image src="/images/brand_logo.png" alt="Anagha" width={120} height={40} className="h-10 w-auto object-contain" priority />
         </Link>
         <div className="flex items-center gap-4 text-navy">
           <SearchIcon />
@@ -80,7 +82,7 @@ export default function Header() {
       {mobileMenuOpen && (
         <div className="fixed inset-0 bg-white z-[200] flex flex-col lg:hidden overflow-hidden">
           <div className="flex items-center justify-between p-4 border-b border-gray-300">
-            <span className="font-display text-[16px] font-bold tracking-[3px] text-navy">SRI SRESTA</span>
+            <Image src="/images/brand_logo.png" alt="Anagha" width={120} height={40} className="h-10 w-auto object-contain" />
             <button aria-label="Close Menu" onClick={() => setMobileMenuOpen(false)} className="text-navy p-1">
               <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
@@ -105,15 +107,12 @@ export default function Header() {
           WHITE TOP SECTION   — scrolls away naturally
       ══════════════════════════════════════════════════════ */}
       <div className="bg-white hidden lg:block">
-        {/* pl-[130px] leaves space for the 90px logo that overlaps from below */}
-        <div className="flex items-end h-[76px] pl-[110px] xl:pl-[130px] pr-4 xl:pr-10 pb-[10px]">
+        {/* pl-[120px] leaves space for the logo icon that overlaps from below */}
+        <div className="flex items-end h-[76px] pl-[105px] xl:pl-[120px] pr-4 xl:pr-10 pb-[10px]">
 
           {/* Brand */}
-          <Link
-            href="/"
-            className="font-display text-[28px] font-bold tracking-[6px] text-navy shrink-0 leading-none pb-0.5"
-          >
-            SRI SRESTA
+          <Link href="/" className="flex items-center shrink-0 translate-y-2.5">
+            <Image src="/images/brand_logo.png" alt="Anagha" width={280} height={80} className="h-[55px] xl:h-[65px] w-auto object-contain" priority />
           </Link>
 
           {/* Search — centred via auto margins */}
@@ -171,21 +170,21 @@ export default function Header() {
       ══════════════════════════════════════════════════════ */}
       <nav className="sticky top-0 z-50 bg-navy h-[46px] hidden lg:flex items-center px-10 overflow-visible">
 
-        {/* Logo: position absolute, 90px = 85% in white / 15% in blue.
-            top = -(90 * 0.85) = -76.5 ≈ -[77px]
-            On scroll: shrinks to 34px, centred in 46px bar → top = 6px  */}
+        {/* Logo: position absolute, 75px = 85% in white / 15% in blue.
+            top = -(75 * 0.85) = -63.75 ≈ -[64px]
+            On scroll: shrinks to 30px, centred in 46px bar → top = 8px  */}
         <div
-          className={`absolute left-10 z-50 transition-all duration-300 ease-in-out origin-top-left ${scrolled
-            ? 'w-[34px] h-[34px] top-[6px]'
-            : 'w-[90px] h-[90px] -top-[77px]'
+          className={`absolute left-10 z-50 transition-all duration-300 ease-in-out origin-top-left bg-white rounded-full overflow-hidden shadow-sm flex items-center justify-center ${scrolled
+            ? 'w-[30px] h-[30px] top-[8px]'
+            : 'w-[75px] h-[75px] -top-[64px]'
             }`}
         >
           <Image
             src="/images/logo_icon.png"
-            alt="Sri Sresta"
-            width={90}
-            height={90}
-            className="w-full h-full rounded-full block"
+            alt="Anagha"
+            width={75}
+            height={75}
+            className="w-full h-full object-cover scale-[1.12]"
             priority
           />
         </div>

@@ -3,8 +3,8 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Terms & Conditions | Sri Sresta',
-  description: 'Terms and conditions for using Sri Sresta website, placing orders, and participating in our programs.',
+  title: 'Terms & Conditions | Anagha',
+  description: 'Terms and conditions for using Anagha website, placing orders, and participating in our programs.',
 };
 
 export default function TermsConditionsPage() {
@@ -43,7 +43,7 @@ export default function TermsConditionsPage() {
                 <ul className="list-disc pl-5 space-y-1.5">
                   <li>Current promotional offers are valid only on selected designs.</li>
                   <li>Discount values and the eligible designs are subject to change without prior notice.</li>
-                  <li>Applicability of existing offers in conjunction with other vouchers is at the sole discretion of Sri Sresta.</li>
+                  <li>Applicability of existing offers in conjunction with other vouchers is at the sole discretion of Anagha.</li>
                 </ul>
               </div>
 
@@ -70,7 +70,7 @@ export default function TermsConditionsPage() {
               <div>
                 <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2 uppercase tracking-wide">Prices</h2>
                 <p className="mb-2">Our pricing is calculated using current precious metal and gem prices to give you the best possible value. These prices do change from time to time, owing to the fluctuations in prices of precious metal and gem prices, so our prices change as well.</p>
-                <p>Prices on srisresta.com are subject to change without notice. Please expect to be charged the price for the Sri Sresta merchandise you buy as it is listed on the day of purchase.</p>
+                <p>Prices on anagha.com are subject to change without notice. Please expect to be charged the price for the Anagha merchandise you buy as it is listed on the day of purchase.</p>
               </div>
 
               <div>
@@ -115,8 +115,8 @@ export default function TermsConditionsPage() {
                   <li>The winners of contests and giveaways will be selected at the company's discretion.</li>
                   <li>The prizes/ gifts/ giveaways are non-returnable/ exchangeable.</li>
                   <li>Any additional facilities provided by the company to winners and selectees of any contest is at the company's discretion</li>
-                  <li>Sri Sresta reserves the right to change the terms and conditions of contests/ giveaways without prior intimation.</li>
-                  <li>All disputes will be resolved at <a href="mailto:cs@srisresta.com" className="text-[#1a73e8] underline">cs@srisresta.com</a></li>
+                  <li>Anagha reserves the right to change the terms and conditions of contests/ giveaways without prior intimation.</li>
+                  <li>All disputes will be resolved at <a href="mailto:an@anagha.com" className="text-[#1a73e8] underline">an@anagha.com</a></li>
                 </ul>
               </div>
 
@@ -165,7 +165,7 @@ export default function TermsConditionsPage() {
                 <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2 uppercase tracking-wide">Offer Terms &amp; Conditions</h2>
                 <ul className="list-disc pl-5 space-y-1.5">
                   <li>Special offer is valid only on select designs on jewellery.</li>
-                  <li>Sri Sresta may change (add to, delete, or amend) these terms from time to time.</li>
+                  <li>Anagha may change (add to, delete, or amend) these terms from time to time.</li>
                   <li>All disputes, with respect to the products and services offered in this connection, are subject to Hyderabad jurisdiction.</li>
                 </ul>
               </div>
@@ -235,8 +235,8 @@ export default function TermsConditionsPage() {
                 <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2 uppercase tracking-wide">Gift Card</h2>
                 <ul className="list-disc pl-5 space-y-1.5">
                   <li>The Gift Card will be activated 48 hours after purchase.</li>
-                  <li>You can redeem Gift Card(s) on srisresta.com, the Sri Sresta app and offline stores.</li>
-                  <li>Gift Card(s) bought from srisresta.com can be redeemed on all jewellery, all solitaires and all coins.</li>
+                  <li>You can redeem Gift Card(s) on anagha.com, the Anagha app and offline stores.</li>
+                  <li>Gift Card(s) bought from anagha.com can be redeemed on all jewellery, all solitaires and all coins.</li>
                   <li>Gift Card(s) bought from other platforms can be used on specific categories only. Please check the type of Gift Card before confirming the type of jewellery or coin that can be bought via it.</li>
                   <li>On the Cart page, click on the link "I have a voucher code/gift card" and enter your 16-digit Gift Card number and pin for redemption.</li>
                   <li>Multiple Gift Card(s) can be used in a single transaction. You may combine Gift Card(s) with any other payment type.</li>
@@ -246,8 +246,8 @@ export default function TermsConditionsPage() {
                   <li>Payment mode will be Net Banking, Credit/Debit Card, UPI, Blue Cash.</li>
                   <li>Gift Card(s), once bought online, shall be considered as sold and cannot be Cancelled, Exchanged or Refunded.</li>
                   <li>If lost or misused, the Gift Card(s) cannot be replaced. Gift Card(s) are void if resold, cannot be exchanged for credit(s) or cash, and cannot be re-validated once expired.</li>
-                  <li>In addition to these Terms and Conditions, Sri Sresta Gift Card(s) and their use on our website are also subject to Sri Sresta's general Terms of Use &amp; Sri Sresta's decision will be final in case of any dispute.</li>
-                  <li>Sri Sresta may change (add to, delete, or amend) these terms from time to time. Unless stated otherwise, the changes will apply to any new Sri Sresta gift card. Any Gift Card(s) you purchase are for personal, non-commercial use and enjoyment only. The same may be shared with family and friends but may not be advertised, sold or used as promotional items by the purchaser or anyone else without Sri Sresta's prior written consent.</li>
+                  <li>In addition to these Terms and Conditions, Anagha Gift Card(s) and their use on our website are also subject to Anagha's general Terms of Use &amp; Anagha's decision will be final in case of any dispute.</li>
+                  <li>Anagha may change (add to, delete, or amend) these terms from time to time. Unless stated otherwise, the changes will apply to any new Anagha gift card. Any Gift Card(s) you purchase are for personal, non-commercial use and enjoyment only. The same may be shared with family and friends but may not be advertised, sold or used as promotional items by the purchaser or anyone else without Anagha's prior written consent.</li>
                   <li>All disputes concerning the products and services offered in this connection are subject to Hyderabad jurisdiction.</li>
                 </ul>
               </div>
@@ -257,10 +257,10 @@ export default function TermsConditionsPage() {
                 <ul className="list-disc pl-5 space-y-1.5">
                   <li>The Old Gold must be plain gold jewellery, biscuits, bars, or coins. This offer does not cover Old Gold with diamonds or gemstones.</li>
                   <li>You may avail the Big Gold Upgrade benefit to get an instant 1% benefit over the current market gold rate on all purities.</li>
-                  <li>The value of the Old Gold will be calculated based on its purity and weight. To avail this offer, the customer must consent to the cutting/melting of the products. Sri Sresta's Karatmeters will generate the purity reading.</li>
-                  <li>Once all participating parties agree on purity, weight and valuation, the offered value against the Old Gold jewellery will be credited to the customer's OTP-verified Sri Sresta account in the form of Blue Credits.</li>
-                  <li>Once the value is credited to your Sri Sresta account, the Old Gold cannot be returned to you.</li>
-                  <li>Your Blue Credits are valid at most for one year (365 days) from the day you receive them and can be used to purchase any jewellery from Sri Sresta except Coins and Solitaires.</li>
+                  <li>The value of the Old Gold will be calculated based on its purity and weight. To avail this offer, the customer must consent to the cutting/melting of the products. Anagha's Karatmeters will generate the purity reading.</li>
+                  <li>Once all participating parties agree on purity, weight and valuation, the offered value against the Old Gold jewellery will be credited to the customer's OTP-verified Anagha account in the form of Blue Credits.</li>
+                  <li>Once the value is credited to your Anagha account, the Old Gold cannot be returned to you.</li>
+                  <li>Your Blue Credits are valid at most for one year (365 days) from the day you receive them and can be used to purchase any jewellery from Anagha except Coins and Solitaires.</li>
                   <li>You'll be required to sign a collection receipt at the store. It indicates that you have read, understood and accepted the terms and conditions of our Big Gold Upgrade/Old Gold Exchange programme.</li>
                   <li>PAN Card is mandatory for Big Gold Upgrade/Old Gold Exchange. The name on the PAN Card should match the customer's name.</li>
                 </ul>
@@ -271,7 +271,7 @@ export default function TermsConditionsPage() {
                 <ul className="list-disc pl-5 space-y-1.5">
                   <li>The True Blue loyalty program subscription is valid only for a year from the date of enrollment.</li>
                   <li>The True Blue loyalty program subscription will exhaust after three usages or a year from the date of enrollment, whichever is earlier.</li>
-                  <li>The True Blue loyalty program subscription has to be enrolled at a physical Sri Sresta store, but the redemption of benefits can be done at a store, or online on the Sri Sresta app or website.</li>
+                  <li>The True Blue loyalty program subscription has to be enrolled at a physical Anagha store, but the redemption of benefits can be done at a store, or online on the Anagha app or website.</li>
                   <li>The True Blue loyalty program can either be bought as a standalone program by paying the above amount or can be bought while billing a product (in which case a discount will be applied on the product, and the enrollment fee will be charged).</li>
                   <li>Customers can choose a program by paying ₹2,000, ₹5,000, or ₹10,000 during billing.</li>
                   <li>The program benefits can be applied to three invoices in total (each invoice needs to be in separate calendar months.)</li>
@@ -299,14 +299,14 @@ export default function TermsConditionsPage() {
                   <p>Unless the contrary intention appears, capitalised terms used in these Terms and Conditions (“T&amp;C”) shall have the meaning ascribed to them below. In addition to the below terms, certain other capitalised terms have been defined within the body of these T&amp;C in bold letters and enclosed within quotes (“”), which shall, unless the contrary intention appears, have the meaning as ascribed therein.</p>
                   <ul className="list-disc pl-5 space-y-1.5">
                     <li><strong>2.1. “Applicable Law”</strong> means all applicable laws, regulations, rules, orders, notifications, circulars and directions of any governmental or regulatory authority in India.</li>
-                    <li><strong>2.2. “Blue Cash”</strong> means the cash balance available in Subscriber’s account maintained with Sri Sresta, usable only on the Company’s website, Company’s mobile application, or at Company Stores, subject to its applicable terms and validity. Blue Cash is refundable upon the Subscriber’s instructions.</li>
-                    <li><strong>2.3. “Company”, “we”, “us” or “our”</strong> means Sri Sresta Jewellery and Lifestyle Limited.</li>
+                    <li><strong>2.2. “Blue Cash”</strong> means the cash balance available in Subscriber’s account maintained with Anagha, usable only on the Company’s website, Company’s mobile application, or at Company Stores, subject to its applicable terms and validity. Blue Cash is refundable upon the Subscriber’s instructions.</li>
+                    <li><strong>2.3. “Company”, “we”, “us” or “our”</strong> means Anagha Jewellery and Lifestyle Limited.</li>
                     <li><strong>2.4. “Grace Period”</strong> means a period of 15 days after the Monthly Due Date for payment of the relevant Installment.</li>
                     <li><strong>2.5. “Gold Rate”</strong> means the 24 karat gold selling rate published by the Company and applicable at the time of the relevant event (payment, maturity or termination, as the case may be). The Gold Rate may differ from market or third‑party rates and may vary intraday.</li>
                     <li><strong>2.6. “Installment”</strong> means each monthly amount selected at Subscription and payable for the Plan.</li>
                     <li><strong>2.7. “Maturity Date”</strong> means the date falling in the next month after the 10th installment Due Date that bears the same numerical day as the Start Date; if such day does not exist in that month (for example, February 30 or February 31), the Maturity Date shall be the last calendar day of that month. On the Maturity Date, the Plan auto-redeems.</li>
                     <li><strong>2.8. “Nominee”</strong> means the person nominated by the Subscriber at Subscription who may utilise the Plan on the Subscriber’s death.</li>
-                    <li><strong>2.9. “Plan”</strong> means the Sri Sresta Gold Reserve plan governed by these T&amp;C.</li>
+                    <li><strong>2.9. “Plan”</strong> means the Anagha Gold Reserve plan governed by these T&amp;C.</li>
                     <li><strong>2.10. “Primary Voucher”</strong> means the e‑voucher issued at maturity equal to the value of total Reserved Gold Units at the Gold Rate on the Maturity Date.</li>
                     <li><strong>2.11. “Reserved Gold Units”</strong> means the notional gold units accumulated for the Plan by dividing each Installment amount by the applicable Gold Rate at payment time. No physical gold is purchased, held, or allocated.</li>
                     <li><strong>2.12. Special Benefit Voucher”</strong> means the additional e‑voucher described in clause 3 below, subject to eligibility and delay rules.</li>
@@ -356,7 +356,7 @@ export default function TermsConditionsPage() {
                     <li>7.1. If you cancel the Plan within the first 30 days and before paying the second Installment, you will receive Blue Cash equal to the total amount paid. No vouchers will be issued and the Plan will end.</li>
                     <li>7.2. If you cancel after 30 days or after paying the second Installment, you will receive a voucher equal to the value of your Reserved Gold Units at the Gold Rate on the date of termination. No cash refund is provided. Purchases remain limited to the categories in clause 4.4; Coins and Solitaires cannot be purchased. Any discounts previously availed will be adjusted at cancellation.</li>
                     <li>7.3. The Company may cancel or suspend the Plan where required by Applicable Law, for suspected fraud, misuse, KYC/AML or sanctions concerns, operational exigencies, or system errors. Treatment of Plan value will follow clause 4.4.</li>
-                    <li>7.4. Vouchers may be combined with other Company vouchers or promotional offers only as permitted by their respective terms. Vouchers from different plans under the same Sri Sresta account may be clubbed, subject to their terms. Vouchers from different Sri Sresta accounts cannot be clubbed.</li>
+                    <li>7.4. Vouchers may be combined with other Company vouchers or promotional offers only as permitted by their respective terms. Vouchers from different plans under the same Anagha account may be clubbed, subject to their terms. Vouchers from different Anagha accounts cannot be clubbed.</li>
                   </ul>
 
                   <h3 className="font-semibold text-[#222]">8. Errors; reversals; communications; privacy</h3>
@@ -385,8 +385,8 @@ export default function TermsConditionsPage() {
 
               <div>
                 <h2 className="text-[#f1592a] font-semibold text-[13px] mb-2 uppercase tracking-wide">Fair Use Policy</h2>
-                <p className="mb-2">At Sri Sresta, we aim to maintain a fair, safe and enjoyable shopping experience for all customers. To do this, we have a policy that prohibits certain types of misuse of our services. The policy prohibits behaviours such as excessively ordering or returning products beyond normal personal or household use, frequently cancelling or returning items on the false grounds, serial returning, using services for commercial purposes, engaging in fraud (including fake or altered returns), exploiting promotions or referral programmes, coupons, cashbacks, or any limited-time offers, creating multiple /proxies accounts to bypass limit or extract extra benefits and behaving abusively, threateningly, or unethically towards our staff, delivery partners, or vendors . Examples include repeatedly ordering multiple versions of the same high-value item with the intent to return most of them, attempting to manipulate refunds, non-cooperation with return or pickup processes (including repeated non-availability for scheduled pickup attempts), or using our services for resale or rental.</p>
-                <p className="mb-2">This policy does not prevent you from exercising your legal rights under Indian law or your rights under Sri Sresta’s own terms and policies. You can still return or exchange defective, damaged, or incorrect items in line with our Returns Policy and reasonably use services like 30-Day Returns, Lifetime Exchange and Buy back for genuine personal use.</p>
+                <p className="mb-2">At Anagha, we aim to maintain a fair, safe and enjoyable shopping experience for all customers. To do this, we have a policy that prohibits certain types of misuse of our services. The policy prohibits behaviours such as excessively ordering or returning products beyond normal personal or household use, frequently cancelling or returning items on the false grounds, serial returning, using services for commercial purposes, engaging in fraud (including fake or altered returns), exploiting promotions or referral programmes, coupons, cashbacks, or any limited-time offers, creating multiple /proxies accounts to bypass limit or extract extra benefits and behaving abusively, threateningly, or unethically towards our staff, delivery partners, or vendors . Examples include repeatedly ordering multiple versions of the same high-value item with the intent to return most of them, attempting to manipulate refunds, non-cooperation with return or pickup processes (including repeated non-availability for scheduled pickup attempts), or using our services for resale or rental.</p>
+                <p className="mb-2">This policy does not prevent you from exercising your legal rights under Indian law or your rights under Anagha’s own terms and policies. You can still return or exchange defective, damaged, or incorrect items in line with our Returns Policy and reasonably use services like 30-Day Returns, Lifetime Exchange and Buy back for genuine personal use.</p>
                 <p>We may assess non-compliance with this policy by analysing patterns in your account activity, including order volume and value, your history and reasons for returns, exchanges and cancellations, and any attempts to bypass our limits or policies. We reserve the right to take appropriate action if you do not comply with this policy, including issuing warnings, restricting access to certain features (such as promotions or easy returns), refusing orders or returns, cancelling pending orders, closing accounts, and, in serious cases (such as suspected fraud), reporting matters to law enforcement or pursuing legal action.</p>
               </div>
 
