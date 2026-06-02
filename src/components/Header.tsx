@@ -65,11 +65,11 @@ export default function Header() {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
           <div className="w-7 h-7 rounded-full overflow-hidden border border-gray-300 flex items-center justify-center bg-white shrink-0">
-            <img src="/images/logo_icon.png" alt="Logo" className="w-full h-full object-cover scale-110" />
+            <img src="/images/logo_icon.png" alt="Logo" className="w-full h-full object-contain [clip-path:circle(47%)] scale-[0.85]" />
           </div>
         </div>
         <Link href="/" className="flex items-center">
-          <Image src="/images/brand_logo.png" alt="Anagha" width={120} height={40} className="h-10 w-auto object-contain" priority />
+          <Image src="/images/brand_logo.png" alt="Anagha" width={120} height={40} className="h-10 w-auto object-contain [clip-path:inset(1px_4px)]" style={{ width: 'auto' }} priority />
         </Link>
         <div className="flex items-center gap-4 text-navy">
           <SearchIcon />
@@ -82,7 +82,7 @@ export default function Header() {
       {mobileMenuOpen && (
         <div className="fixed inset-0 bg-white z-[200] flex flex-col lg:hidden overflow-hidden">
           <div className="flex items-center justify-between p-4 border-b border-gray-300">
-            <Image src="/images/brand_logo.png" alt="Anagha" width={120} height={40} className="h-10 w-auto object-contain" />
+            <Image src="/images/brand_logo.png" alt="Anagha" width={120} height={40} className="h-10 w-auto object-contain [clip-path:inset(1px_4px)]" style={{ width: 'auto' }} />
             <button aria-label="Close Menu" onClick={() => setMobileMenuOpen(false)} className="text-navy p-1">
               <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
@@ -112,7 +112,7 @@ export default function Header() {
 
           {/* Brand */}
           <Link href="/" className="flex items-center shrink-0 translate-y-2.5">
-            <Image src="/images/brand_logo.png" alt="Anagha" width={280} height={80} className="h-[55px] xl:h-[65px] w-auto object-contain" priority />
+            <Image src="/images/brand_logo.png" alt="Anagha" width={280} height={80} className="h-[50px] xl:h-[60px] w-auto object-contain [clip-path:inset(1px_4px)]" style={{ width: 'auto' }} priority />
           </Link>
 
           {/* Search — centred via auto margins */}
@@ -184,7 +184,7 @@ export default function Header() {
             alt="Anagha"
             width={75}
             height={75}
-            className="w-full h-full object-cover scale-[1.12]"
+            className="w-full h-full object-contain [clip-path:circle(47%)] scale-[0.85]"
             priority
           />
         </div>
