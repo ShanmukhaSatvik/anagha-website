@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Anagha Website
 
-## Getting Started
+Monorepo with a Next.js frontend and Express + Neon backend.
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+anagha-website/
+├── frontend/     # Next.js app (UI + admin upload pages)
+├── backend/      # Express API + Neon Postgres
+└── package.json  # workspace scripts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1. Install dependencies
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run install:all
+```
 
-## Learn More
+Or separately:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm install --prefix frontend
+npm install --prefix backend
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 2. Environment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+# Frontend
+cp frontend/.env.example frontend/.env.local
 
-## Deploy on Vercel
+# Backend
+cp backend/.env.example backend/.env
+# then set DATABASE_URL from Neon
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 3. Database
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run backend:migrate
+npm run backend:seed
+```
+
+### 4. Run locally
+
+```bash
+# terminal 1 — API (http://localhost:4000)
+npm run dev:backend
+
+# terminal 2 — website (http://localhost:3000)
+npm run dev:frontend
+```
+
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev:frontend` | Start Next.js |
+| `npm run dev:backend` | Start Express API |
+| `npm run backend:migrate` | Apply DB schema |
+| `npm run backend:seed` | Seed from existing metadata |
+| `npm run build` | Build frontend |
