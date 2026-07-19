@@ -40,12 +40,42 @@ export default function Header() {
   const [navItems, setNavItems] = useState<NavItem[]>(DEFAULT_NAV);
 
   useEffect(() => {
-    fetch('/api/upload/header')
-      .then(r => r.json())
-      .then(data => {
-        if (Array.isArray(data) && data.length > 0) setNavItems(data);
-      })
-      .catch(() => setNavItems(DEFAULT_NAV));
+    let cancelled = false;
+
+    async function loadNav() {
+      try {
+        const erpRes = await fetch('/api/catalog/filters', { cache: 'no-store' });
+        if (erpRes.ok) {
+          const body = await erpRes.json();
+          const types = body?.data?.filters?.type;
+          if (Array.isArray(types) && types.length > 0) {
+            const erpNav: NavItem[] = [
+              ...types.slice(0, 8).map((t: { name: string; slug?: string | null }) => ({
+                label: String(t.name).toUpperCase(),
+                slug: t.slug || String(t.name).toLowerCase().replace(/\s+/g, '-'),
+                dropdown: null,
+              })),
+              { label: 'ALL JEWELLERY', slug: 'all-jewellery', dropdown: null },
+            ];
+            if (!cancelled) setNavItems(erpNav);
+            return;
+          }
+        }
+      } catch {
+        // fall through to CMS / defaults
+      }
+
+      try {
+        const res = await fetch('/api/upload/header');
+        const data = await res.json();
+        if (!cancelled && Array.isArray(data) && data.length > 0) setNavItems(data);
+      } catch {
+        if (!cancelled) setNavItems(DEFAULT_NAV);
+      }
+    }
+
+    loadNav();
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {

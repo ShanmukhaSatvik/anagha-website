@@ -1,243 +1,265 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { PRODUCTS } from '@/lib/data';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  CatalogFilterOption,
+  CatalogItem,
+  fetchCatalog,
+  fetchCatalogFilters,
+  formatDisplayPrice,
+  itemHref,
+} from '@/lib/erpCatalog';
 
 interface Props {
-  category?: string; // if undefined, show all
+  /** ERP type slug (from inventory_types name). If undefined, show all. */
+  category?: string;
 }
 
-const FilterGroup = ({ title, items, showMore }: { title: string; items: { label: string; count: number }[]; showMore?: string }) => (
+type ActiveFilters = {
+  type?: string;
+  group?: string;
+  article?: string;
+  purity?: string;
+};
+
+const FilterGroup = ({
+  title,
+  items,
+  selected,
+  onSelect,
+}: {
+  title: string;
+  items: CatalogFilterOption[];
+  selected?: string;
+  onSelect: (name: string | undefined) => void;
+}) => (
   <div>
     <h3 className="font-domine text-[#222] text-[16px] mb-4 font-bold border-b border-gray-100 pb-2">{title}</h3>
     <div className="space-y-3">
-      {items.map((f, i) => (
-        <label key={i} className="flex items-center gap-3 cursor-pointer group">
-          <div className="w-4 h-4 border border-gray-300 rounded-[2px] bg-white group-hover:border-[#2e6da4] transition-colors flex-shrink-0" />
-          <span className="text-[#444] text-[13px]">{f.label} <span className="text-gray-400">({f.count})</span></span>
-        </label>
-      ))}
+      {items.length === 0 ? (
+        <p className="text-[12px] text-gray-400">No options</p>
+      ) : (
+        items.map((f) => {
+          const active = selected === f.name;
+          return (
+            <button
+              key={`${title}-${f.id || f.slug || f.name}`}
+              type="button"
+              onClick={() => onSelect(active ? undefined : f.name)}
+              className="flex items-center gap-3 cursor-pointer group w-full text-left"
+            >
+              <div
+                className={`w-4 h-4 border rounded-[2px] flex-shrink-0 transition-colors ${
+                  active ? 'border-[#2e6da4] bg-[#2e6da4]' : 'border-gray-300 bg-white group-hover:border-[#2e6da4]'
+                }`}
+              />
+              <span className={`text-[13px] ${active ? 'text-[#2e6da4] font-medium' : 'text-[#444]'}`}>
+                {f.name}
+                {typeof f.count === 'number' ? (
+                  <span className="text-gray-400"> ({f.count})</span>
+                ) : null}
+              </span>
+            </button>
+          );
+        })
+      )}
     </div>
-    {showMore && <button className="text-[#e2574c] text-[12px] mt-3 hover:underline">{showMore}</button>}
   </div>
 );
-const ProductCard = ({ product }: { product: any }) => (
-  <Link
-    href={`/jewellery/${product.category}/${product.id}`}
-    className="group flex flex-col bg-white rounded-lg overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow duration-300 h-full"
-  >
-    {/* Image Area (Bulletproof 1:1 Aspect Ratio) */}
-    <div className="relative w-full pt-[100%] bg-[#fafafa] overflow-hidden">
-      <div className="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-500 mix-blend-multiply"
-        />
+
+function ProductCard({ product }: { product: CatalogItem }) {
+  const priceLabel = formatDisplayPrice(product.display_price);
+  const showPrice = product.display_price != null;
+
+  return (
+    <Link
+      href={itemHref(product)}
+      className="group flex flex-col bg-white rounded-lg overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow duration-300 h-full"
+    >
+      <div className="relative w-full pt-[100%] bg-[#fafafa] overflow-hidden">
+        <div className="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
+          {product.image_url ? (
+            <img
+              src={product.image_url}
+              alt={product.name}
+              className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-500 mix-blend-multiply"
+            />
+          ) : (
+            <div className="text-gray-300 text-sm text-center px-4">No image</div>
+          )}
+        </div>
       </div>
-    </div>
-    {/* Details Area */}
-    <div className="p-4 flex flex-col flex-1 items-start text-left bg-white">
-      <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-        <span className="font-bold text-[#222] text-[15px] md:text-[16px]">₹{product.price}</span>
-        <span className="text-gray-400 text-[12px] md:text-[13px] line-through">₹{product.originalPrice}</span>
+      <div className="p-4 flex flex-col flex-1 items-start text-left bg-white">
+        <div className="flex items-center gap-2 mb-1.5 flex-wrap min-h-[24px]">
+          <span className={`font-bold text-[15px] md:text-[16px] ${showPrice ? 'text-[#222]' : 'text-gray-500 text-[13px]'}`}>
+            {priceLabel}
+          </span>
+        </div>
+        <h3 className="text-[#666] text-[12px] md:text-[13px] line-clamp-2 leading-snug min-h-[38px] w-full">
+          {product.name}
+        </h3>
+        <p className="text-[11px] text-gray-400 mt-1">
+          {product.tag_number}
+          {product.purity ? ` · ${product.purity}` : ''}
+        </p>
       </div>
-      <h3 className="text-[#666] text-[12px] md:text-[13px] line-clamp-2 leading-snug h-[38px] w-full">
-        {product.name}
-      </h3>
-    </div>
-  </Link>
-);
+    </Link>
+  );
+}
 
 export default function JewelleryListing({ category }: Props) {
-  const [dynamicCategories, setDynamicCategories] = useState<{ name: string, image: string | null }[]>([]);
-  const [dynamicProducts, setDynamicProducts] = useState<any[]>(PRODUCTS);
+  const [items, setItems] = useState<CatalogItem[]>([]);
+  const [total, setTotal] = useState(0);
+  const [filterOptions, setFilterOptions] = useState<{
+    type: CatalogFilterOption[];
+    group: CatalogFilterOption[];
+    article: CatalogFilterOption[];
+    purity: CatalogFilterOption[];
+  }>({ type: [], group: [], article: [], purity: [] });
+  const [active, setActive] = useState<ActiveFilters>({});
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!loading && typeof window !== 'undefined' && window.location.hash) {
-      const id = window.location.hash.substring(1);
-      const element = document.getElementById(id);
-      if (element) {
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-      }
-    }
-  }, [loading]);
+  const typeFromRoute = category?.replace(/-/g, ' ');
 
-  useEffect(() => {
-    let isMounted = true;
-    Promise.all([
-      fetch('/api/upload/jewellery/categories', { cache: 'no-store' }).then(r => r.ok ? r.json() : []),
-      fetch('/api/upload/jewellery/products', { cache: 'no-store' }).then(r => r.ok ? r.json() : PRODUCTS)
-    ]).then(([cats, prods]) => {
-      if (!isMounted) return;
-      setDynamicCategories(cats);
-      setDynamicProducts(prods);
+  const queryParams = useMemo(() => {
+    const params: Record<string, string | number | undefined> = {
+      limit: 48,
+      offset: 0,
+    };
+    if (active.type) params.type = active.type;
+    else if (category) params.type = category;
+    if (active.group) params.group = active.group;
+    if (active.article) params.article = active.article;
+    if (active.purity) params.purity = active.purity;
+    return params;
+  }, [active, category]);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const filterQuery: Record<string, string | undefined> = {};
+      if (active.type) filterQuery.type = active.type;
+      else if (category) filterQuery.type = category;
+      if (active.group) filterQuery.group = active.group;
+
+      const [catalog, filtersPayload] = await Promise.all([
+        fetchCatalog(queryParams),
+        fetchCatalogFilters(filterQuery),
+      ]);
+      setItems(catalog.items || []);
+      setTotal(catalog.total || 0);
+      setFilterOptions({
+        type: filtersPayload.filters.type || [],
+        group: filtersPayload.filters.group || [],
+        article: filtersPayload.filters.article || [],
+        purity: filtersPayload.filters.purity || [],
+      });
+    } catch (err) {
+      setItems([]);
+      setTotal(0);
+      setError(err instanceof Error ? err.message : 'Failed to load inventory');
+    } finally {
       setLoading(false);
-    }).catch(() => {
-      if (isMounted) setLoading(false);
-    });
-    return () => { isMounted = false; };
-  }, []);
+    }
+  }, [queryParams, active.type, active.group, category]);
 
-  const HARAM_SLUGS = ['guttapusala-haram', 'kasulaperu-haram', 'pachala-haram', 'nakshi-haram', 'gundla-haram'];
-
-  const displayProducts = category
-    ? category === 'haram'
-      ? dynamicProducts.filter((p) => p.category === 'haram')
-      : HARAM_SLUGS.includes(category)
-        ? dynamicProducts.filter((p) => p.category === 'haram' && p.subcategory === category)
-        : dynamicProducts.filter((p) => p.category === category)
-    : dynamicProducts;
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const title = category
-    ? category.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) + (category === 'haram' ? ' Collection' : ' Collection')
+    ? `${(typeFromRoute || category).replace(/\b\w/g, (c) => c.toUpperCase())} Collection`
     : 'All Jewellery';
-
-  const count = displayProducts.length;
 
   return (
     <main className="w-full bg-[#f9f9f9] min-h-screen font-sans pb-20">
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 mt-6">
-        {/* Page Title */}
         <div className="mb-10 mt-4">
           <h2 className="text-center text-[28px] font-domine text-[#032C5E] tracking-wide font-bold">
             {title}
           </h2>
+          {!loading && !error ? (
+            <p className="text-center text-[13px] text-gray-500 mt-2">{total} available item{total === 1 ? '' : 's'}</p>
+          ) : null}
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8 items-start">
-
-          {/* Left Sidebar (Filters) */}
           <div className="w-full lg:w-[280px] shrink-0 bg-white shadow-sm border border-gray-100 sticky top-24 max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
-            <div className="bg-[#2e6da4] text-white px-4 py-3 font-medium tracking-wide sticky top-0 z-10">
-              FILTERS
+            <div className="bg-[#2e6da4] text-white px-4 py-3 font-medium tracking-wide sticky top-0 z-10 flex items-center justify-between">
+              <span>FILTERS</span>
+              {(active.group || active.article || active.purity || active.type) ? (
+                <button
+                  type="button"
+                  className="text-[11px] uppercase tracking-wide opacity-90 hover:opacity-100"
+                  onClick={() => setActive({})}
+                >
+                  Clear
+                </button>
+              ) : null}
             </div>
             <div className="p-5 space-y-8">
-              <FilterGroup title="Price" items={[
-                { label: 'Below Rs. 10,000', count: 208 },
-                { label: 'Rs. 10,000 - Rs. 20,000', count: 614 },
-                { label: 'Rs. 20,000 - Rs. 30,000', count: 671 },
-                { label: 'Rs. 30,000 - Rs. 40,000', count: 660 },
-                { label: 'Rs. 40,000 - Rs. 50,000', count: 731 },
-                { label: 'Rs. 50,000 and Above', count: 7186 },
-              ]} />
-              <FilterGroup title="Type" items={dynamicCategories.map(cat => ({
-                label: cat.name,
-                count: dynamicProducts.filter(p => p.category === cat.name.toLowerCase().replace(/ /g, '-')).length
-              }))} />
-              <FilterGroup title="Metal" items={[
-                { label: 'Gold', count: 7716 }, { label: 'Plain Gold/Platinum', count: 2348 }, { label: 'Rose Gold', count: 1618 },
-                { label: 'White Gold', count: 572 }, { label: 'Platinum', count: 164 },
-              ]} />
-              <FilterGroup title="Gender" items={[
-                { label: 'Women', count: 8486 }, { label: 'Men', count: 977 }, { label: 'Kids', count: 507 }, { label: 'Unisex', count: 336 },
-              ]} />
-              <FilterGroup title="Offers" items={[
-                { label: '0% Making Charge', count: 6 }, { label: 'Offers', count: 6 },
-              ]} />
-              <FilterGroup title="Gold Purity" items={[
-                { label: '18k', count: 7460 }, { label: '14k', count: 1110 }, { label: '22k', count: 1335 },
-              ]} />
-              <FilterGroup title="Stones" items={[
-                { label: 'Diamond', count: 5355 }, { label: 'Diamond And Gemstone', count: 1403 }, { label: 'Gemstone', count: 791 },
-                { label: 'Pearl', count: 540 }, { label: 'Ruby', count: 453 }, { label: 'Sapphire', count: 358 },
-              ]} showMore="+ 21 more" />
-              <FilterGroup title="Occasion" items={[
-                { label: 'Akshaya Tritiya', count: 8758 }, { label: 'Weekend', count: 8218 }, { label: 'Romance', count: 7307 },
-                { label: 'Party', count: 7271 }, { label: 'Workwear', count: 6464 }, { label: 'Vacation', count: 4644 },
-              ]} showMore="+ 25 more" />
-              <FilterGroup title="# Of Stones" items={[
-                { label: 'Multistone', count: 6255 }, { label: 'Single Stone', count: 839 }, { label: 'Solitaire', count: 255 },
-                { label: 'Three Stone', count: 144 }, { label: 'Five Stone', count: 73 },
-              ]} />
-              <FilterGroup title="Style" items={[
-                { label: 'Light Weight Jewellery', count: 2004 }, { label: 'Studs', count: 1356 }, { label: 'Band', count: 675 },
-                { label: 'Hoops', count: 540 }, { label: 'Drops', count: 453 }, { label: 'Couple Band', count: 293 },
-              ]} showMore="+ 45 more" />
-              <FilterGroup title="Design" items={[
-                { label: 'Classic', count: 6150 }, { label: 'Fashion', count: 5976 }, { label: 'Fusion', count: 2996 },
-                { label: 'Valentine Designers Pick', count: 2664 }, { label: 'Enamel', count: 888 }, { label: 'Floral', count: 864 },
-              ]} showMore="+ 52 more" />
-              <FilterGroup title="Stone Color" items={[
-                { label: 'White', count: 6963 }, { label: 'Red', count: 469 }, { label: 'Blue', count: 310 },
-                { label: 'Green', count: 281 }, { label: 'Pink', count: 193 }, { label: 'Yellow', count: 129 },
-              ]} showMore="+ 4 more" />
-              <FilterGroup title="Zodiac" items={[
-                { label: 'Gemini', count: 3 }, { label: 'Scorpio', count: 3 }, { label: 'Libra', count: 2 },
-                { label: 'Virgo', count: 2 }, { label: 'Aquarius', count: 1 }, { label: 'Cancer', count: 1 },
-              ]} showMore="+ 5 more" />
-              <FilterGroup title="Stone Shape" items={[
-                { label: 'Round', count: 2591 }, { label: 'Pear', count: 402 }, { label: 'Marquise', count: 321 },
-                { label: 'Princess', count: 307 }, { label: 'Baguette', count: 265 }, { label: 'Oval', count: 128 },
-              ]} showMore="+ 12 more" />
+              {!category ? (
+                <FilterGroup
+                  title="Type"
+                  items={filterOptions.type}
+                  selected={active.type}
+                  onSelect={(name) => setActive((prev) => ({ ...prev, type: name, group: undefined, article: undefined }))}
+                />
+              ) : null}
+              <FilterGroup
+                title="Group"
+                items={filterOptions.group}
+                selected={active.group}
+                onSelect={(name) => setActive((prev) => ({ ...prev, group: name, article: undefined }))}
+              />
+              <FilterGroup
+                title="Article"
+                items={filterOptions.article}
+                selected={active.article}
+                onSelect={(name) => setActive((prev) => ({ ...prev, article: name }))}
+              />
+              <FilterGroup
+                title="Purity"
+                items={filterOptions.purity}
+                selected={active.purity}
+                onSelect={(name) => setActive((prev) => ({ ...prev, purity: name }))}
+              />
             </div>
           </div>
 
-          {/* Right Content (Product Grid) */}
           <div className="flex-1 w-full">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-32 text-center">
                 <div className="w-12 h-12 border-4 border-[#2e6da4] border-t-transparent rounded-full animate-spin mb-4" />
-                <p className="text-gray-400 font-medium">Loading products...</p>
+                <p className="text-gray-400 font-medium">Loading live inventory...</p>
               </div>
-            ) : displayProducts.length === 0 ? (
+            ) : error ? (
+              <div className="flex flex-col items-center justify-center py-24 text-center px-4">
+                <h2 className="text-xl font-domine text-gray-500 mb-2">Catalog unavailable</h2>
+                <p className="text-gray-400 text-sm max-w-md">{error}</p>
+                <p className="text-gray-400 text-xs mt-3">
+                  Ensure Anagha backend has ERP_API_URL and ERP_STORE_SLUG configured.
+                </p>
+              </div>
+            ) : items.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 text-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-200 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
                 <h2 className="text-xl font-domine text-gray-400 mb-2">No products found</h2>
-                <p className="text-gray-400 text-sm">We couldn&apos;t find any items in this category.</p>
-                <Link href="/jewellery" className="mt-6 text-[#2e6da4] text-sm font-medium hover:underline">Browse All Jewellery →</Link>
-              </div>
-            ) : category === 'haram' ? (
-              <div className="space-y-16">
-                {HARAM_SLUGS.map(slug => {
-                  const subProducts = displayProducts.filter(p => p.subcategory === slug);
-                  if (subProducts.length === 0) return null;
-                  
-                  return (
-                    <div key={slug} id={slug} className="space-y-6 scroll-mt-24">
-                      <div>
-                        <h3 className="font-domine text-[20px] text-[#032C5E] font-bold capitalize">
-                          {slug.replace(/-/g, ' ')}
-                        </h3>
-                      </div>
-                      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                        {subProducts.map((product) => (
-                          <ProductCard key={product.id} product={product} />
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-                
-                {/* Fallback for haram products without subcategory mapping */}
-                {displayProducts.filter(p => !p.subcategory || !HARAM_SLUGS.includes(p.subcategory)).length > 0 && (
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="font-domine text-[20px] text-[#032C5E] font-bold">Other Haram Styles</h3>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                      {displayProducts.filter(p => !p.subcategory || !HARAM_SLUGS.includes(p.subcategory)).map((product) => (
-                        <ProductCard key={product.id} product={product} />
-                      ))}
-                    </div>
-                  </div>
-                )}
+                <p className="text-gray-400 text-sm">No available items match these filters.</p>
+                <Link href="/jewellery" className="mt-6 text-[#2e6da4] text-sm font-medium hover:underline">
+                  Browse All Jewellery →
+                </Link>
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                {displayProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                {items.map((product) => (
+                  <ProductCard key={product.id || product.tag_number} product={product} />
                 ))}
               </div>
             )}
           </div>
-
         </div>
       </div>
     </main>

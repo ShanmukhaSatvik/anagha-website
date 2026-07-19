@@ -16,6 +16,7 @@ import testimonialsRoutes from './routes/testimonials.js';
 import standaloneBannerRoutes from './routes/standaloneBanner.js';
 import jewelleryCategoriesRoutes from './routes/jewelleryCategories.js';
 import jewelleryProductsRoutes from './routes/jewelleryProducts.js';
+import catalogRoutes from './routes/catalog.js';
 import { UPLOADS_DIR } from './lib/upload.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -50,6 +51,9 @@ app.use('/api/upload/testimonials', testimonialsRoutes);
 app.use('/api/upload/standalone-banner', standaloneBannerRoutes);
 app.use('/api/upload/jewellery/categories', jewelleryCategoriesRoutes);
 app.use('/api/upload/jewellery/products', jewelleryProductsRoutes);
+
+// Live ERP inventory catalog (BFF) — multi-client via ERP_STORE_SLUG
+app.use('/api/catalog', catalogRoutes);
 
 app.use(
   (

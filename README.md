@@ -33,7 +33,12 @@ cp frontend/.env.example frontend/.env.local
 # Backend
 cp backend/.env.example backend/.env
 # then set DATABASE_URL from Neon
+# and ERP catalog wiring:
+#   ERP_API_URL=http://localhost:4000/api
+#   ERP_STORE_SLUG=<org-slug-from-octis>
 ```
+
+Jewellery catalog pages load **live available inventory** from Octis ERP via the Anagha BFF (`/api/catalog`). Marketing CMS (hero/offers) still uses Neon. Each client website is an instance: change `ERP_STORE_SLUG` (and branding) for Sresta / other orgs.
 
 ### 3. Database
 
@@ -45,7 +50,10 @@ npm run backend:seed
 ### 4. Run locally
 
 ```bash
-# terminal 1 — API (http://localhost:4000)
+# terminal 0 — Octis ERP API (http://localhost:4000)
+# from Gold-Shop-Management-System/backend
+
+# terminal 1 — Anagha BFF (http://localhost:4001)
 npm run dev:backend
 
 # terminal 2 — website (http://localhost:3000)
