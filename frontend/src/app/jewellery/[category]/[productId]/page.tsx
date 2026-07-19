@@ -1,12 +1,13 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import BuyNowButton from '@/components/BuyNowButton';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { formatDisplayPrice } from '@/lib/erpCatalog';
 
 export const dynamic = 'force-dynamic';
 
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:4000';
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:4001';
 
 async function loadItem(tag: string) {
   try {
@@ -147,6 +148,17 @@ export default async function ProductDetailPage({
               ) : null}
 
               <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                {product.display_price != null && Number(product.display_price) > 0 ? (
+                  <BuyNowButton
+                    item={{
+                      tag_number: product.tag_number,
+                      name: product.name,
+                      display_price: product.display_price,
+                      image_url: product.image_url,
+                      type_slug: product.type_slug || typeSlug,
+                    }}
+                  />
+                ) : null}
                 <a
                   href={`https://wa.me/?text=${whatsappText}`}
                   target="_blank"
@@ -158,7 +170,7 @@ export default async function ProductDetailPage({
               </div>
 
               <p className="text-[12px] text-gray-400">
-                Live inventory from store ERP. Checkout & online payment coming in a later release.
+                Live inventory from store ERP. Online pay reserves the tag; collect from store (no shipping in this release).
               </p>
             </div>
           </div>

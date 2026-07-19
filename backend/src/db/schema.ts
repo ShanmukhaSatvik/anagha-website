@@ -46,3 +46,28 @@ export const products = pgTable('products', {
     .notNull()
     .defaultNow(),
 });
+
+/** Website checkout sessions (ERP customer created only after paid). */
+export const checkoutSessions = pgTable('checkout_sessions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  status: text('status').notNull().default('pending'),
+  tagNumber: text('tag_number').notNull(),
+  inventoryId: text('inventory_id'),
+  amount: text('amount').notNull(),
+  currency: text('currency').notNull().default('INR'),
+  customerName: text('customer_name'),
+  customerMobile: text('customer_mobile'),
+  customerEmail: text('customer_email'),
+  phonepeMerchantTxnId: text('phonepe_merchant_txn_id'),
+  phonepeTxnId: text('phonepe_txn_id'),
+  erpBillId: text('erp_bill_id'),
+  erpBillNumber: text('erp_bill_number'),
+  paymentPayload: jsonb('payment_payload').default({}),
+  expiresAt: timestamp('expires_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});

@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:4000";
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:4001";
 
 const nextConfig: NextConfig = {
   async rewrites() {
@@ -16,6 +16,14 @@ const nextConfig: NextConfig = {
       {
         source: "/api/catalog/:path*",
         destination: `${BACKEND_URL}/api/catalog/:path*`,
+      },
+      {
+        source: "/api/checkout",
+        destination: `${BACKEND_URL}/api/checkout`,
+      },
+      {
+        source: "/api/checkout/:path*",
+        destination: `${BACKEND_URL}/api/checkout/:path*`,
       },
       {
         source: "/uploads/:path*",

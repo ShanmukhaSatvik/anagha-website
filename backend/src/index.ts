@@ -17,11 +17,12 @@ import standaloneBannerRoutes from './routes/standaloneBanner.js';
 import jewelleryCategoriesRoutes from './routes/jewelleryCategories.js';
 import jewelleryProductsRoutes from './routes/jewelleryProducts.js';
 import catalogRoutes from './routes/catalog.js';
+import checkoutRoutes from './routes/checkout.js';
 import { UPLOADS_DIR } from './lib/upload.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
-const PORT = Number(process.env.PORT) || 4000;
+const PORT = Number(process.env.PORT) || 4001;
 const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
 
 app.use(
@@ -54,6 +55,8 @@ app.use('/api/upload/jewellery/products', jewelleryProductsRoutes);
 
 // Live ERP inventory catalog (BFF) — multi-client via ERP_STORE_SLUG
 app.use('/api/catalog', catalogRoutes);
+// Checkout: reserve → PhonePe → ERP bill on success
+app.use('/api/checkout', checkoutRoutes);
 
 app.use(
   (
