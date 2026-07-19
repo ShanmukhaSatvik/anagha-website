@@ -13,6 +13,12 @@ import {
 
 const router = Router();
 
+/** Express 5 types params as string | string[]; Drizzle eq() needs a string. */
+function paramId(req: Request, name = 'id'): string {
+  const raw = req.params[name];
+  return Array.isArray(raw) ? String(raw[0] || '') : String(raw || '');
+}
+
 function handle(err: unknown, res: Response) {
   const status =
     typeof err === 'object' && err && 'status' in err
@@ -182,7 +188,7 @@ router.get('/session/:id', async (req: Request, res: Response) => {
     const rows = await db
       .select()
       .from(checkoutSessions)
-      .where(eq(checkoutSessions.id, req.params.id))
+      .where(eq(checkoutSessions.id, paramId(req)))
       .limit(1);
     if (!rows[0]) return res.status(404).json({ error: 'Session not found' });
     res.json({ data: publicSession(rows[0]) });
@@ -197,7 +203,7 @@ router.post('/session/:id/cancel', async (req: Request, res: Response) => {
     const rows = await db
       .select()
       .from(checkoutSessions)
-      .where(eq(checkoutSessions.id, req.params.id))
+      .where(eq(checkoutSessions.id, paramId(req)))
       .limit(1);
     const session = rows[0];
     if (!session) return res.status(404).json({ error: 'Session not found' });
@@ -228,7 +234,7 @@ router.post('/session/:id/confirm-payment', async (req: Request, res: Response) 
     const rows = await db
       .select()
       .from(checkoutSessions)
-      .where(eq(checkoutSessions.id, req.params.id))
+      .where(eq(checkoutSessions.id, paramId(req)))
       .limit(1);
     const session = rows[0];
     if (!session) return res.status(404).json({ error: 'Session not found' });
