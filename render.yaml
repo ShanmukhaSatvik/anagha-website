@@ -19,10 +19,32 @@ services:
         sync: false
       - key: CORS_ORIGIN
         sync: false
-      # Octis ERP public catalog (BFF) — set in Render dashboard
+      # Octis ERP public catalog + webstore checkout (BFF) — set in Render dashboard
       - key: ERP_API_URL
         sync: false
       - key: ERP_STORE_SLUG
         sync: false
       - key: ERP_BRANCH_ID
+        sync: false
+      - key: WEBSTORE_SECRET
+        sync: false
+      - key: PUBLIC_BASE_URL
+        sync: false
+      - key: PUBLIC_API_BASE_URL
+        sync: false
+      - key: PHONEPE_MODE
+        sync: false
+      - key: PHONEPE_CLIENT_ID
+        sync: false
+      - key: PHONEPE_CLIENT_SECRET
+        sync: false
+      - key: PHONEPE_CLIENT_VERSION
+        sync: false
+      - key: PHONEPE_BASE_URL
+        sync: false
+      - key: PHONEPE_MERCHANT_ID
+        sync: false
+      - key: PHONEPE_SALT_KEY
+        sync: false
+      - key: PHONEPE_SALT_INDEX
         sync: false

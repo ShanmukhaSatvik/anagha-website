@@ -33,12 +33,19 @@ cp frontend/.env.example frontend/.env.local
 # Backend
 cp backend/.env.example backend/.env
 # then set DATABASE_URL from Neon
-# and ERP catalog wiring:
+# and ERP catalog + checkout wiring:
 #   ERP_API_URL=http://localhost:4000/api
 #   ERP_STORE_SLUG=<org-slug-from-octis>
+#   ERP_BRANCH_ID=<branch-uuid>
+#   WEBSTORE_SECRET=<same as ERP WEBSTORE_SECRET>
+#   PHONEPE_MODE=mock   # or sandbox with PhonePe UAT keys
+#   PUBLIC_BASE_URL=http://localhost:3000
+#   PUBLIC_API_BASE_URL=http://localhost:4001
 ```
 
-Jewellery catalog pages load **live available inventory** from Octis ERP via the Anagha BFF (`/api/catalog`). Marketing CMS (hero/offers) still uses Neon. Each client website is an instance: change `ERP_STORE_SLUG` (and branding) for Sresta / other orgs.
+Jewellery catalog pages load **live available inventory** from Octis ERP via the Anagha BFF (`/api/catalog`). Checkout uses **Buy now** → reserve → PhonePe (mock/sandbox) → ERP sale bill via `/api/webstore`. Marketing CMS (hero/offers) still uses Neon. Each client website is an instance: change `ERP_STORE_SLUG` (and branding) for Sresta / other orgs.
+
+Full V2 deploy notes live in the Octis ERP repo: `docs/V2_PHONEPE_WEBSTORE_CHECKOUT.md`.
 
 ### 3. Database
 
