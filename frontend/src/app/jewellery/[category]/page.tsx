@@ -9,7 +9,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   const title = category.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
   return {
     title: `${title} | Anagha`,
-    description: `Shop our exclusive collection of ${title} jewellery from live store inventory.`,
+    description: `Shop our exclusive ${title} collection from live store inventory.`,
   };
 }
 

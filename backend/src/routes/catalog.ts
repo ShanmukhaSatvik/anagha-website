@@ -1,5 +1,9 @@
 import { Router, type Request, type Response, type NextFunction } from 'express';
 import { fetchErpPublic } from '../lib/erpCatalog.js';
+import {
+  applyWebsiteDescription,
+  getAllWebsiteItemMeta,
+} from '../lib/websiteItemMeta.js';
 
 const router = Router();
 
@@ -41,6 +45,12 @@ router.get('/', async (req: Request, res: Response) => {
         'branch_id',
       ]),
     );
+    const metaMap = await getAllWebsiteItemMeta();
+    if (body?.data?.items && Array.isArray(body.data.items)) {
+      body.data.items = body.data.items.map((item: { tag_number?: string; description?: string | null }) =>
+        applyWebsiteDescription(item, metaMap),
+      );
+    }
     res.json(body);
   } catch (err) {
     handleErpError(err, res);
@@ -76,6 +86,10 @@ router.get('/items/:tag', async (req: Request, res: Response) => {
       `/items/${encodeURIComponent(tag)}`,
       pickQuery(req, ['branch_id']),
     );
+    const metaMap = await getAllWebsiteItemMeta();
+    if (body?.data) {
+      body.data = applyWebsiteDescription(body.data, metaMap);
+    }
     res.json(body);
   } catch (err) {
     handleErpError(err, res);

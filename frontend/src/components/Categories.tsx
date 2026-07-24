@@ -1,255 +1,174 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import {
+  fetchCatalogFilters,
+  groupImageForSlug,
+  slugifyName,
+  type CatalogFilterOption,
+} from '@/lib/erpCatalog';
 
-/* ─── Default assets baked in — overridden if client uploads via /upload ─── */
-const GOLD_DEFAULTS = [
-  { name: 'Solitaires',       img: '/images/category/solitaire_gold.png' },
-  { name: 'Watch Jewellery',  img: '/images/category/watch_jewellery_gold.png' },
-  { name: "Men's Jewellery",  img: '/images/category/mens_jewellery_gold.png' },
-  { name: 'Mangalsutras',     img: '/images/category/mangalsutra_gold.png' },
-  { name: 'Nose Pins',        img: '/images/category/nose_pin_gold.png' },
-  { name: 'Kids Jewellery',   img: '/images/category/kids_jewellery_gold.png' },
-  { name: 'Gold Coins',       img: '/images/category/gold_coins.png' },
-  { name: 'Anklets',          img: '/images/category/gold_anklet.png' },
-  { name: 'Pendants',         img: '/images/category/gold_pendant.png' },
-  { name: 'Rings',            img: '/images/category/gold_rings.png' },
-  { name: 'Necklaces',        img: '/images/category/gold_neckalce.png' },
-  { name: 'Earrings',         img: '/images/category/gold_earrings.png' },
-  { name: 'Bangles',          img: '/images/category/gold_bangles.png' },
-  { name: 'Bracelets',        img: '/images/category/gold_bracelet.png' },
-  { name: 'Gold Chains',      img: '/images/category/gold_chain.png' },
-  { name: 'Kada',             img: '/images/category/gold_kada.png' },
-];
+const HOME_GRID_LIMIT = 16;
 
-const SILVER_DEFAULTS = [
-  { name: 'Solitaires',       img: '/images/category/solitaire_silver.png' },
-  { name: 'Watch Jewellery',  img: '/images/category/watch_jewellery_silver.png' },
-  { name: "Men's Jewellery",  img: '/images/category/mens_jewellery_silver.png' },
-  { name: 'Mangalsutras',     img: '/images/category/mangalsutra_silver.png' },
-  { name: 'Nose Pins',        img: '/images/category/nose_pin_silver.png' },
-  { name: 'Kids Jewellery',   img: '/images/category/kids_jewellery_silver.png' },
-  { name: 'Silver Coins',     img: '/images/category/silver_coins.png' },
-  { name: 'Anklets',          img: '/images/category/silver_anklet.png' },
-  { name: 'Pendants',         img: '/images/category/silver_image.png' },
-  { name: 'Rings',            img: '/images/category/silver_ring.png' },
-  { name: 'Necklaces',        img: '/images/category/silver_neckalce.png' },
-  { name: 'Earrings',         img: '/images/category/silver_earrings.png' },
-  { name: 'Bangles',          img: '/images/category/silver_bangle.png' },
-  { name: 'Bracelets',        img: '/images/category/silver_bracelet.png' },
-  { name: 'Silver Chains',    img: '/images/category/silver_chain.png' },
-  { name: 'Kada',             img: '/images/category/silver_kada.png' },
-];
-
-/* ─── Maps category display names → route slug ─── */
-const CATEGORY_SLUG_MAP: Record<string, string> = {
-  'Solitaires':       'solitaires',
-  'Watch Jewellery':  'watch-jewellery',
-  "Men's Jewellery":  'mens-jewellery',
-  'Mangalsutras':     'mangalsutra',
-  'Nose Pins':        'nose-pins',
-  'Kids Jewellery':   'kids-jewellery',
-  'Gold Coins':       'coins',
-  'Silver Coins':     'coins',
-  'Anklets':          'anklets',
-  'Pendants':         'pendants',
-  'Rings':            'rings',
-  'Necklaces':        'necklaces',
-  'Earrings':         'earrings',
-  'Bangles':          'bangles',
-  'Bracelets':        'bracelets',
-  'Gold Chains':      'chains',
-  'Silver Chains':    'chains',
-  'Kada':             'kadas',
-};
-
-interface PlanData {
+type PlanData = {
   badge: string;
   installment: string;
   suffix: string;
   desc: string;
   btnText: string;
   btnLink: string;
-}
-
-const GOLD_PLAN_DEFAULT: PlanData = {
-  badge: 'Gold Mine', installment: '10 + 1', suffix: 'Monthly Plan',
-  desc: 'Pay 10 installments, and get 100% off on the last one!',
-  btnText: 'Enroll Now', btnLink: '#',
-}
+};
 
 const SILVER_PLAN_DEFAULT: PlanData = {
-  badge: 'Silver Mine', installment: '10 + 1', suffix: 'Monthly Plan',
-  desc: 'Pay 10 installments, and get 100% off on the last one!',
-  btnText: 'Enroll Now', btnLink: '#',
-}
-
-interface CategoryItem { name: string; img?: string; filename?: string | null; }
-
-function buildItems(
-  defaults: typeof GOLD_DEFAULTS,
-  live: Array<{ name?: string; filename?: string | null } | null>
-): CategoryItem[] {
-  const count = Math.max(defaults.length, live.length);
-  const items = Array.from({ length: count }).map((_, i) => {
-    const d = defaults[i];
-    const l = live[i];
-    if (!l && !d) return null;
-    return { 
-      name: l?.name || d?.name || '', 
-      img: l?.filename ? `/uploads/${l.filename}` : (d?.img || '') 
-    } as CategoryItem;
-  });
-  return items.filter((it): it is CategoryItem => it !== null && !!it.name);
-}
+  badge: 'Anagha Silver Advantage Plan:',
+  installment: '0% Interest',
+  suffix: 'Easy EMIs',
+  desc: 'Flexible monthly plans on selected silver jewellery',
+  btnText: 'Explore Plan',
+  btnLink: '/jewellery',
+};
 
 interface Props {
-  goldLive: Array<{ name?: string; filename?: string | null } | null>;
-  silverLive: Array<{ name?: string; filename?: string | null } | null>;
+  goldLive?: Array<{ name?: string; filename?: string | null } | null>;
+  silverLive?: Array<{ name?: string; filename?: string | null } | null>;
   goldPlan?: Partial<PlanData>;
   silverPlan?: Partial<PlanData>;
 }
 
-export default function Categories({ goldLive, silverLive, goldPlan, silverPlan }: Props) {
-  const [tab, setTab] = useState<'labgrown' | 'silver'>('silver');
+function sortByCountDesc(groups: CatalogFilterOption[]) {
+  return [...groups].sort((a, b) => (b.count || 0) - (a.count || 0) || a.name.localeCompare(b.name));
+}
 
-  const goldItems   = buildItems(GOLD_DEFAULTS,   goldLive);
-  const silverItems = buildItems(SILVER_DEFAULTS, silverLive);
-  const items       = tab === 'labgrown' ? goldItems : silverItems;
+export default function Categories({ silverPlan }: Props) {
+  const [groups, setGroups] = useState<CatalogFilterOption[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const plan: PlanData = tab === 'labgrown'
-    ? { ...GOLD_PLAN_DEFAULT, ...goldPlan }
-    : { ...SILVER_PLAN_DEFAULT, ...silverPlan };
+  const plan: PlanData = { ...SILVER_PLAN_DEFAULT, ...silverPlan };
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const payload = await fetchCatalogFilters();
+        if (!cancelled) {
+          setGroups(sortByCountDesc(payload.filters?.group || []).slice(0, HOME_GRID_LIMIT));
+        }
+      } catch {
+        if (!cancelled) setGroups([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <section className="bg-white py-10 overflow-hidden">
       <div className="w-full px-6">
-
-        {/* ── Tab Switcher ── */}
         <div className="flex items-center justify-center mb-10">
           <div className="relative inline-flex rounded-full bg-gray-100 p-1.5 gap-1">
-            {/* Lab Grown Diamonds tab
             <button
-              onClick={() => setTab('labgrown')}
-              className={`relative z-10 px-6 py-3 rounded-full text-sm font-bold tracking-wide uppercase transition-all duration-300
-                ${
-                  tab === 'labgrown'
-                    ? 'bg-gradient-to-r from-rose-400 to-pink-500 text-white shadow-md'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-            >
-              Lab Grown Diamonds
-            </button>
-            */}
-
-            {/* Silver tab */}
-            <button
-              onClick={() => setTab('silver')}
-              className={`relative z-10 px-8 py-3 rounded-full text-sm font-bold tracking-widest uppercase transition-all duration-300
-                ${
-                  tab === 'silver'
-                    ? 'bg-gradient-to-r from-slate-400 to-gray-500 text-white shadow-md'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
+              type="button"
+              className="relative z-10 px-8 py-3 rounded-full text-sm font-bold tracking-widest uppercase transition-all duration-300 bg-gradient-to-r from-slate-400 to-gray-500 text-white shadow-md"
             >
               Silver
             </button>
           </div>
         </div>
 
-        {/* ── 2-row × 8-col grid ── */}
-        <motion.div 
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.6 }}
-          className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-x-4 md:gap-y-8"
-        >
-          {items.map((cat, i) => {
-            const isLeft = (i % 8) % 2 === 0;
-            const slug = CATEGORY_SLUG_MAP[cat.name];
-            const href = slug ? `/jewellery/${slug}` : '/jewellery';
+        {loading ? (
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-x-4 md:gap-y-8">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="flex flex-col items-center gap-3 animate-pulse">
+                <div className="w-full aspect-square rounded-[22px] bg-[#f4f6f9]" />
+                <div className="h-3 w-16 bg-gray-100 rounded" />
+              </div>
+            ))}
+          </div>
+        ) : groups.length === 0 ? (
+          <p className="text-center text-sm text-gray-400 py-8">
+            Categories will appear when live inventory is available.
+          </p>
+        ) : (
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-x-4 md:gap-y-8"
+          >
+            {groups.map((g, i) => {
+              const slug = g.slug || slugifyName(g.name);
+              const img = groupImageForSlug(slug);
+              const isLeft = (i % 8) % 2 === 0;
 
-            return (
-              <motion.div
-                key={`${tab}-${i}`}
-                variants={{
-                  hidden: {
-                    x: isLeft ? 'calc(100% + 1rem)' : 'calc(-100% - 1rem)',
-                  },
-                  visible: {
-                    x: 0,
-                    transition: { delay: 0.3, duration: 1.5, ease: [0.23, 1, 0.32, 1] }
-                  }
-                }}
-              >
-                <Link
-                  href={href}
-                  className="flex flex-col items-center gap-3 cursor-pointer group"
+              return (
+                <motion.div
+                  key={g.id || slug}
+                  variants={{
+                    hidden: { x: isLeft ? 'calc(100% + 1rem)' : 'calc(-100% - 1rem)', opacity: 0 },
+                    visible: {
+                      x: 0,
+                      opacity: 1,
+                      transition: { delay: Math.min(i * 0.03, 0.4), duration: 0.6, ease: [0.23, 1, 0.32, 1] },
+                    },
+                  }}
                 >
-                  <div className={`w-full aspect-square rounded-[22px] overflow-hidden flex items-center justify-center
-                    transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-xl
-                    ${tab === 'labgrown' ? 'bg-[#fff5f5] group-hover:bg-[#ffeef0]' : 'bg-[#f4f6f9] group-hover:bg-[#eaeff7]'}`}
-                  >
-                    <img src={cat.img} alt={cat.name} className="w-[78%] h-[78%] object-contain" />
-                  </div>
-                  <p className={`text-[12px] font-medium text-center leading-tight transition-colors
-                    ${tab === 'labgrown' ? 'text-gray-400 group-hover:text-rose-500' : 'text-gray-400 group-hover:text-slate-600'}`}>
-                    {cat.name}
-                  </p>
-                </Link>
-              </motion.div>
-            );
-          })}
-        </motion.div>
+                  <Link href={`/jewellery/${slug}`} className="flex flex-col items-center gap-3 cursor-pointer group">
+                    <div className="w-full aspect-square rounded-[22px] overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-xl bg-[#f4f6f9] group-hover:bg-[#eaeff7]">
+                      <img src={img} alt={g.name} className="w-[78%] h-[78%] object-contain" />
+                    </div>
+                    <p className="text-[12px] font-medium text-center leading-tight transition-colors text-gray-400 group-hover:text-slate-600 uppercase">
+                      {g.name}
+                      {typeof g.count === 'number' ? (
+                        <span className="block text-[10px] font-normal normal-case text-gray-300">
+                          {g.count} items
+                        </span>
+                      ) : null}
+                    </p>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        )}
 
-
-        {/* ── Offer Plan Banner — after grid ── */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          style={tab === 'labgrown' ? {
-            backgroundImage: [
-              'linear-gradient(to right, transparent 0%, rgba(180,110,140,0.25) 30%, rgba(180,110,140,0.25) 70%, transparent 100%)',
-              'linear-gradient(to right, transparent 0%, rgba(180,110,140,0.25) 30%, rgba(180,110,140,0.25) 70%, transparent 100%)',
-              'linear-gradient(to right, #ffffff 0%, #fffafa 20%, #fff5f5 50%, #fffafa 80%, #ffffff 100%)',
-            ].join(','),
-            backgroundSize:     '100% 1px, 100% 1px, 100% 100%',
-            backgroundPosition: 'top, bottom, center',
-            backgroundRepeat:   'no-repeat',
-          } : {
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          style={{
             backgroundImage: [
               'linear-gradient(to right, transparent 0%, rgba(100,120,155,0.2) 30%, rgba(100,120,155,0.2) 70%, transparent 100%)',
               'linear-gradient(to right, transparent 0%, rgba(100,120,155,0.2) 30%, rgba(100,120,155,0.2) 70%, transparent 100%)',
               'linear-gradient(to right, #f8fafc 0%, #f2f5f9 20%, #e8eef5 50%, #f2f5f9 80%, #f8fafc 100%)',
             ].join(','),
-            backgroundSize:     '100% 1px, 100% 1px, 100% 100%',
+            backgroundSize: '100% 1px, 100% 1px, 100% 100%',
             backgroundPosition: 'top, bottom, center',
-            backgroundRepeat:   'no-repeat',
+            backgroundRepeat: 'no-repeat',
           }}
           className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 w-full py-5 md:py-3.5 mt-10 md:mt-16 text-center md:text-left"
         >
           <p className="text-[12px] md:text-[13.5px] text-navy">
             <span className="font-bold block sm:inline">{plan.badge} </span>
-            <span className={`font-extrabold ${tab === 'labgrown' ? 'text-coral' : 'text-slate-500'}`}>
-              {plan.installment}
-            </span>
+            <span className="font-extrabold text-slate-500">{plan.installment}</span>
             <span className="font-bold"> {plan.suffix}</span>
-            <span className="text-gray-400 font-normal text-[11px] md:text-[13px] block sm:inline sm:ml-1.5 mt-1 sm:mt-0">({plan.desc})</span>
+            <span className="text-gray-400 font-normal text-[11px] md:text-[13px] block sm:inline sm:ml-1.5 mt-1 sm:mt-0">
+              ({plan.desc})
+            </span>
           </p>
           <a
             href={plan.btnLink}
-            className={`shrink-0 px-6 py-2 rounded-lg text-[13px] font-bold text-white
-              transition-all hover:opacity-90 active:scale-95 shadow-sm
-              ${tab === 'labgrown' ? 'bg-coral' : 'bg-slate-500'}`}
+            className="shrink-0 px-6 py-2 rounded-lg text-[13px] font-bold text-white transition-all hover:opacity-90 active:scale-95 shadow-sm bg-slate-500"
           >
             {plan.btnText}
           </a>
         </motion.div>
-
       </div>
     </section>
   );

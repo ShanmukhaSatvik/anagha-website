@@ -3,7 +3,12 @@ export type CatalogItem = {
   tag_number: string;
   name: string;
   description?: string | null;
+  /** Primary storefront image (gallery[0] or POS fallback). */
   image_url?: string | null;
+  /** POS stock photo — never overwritten by website gallery. */
+  pos_image_url?: string | null;
+  /** Ordered website gallery URLs (empty = use pos_image_url / image_url). */
+  website_images?: string[] | null;
   gross_weight?: number | string | null;
   net_weight?: number | string | null;
   stone_weight?: number | string | null;
@@ -56,8 +61,51 @@ export function formatDisplayPrice(price: number | null | undefined) {
 }
 
 export function itemHref(item: CatalogItem) {
-  const typeSlug = item.type_slug || 'item';
-  return `/jewellery/${encodeURIComponent(typeSlug)}/${encodeURIComponent(item.tag_number)}`;
+  // Routes are group-based (ERP inventory_groups), not type (MEN/WOMEN).
+  const groupSlug = item.group_slug || item.type_slug || 'item';
+  return `/jewellery/${encodeURIComponent(groupSlug)}/${encodeURIComponent(item.tag_number)}`;
+}
+
+const GROUP_IMAGE_BY_SLUG: Record<string, string> = {
+  anklets: '/images/category/silver_anklet.png',
+  bangles: '/images/category/silver_bangle.png',
+  bracelet: '/images/category/silver_bracelet.png',
+  brooches: '/images/category/silver_image.png',
+  chains: '/images/category/silver_chain.png',
+  'chains-locket': '/images/category/silver_chain.png',
+  choker: '/images/category/silver_neckalce.png',
+  'ear-rings': '/images/category/silver_earrings.png',
+  earrings: '/images/category/silver_earrings.png',
+  'hand-bag': '/images/category/silver_image.png',
+  haram: '/images/category/silver_neckalce.png',
+  jhumki: '/images/category/silver_earrings.png',
+  kada: '/images/category/silver_kada.png',
+  kante: '/images/category/silver_neckalce.png',
+  locket: '/images/category/silver_image.png',
+  malla: '/images/category/silver_neckalce.png',
+  'mang-tikka': '/images/category/silver_image.png',
+  nallapusalu: '/images/category/mangalsutra_silver.png',
+  necklace: '/images/category/silver_neckalce.png',
+  pendent: '/images/category/silver_image.png',
+  pendant: '/images/category/silver_image.png',
+  ring: '/images/category/silver_ring.png',
+  rings: '/images/category/silver_ring.png',
+  'side-bits': '/images/category/silver_image.png',
+  'thali-chain': '/images/category/mangalsutra_silver.png',
+  tikka: '/images/category/silver_image.png',
+  vaddanam: '/images/header/silver-vaddanam.png',
+};
+
+export function groupImageForSlug(slug: string | null | undefined) {
+  if (!slug) return '/images/category/silver_image.png';
+  return GROUP_IMAGE_BY_SLUG[slug] || '/images/category/silver_image.png';
+}
+
+export function slugifyName(name: string) {
+  return String(name)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
 export async function fetchCatalog(params: Record<string, string | number | undefined> = {}) {
@@ -91,4 +139,56 @@ export async function fetchCatalogItem(tag: string) {
     throw new Error(body.error || 'Item not found');
   }
   return body.data as CatalogItem;
+}
+
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ''));
+    reader.onerror = () => reject(new Error('Failed to read image file'));
+    reader.readAsDataURL(file);
+  });
+}
+
+/** Append one image to ERP website gallery (BFF → WEBSTORE_SECRET). */
+export async function uploadWebsiteImage(tag: string, file: File) {
+  const dataUrl = await fileToDataUrl(file);
+  const res = await fetch(`/api/upload/jewellery/website-images/${encodeURIComponent(tag)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ file: dataUrl, fileName: file.name }),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(body.error || 'Failed to upload website image');
+  }
+  return body.data as CatalogItem;
+}
+
+/** Replace / reorder / clear website gallery. */
+export async function setWebsiteImages(tag: string, websiteImages: string[]) {
+  const res = await fetch(`/api/upload/jewellery/website-images/${encodeURIComponent(tag)}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ website_images: websiteImages }),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(body.error || 'Failed to update website gallery');
+  }
+  return body.data as CatalogItem;
+}
+
+/** Save website-only description (CMS; does not write ERP). */
+export async function saveItemDescription(tag: string, description: string) {
+  const res = await fetch(`/api/upload/jewellery/item-meta/${encodeURIComponent(tag)}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ description }),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(body.error || 'Failed to save description');
+  }
+  return body.data as { description?: string };
 }

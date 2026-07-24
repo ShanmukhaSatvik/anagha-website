@@ -7,7 +7,6 @@ import {
   clearCartItem,
   confirmPhonePeCheckout,
   fetchCheckoutSession,
-  mockConfirmCheckout,
   type CheckoutSession,
 } from '@/lib/checkout';
 import { formatDisplayPrice } from '@/lib/erpCatalog';
@@ -15,7 +14,6 @@ import { formatDisplayPrice } from '@/lib/erpCatalog';
 export default function CheckoutThanks() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session') || '';
-  const isMock = searchParams.get('mock') === '1';
 
   const [session, setSession] = useState<CheckoutSession | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -33,16 +31,27 @@ export default function CheckoutThanks() {
 
     async function run() {
       try {
-        if (isMock) {
-          const paid = await mockConfirmCheckout(sessionId);
-          if (cancelled) return;
-          setSession(paid);
+        // Mock path: payment already completed in MockPaymentModal before navigation.
+        const current = await fetchCheckoutSession(sessionId);
+        if (cancelled) return;
+
+        if (current.status === 'paid') {
+          setSession(current);
           clearCartItem();
           setPhase('done');
           return;
         }
+        if (
+          current.status === 'failed' ||
+          current.status === 'cancelled' ||
+          current.status === 'expired'
+        ) {
+          setError(`Payment ${current.status}. Stock hold was released.`);
+          setPhase('error');
+          return;
+        }
 
-        // Real PhonePe sandbox/live: verify via status API (webhooks often can't reach localhost)
+        // Real PhonePe sandbox/live: verify via status API
         while (!cancelled && attempts < 30) {
           attempts += 1;
           const result = await confirmPhonePeCheckout(sessionId);
@@ -55,16 +64,20 @@ export default function CheckoutThanks() {
             return;
           }
 
-          const current = await fetchCheckoutSession(sessionId);
+          const latest = await fetchCheckoutSession(sessionId);
           if (cancelled) return;
-          setSession(current);
-          if (current.status === 'paid') {
+          setSession(latest);
+          if (latest.status === 'paid') {
             clearCartItem();
             setPhase('done');
             return;
           }
-          if (current.status === 'failed' || current.status === 'cancelled' || current.status === 'expired') {
-            setError(`Payment ${current.status}. Stock hold was released.`);
+          if (
+            latest.status === 'failed' ||
+            latest.status === 'cancelled' ||
+            latest.status === 'expired'
+          ) {
+            setError(`Payment ${latest.status}. Stock hold was released.`);
             setPhase('error');
             return;
           }
@@ -73,7 +86,9 @@ export default function CheckoutThanks() {
         }
 
         if (!cancelled) {
-          setError('Still waiting for PhonePe confirmation. Complete payment on the PhonePe page, then refresh.');
+          setError(
+            'Still waiting for PhonePe confirmation. Complete payment on the PhonePe page, then refresh.',
+          );
           setPhase('error');
         }
       } catch (err) {
@@ -88,17 +103,13 @@ export default function CheckoutThanks() {
     return () => {
       cancelled = true;
     };
-  }, [sessionId, isMock]);
+  }, [sessionId]);
 
   if (phase === 'working') {
     return (
       <div className="max-w-xl mx-auto px-4 py-20 text-center">
         <h1 className="font-domine text-2xl text-[#032C5E] mb-3">Confirming payment…</h1>
-        <p className="text-sm text-gray-500">
-          {isMock
-            ? 'Completing demo payment and creating your store bill.'
-            : 'Verifying with PhonePe and creating your store bill.'}
-        </p>
+        <p className="text-sm text-gray-500">Verifying payment and creating your store bill.</p>
       </div>
     );
   }
@@ -123,8 +134,8 @@ export default function CheckoutThanks() {
       <p className="text-[11px] uppercase tracking-widest text-emerald-600 mb-3">Payment successful</p>
       <h1 className="font-domine text-3xl text-[#032C5E] font-bold mb-4">Thank you</h1>
       <p className="text-sm text-gray-600 mb-8">
-        Your order for tag <span className="font-medium text-[#222]">{session?.tag_number}</span> is confirmed.
-        Please collect from the store.
+        Your order for tag <span className="font-medium text-[#222]">{session?.tag_number}</span> is
+        confirmed. Please collect from the store.
       </p>
 
       <div className="border border-gray-100 rounded-lg p-5 text-left bg-[#fafafa] mb-8">

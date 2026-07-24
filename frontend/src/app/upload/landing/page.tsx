@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Header from '@/components/Header';
+import ErpGroupsPanel from '@/components/ErpGroupsPanel';
 import {
   TESTIMONIAL_REVIEWS,
   CURATED_STYLES_CARDS,
@@ -269,14 +270,11 @@ export default function UploadPage() {
           </div>
         </section>
 
-        {/* ── LAB GROWN DIAMONDS CATEGORIES ── */}
-        {/* <CategoryGrid type="gold" /> */}
-
-        {/* ── LAB GROWN DIAMONDS OFFER PLAN ── */}
-        {/* <PlanEditor type="gold" /> */}
-
-        {/* ── SILVER CATEGORIES ── */}
-        <CategoryGrid type="silver" />
+        {/* ── SILVER / HOMEPAGE CATEGORIES (ERP groups) ── */}
+        <ErpGroupsPanel
+          title="Silver Categories"
+          description="Homepage category grid uses live ERP inventory groups. Images are mapped on the storefront; manage stock in Octis ERP."
+        />
 
         {/* ── SILVER OFFER PLAN ── */}
         <PlanEditor type="silver" />
@@ -299,8 +297,11 @@ export default function UploadPage() {
         {/* ── TESTIMONIALS ── */}
         <TestimonialsEditor />
 
-        {/* ── HEADER CUSTOMIZATION ── */}
-        <HeaderEditor />
+        {/* ── HEADER NAV (ERP groups — same source as storefront Header) ── */}
+        <ErpGroupsPanel
+          title="Header"
+          description="Storefront header tabs are loaded from ERP groups (top stock counts). Editing tabs here was retired so nav cannot drift from live inventory."
+        />
 
       </div>
     </div>

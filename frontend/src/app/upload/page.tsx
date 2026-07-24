@@ -15,7 +15,7 @@ export default function AdminHome() {
     },
     {
       title: 'Jewellery Page',
-      desc: 'Manage product collections, categories, and inventory for the jewellery catalog.',
+      desc: 'Browse live ERP groups and available inventory tags (read-only; edit stock in Octis).',
       img: '/images/admin/jewellery_thumb.png',
       link: '/upload/jewellery',
       color: 'from-blue-500 to-indigo-600',

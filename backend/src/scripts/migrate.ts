@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import { neon } from '@neondatabase/serverless';
+import bcrypt from 'bcryptjs';
 
 async function main() {
   if (!process.env.DATABASE_URL) {
@@ -49,6 +50,35 @@ async function main() {
   await sql`CREATE INDEX IF NOT EXISTS products_category_idx ON products (category)`;
 
   await sql`
+    CREATE TABLE IF NOT EXISTS website_customers (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      email TEXT NOT NULL UNIQUE,
+      password_hash TEXT NOT NULL,
+      name TEXT NOT NULL,
+      mobile TEXT NOT NULL,
+      is_admin BOOLEAN NOT NULL DEFAULT FALSE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
+  await sql`ALTER TABLE website_customers ADD COLUMN IF NOT EXISTS is_admin BOOLEAN NOT NULL DEFAULT FALSE`;
+
+  await sql`CREATE INDEX IF NOT EXISTS website_customers_email_idx ON website_customers (email)`;
+
+  const adminEmail = 'admin@anagha.com';
+  const adminHash = await bcrypt.hash('admin123', 10);
+  await sql`
+    INSERT INTO website_customers (email, password_hash, name, mobile, is_admin)
+    VALUES (${adminEmail}, ${adminHash}, ${'Anagha Admin'}, ${'9999999999'}, ${true})
+    ON CONFLICT (email) DO UPDATE SET
+      password_hash = EXCLUDED.password_hash,
+      is_admin = TRUE,
+      name = EXCLUDED.name,
+      updated_at = NOW()
+  `;
+
+  await sql`
     CREATE TABLE IF NOT EXISTS checkout_sessions (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       status TEXT NOT NULL DEFAULT 'pending',
@@ -56,6 +86,7 @@ async function main() {
       inventory_id TEXT,
       amount TEXT NOT NULL,
       currency TEXT NOT NULL DEFAULT 'INR',
+      website_customer_id UUID,
       customer_name TEXT,
       customer_mobile TEXT,
       customer_email TEXT,
@@ -70,8 +101,11 @@ async function main() {
     )
   `;
 
+  await sql`ALTER TABLE checkout_sessions ADD COLUMN IF NOT EXISTS website_customer_id UUID`;
+
   await sql`CREATE INDEX IF NOT EXISTS checkout_sessions_status_idx ON checkout_sessions (status)`;
   await sql`CREATE INDEX IF NOT EXISTS checkout_sessions_merchant_txn_idx ON checkout_sessions (phonepe_merchant_txn_id)`;
+  await sql`CREATE INDEX IF NOT EXISTS checkout_sessions_customer_idx ON checkout_sessions (website_customer_id)`;
 
   console.log('Migration complete.');
 }

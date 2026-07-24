@@ -26,6 +26,14 @@ const nextConfig: NextConfig = {
         destination: `${BACKEND_URL}/api/checkout/:path*`,
       },
       {
+        source: "/api/auth",
+        destination: `${BACKEND_URL}/api/auth`,
+      },
+      {
+        source: "/api/auth/:path*",
+        destination: `${BACKEND_URL}/api/auth/:path*`,
+      },
+      {
         source: "/uploads/:path*",
         destination: `${BACKEND_URL}/uploads/:path*`,
       },

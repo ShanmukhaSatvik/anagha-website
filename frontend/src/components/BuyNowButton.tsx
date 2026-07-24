@@ -19,7 +19,7 @@ export default function BuyNowButton({ item }: Props) {
     <button
       type="button"
       onClick={onClick}
-      className="flex items-center justify-center gap-2 bg-[#f1592a] text-white font-bold py-3 px-10 rounded-full hover:bg-[#d94a1f] transition-colors uppercase tracking-widest text-[12px]"
+      className="flex w-full items-center justify-center gap-2 bg-[#f1592a] text-white font-bold py-3 px-6 rounded-full hover:bg-[#d94a1f] transition-colors uppercase tracking-widest text-[12px]"
     >
       Buy now
     </button>

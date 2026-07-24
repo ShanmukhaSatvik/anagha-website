@@ -1,7 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  startTransition,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from 'react';
 import {
   CatalogFilterOption,
   CatalogItem,
@@ -12,7 +21,7 @@ import {
 } from '@/lib/erpCatalog';
 
 interface Props {
-  /** ERP type slug (from inventory_types name). If undefined, show all. */
+  /** ERP group slug from route. If undefined, show all. */
   category?: string;
 }
 
@@ -21,6 +30,13 @@ type ActiveFilters = {
   group?: string;
   article?: string;
   purity?: string;
+};
+
+type FilterOptions = {
+  type: CatalogFilterOption[];
+  group: CatalogFilterOption[];
+  article: CatalogFilterOption[];
+  purity: CatalogFilterOption[];
 };
 
 const FilterGroup = ({
@@ -46,7 +62,10 @@ const FilterGroup = ({
             <button
               key={`${title}-${f.id || f.slug || f.name}`}
               type="button"
-              onClick={() => onSelect(active ? undefined : f.name)}
+              onClick={() => {
+                const next = active ? undefined : f.name;
+                startTransition(() => onSelect(next));
+              }}
               className="flex items-center gap-3 cursor-pointer group w-full text-left"
             >
               <div
@@ -67,6 +86,49 @@ const FilterGroup = ({
     </div>
   </div>
 );
+
+function FiltersBody({
+  category,
+  filterOptions,
+  active,
+  setActive,
+}: {
+  category?: string;
+  filterOptions: FilterOptions;
+  active: ActiveFilters;
+  setActive: Dispatch<SetStateAction<ActiveFilters>>;
+}) {
+  return (
+    <div className="p-5 space-y-8">
+      <FilterGroup
+        title="Audience"
+        items={filterOptions.type}
+        selected={active.type}
+        onSelect={(name) => setActive((prev) => ({ ...prev, type: name, article: undefined }))}
+      />
+      {!category ? (
+        <FilterGroup
+          title="Category"
+          items={filterOptions.group}
+          selected={active.group}
+          onSelect={(name) => setActive((prev) => ({ ...prev, group: name, article: undefined }))}
+        />
+      ) : null}
+      <FilterGroup
+        title="Article"
+        items={filterOptions.article}
+        selected={active.article}
+        onSelect={(name) => setActive((prev) => ({ ...prev, article: name }))}
+      />
+      <FilterGroup
+        title="Purity"
+        items={filterOptions.purity}
+        selected={active.purity}
+        onSelect={(name) => setActive((prev) => ({ ...prev, purity: name }))}
+      />
+    </div>
+  );
+}
 
 function ProductCard({ product }: { product: CatalogItem }) {
   const priceLabel = formatDisplayPrice(product.display_price);
@@ -108,47 +170,69 @@ function ProductCard({ product }: { product: CatalogItem }) {
   );
 }
 
+function countActiveFilters(active: ActiveFilters, category?: string) {
+  let n = 0;
+  if (active.type) n += 1;
+  if (!category && active.group) n += 1;
+  if (active.article) n += 1;
+  if (active.purity) n += 1;
+  return n;
+}
+
 export default function JewelleryListing({ category }: Props) {
   const [items, setItems] = useState<CatalogItem[]>([]);
   const [total, setTotal] = useState(0);
-  const [filterOptions, setFilterOptions] = useState<{
-    type: CatalogFilterOption[];
-    group: CatalogFilterOption[];
-    article: CatalogFilterOption[];
-    purity: CatalogFilterOption[];
-  }>({ type: [], group: [], article: [], purity: [] });
+  const [filterOptions, setFilterOptions] = useState<FilterOptions>({
+    type: [],
+    group: [],
+    article: [],
+    purity: [],
+  });
   const [active, setActive] = useState<ActiveFilters>({});
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const hasLoadedRef = useRef(false);
+  const requestIdRef = useRef(0);
 
-  const typeFromRoute = category?.replace(/-/g, ' ');
+  const groupFromRoute = category?.replace(/-/g, ' ');
+  const activeCount = countActiveFilters(active, category);
 
   const queryParams = useMemo(() => {
     const params: Record<string, string | number | undefined> = {
       limit: 48,
       offset: 0,
     };
-    if (active.type) params.type = active.type;
-    else if (category) params.type = category;
     if (active.group) params.group = active.group;
+    else if (category) params.group = category;
+    if (active.type) params.type = active.type;
     if (active.article) params.article = active.article;
     if (active.purity) params.purity = active.purity;
     return params;
   }, [active, category]);
 
   const load = useCallback(async () => {
-    setLoading(true);
+    const requestId = ++requestIdRef.current;
+    const isFirst = !hasLoadedRef.current;
+    if (isFirst) setInitialLoading(true);
+    else setRefreshing(true);
     setError(null);
+
     try {
       const filterQuery: Record<string, string | undefined> = {};
-      if (active.type) filterQuery.type = active.type;
-      else if (category) filterQuery.type = category;
       if (active.group) filterQuery.group = active.group;
+      else if (category) filterQuery.group = category;
+      if (active.type) filterQuery.type = active.type;
 
       const [catalog, filtersPayload] = await Promise.all([
         fetchCatalog(queryParams),
         fetchCatalogFilters(filterQuery),
       ]);
+
+      // Ignore stale responses when filters change quickly
+      if (requestId !== requestIdRef.current) return;
+
       setItems(catalog.items || []);
       setTotal(catalog.total || 0);
       setFilterOptions({
@@ -157,12 +241,19 @@ export default function JewelleryListing({ category }: Props) {
         article: filtersPayload.filters.article || [],
         purity: filtersPayload.filters.purity || [],
       });
+      hasLoadedRef.current = true;
     } catch (err) {
-      setItems([]);
-      setTotal(0);
+      if (requestId !== requestIdRef.current) return;
+      if (!hasLoadedRef.current) {
+        setItems([]);
+        setTotal(0);
+      }
       setError(err instanceof Error ? err.message : 'Failed to load inventory');
     } finally {
-      setLoading(false);
+      if (requestId === requestIdRef.current) {
+        setInitialLoading(false);
+        setRefreshing(false);
+      }
     }
   }, [queryParams, active.type, active.group, category]);
 
@@ -170,73 +261,69 @@ export default function JewelleryListing({ category }: Props) {
     load();
   }, [load]);
 
+  useEffect(() => {
+    if (!filtersOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [filtersOpen]);
+
   const title = category
-    ? `${(typeFromRoute || category).replace(/\b\w/g, (c) => c.toUpperCase())} Collection`
+    ? `${(groupFromRoute || category).replace(/\b\w/g, (c) => c.toUpperCase())} Collection`
     : 'All Jewellery';
 
+  const clearFilters = () => startTransition(() => setActive({}));
+
   return (
-    <main className="w-full bg-[#f9f9f9] min-h-screen font-sans pb-20">
+    <main className="w-full bg-[#f9f9f9] min-h-screen font-sans pb-24 lg:pb-20">
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 mt-6">
-        <div className="mb-10 mt-4">
-          <h2 className="text-center text-[28px] font-domine text-[#032C5E] tracking-wide font-bold">
+        <div className="mb-8 mt-4 lg:mb-10">
+          <h2 className="text-center text-[24px] sm:text-[28px] font-domine text-[#032C5E] tracking-wide font-bold">
             {title}
           </h2>
-          {!loading && !error ? (
-            <p className="text-center text-[13px] text-gray-500 mt-2">{total} available item{total === 1 ? '' : 's'}</p>
+          {!initialLoading && !error ? (
+            <p className="text-center text-[13px] text-gray-500 mt-2">
+              {refreshing ? 'Updating…' : `${total} available item${total === 1 ? '' : 's'}`}
+              {activeCount > 0 ? (
+                <span className="text-[#2e6da4]"> · {activeCount} filter{activeCount === 1 ? '' : 's'}</span>
+              ) : null}
+            </p>
           ) : null}
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8 items-start">
-          <div className="w-full lg:w-[280px] shrink-0 bg-white shadow-sm border border-gray-100 sticky top-24 max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
+          {/* Desktop sidebar */}
+          <aside className="hidden lg:block w-[280px] shrink-0 bg-white shadow-sm border border-gray-100 sticky top-24 max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
             <div className="bg-[#2e6da4] text-white px-4 py-3 font-medium tracking-wide sticky top-0 z-10 flex items-center justify-between">
               <span>FILTERS</span>
-              {(active.group || active.article || active.purity || active.type) ? (
+              {activeCount > 0 ? (
                 <button
                   type="button"
                   className="text-[11px] uppercase tracking-wide opacity-90 hover:opacity-100"
-                  onClick={() => setActive({})}
+                  onClick={clearFilters}
                 >
                   Clear
                 </button>
               ) : null}
             </div>
-            <div className="p-5 space-y-8">
-              {!category ? (
-                <FilterGroup
-                  title="Type"
-                  items={filterOptions.type}
-                  selected={active.type}
-                  onSelect={(name) => setActive((prev) => ({ ...prev, type: name, group: undefined, article: undefined }))}
-                />
-              ) : null}
-              <FilterGroup
-                title="Group"
-                items={filterOptions.group}
-                selected={active.group}
-                onSelect={(name) => setActive((prev) => ({ ...prev, group: name, article: undefined }))}
-              />
-              <FilterGroup
-                title="Article"
-                items={filterOptions.article}
-                selected={active.article}
-                onSelect={(name) => setActive((prev) => ({ ...prev, article: name }))}
-              />
-              <FilterGroup
-                title="Purity"
-                items={filterOptions.purity}
-                selected={active.purity}
-                onSelect={(name) => setActive((prev) => ({ ...prev, purity: name }))}
-              />
-            </div>
-          </div>
+            <FiltersBody
+              category={category}
+              filterOptions={filterOptions}
+              active={active}
+              setActive={setActive}
+            />
+          </aside>
 
-          <div className="flex-1 w-full">
-            {loading ? (
+          {/* Product grid — full width on mobile; keep layout stable while refreshing */}
+          <div className="flex-1 w-full min-w-0 relative">
+            {initialLoading ? (
               <div className="flex flex-col items-center justify-center py-32 text-center">
                 <div className="w-12 h-12 border-4 border-[#2e6da4] border-t-transparent rounded-full animate-spin mb-4" />
                 <p className="text-gray-400 font-medium">Loading live inventory...</p>
               </div>
-            ) : error ? (
+            ) : error && items.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 text-center px-4">
                 <h2 className="text-xl font-domine text-gray-500 mb-2">Catalog unavailable</h2>
                 <p className="text-gray-400 text-sm max-w-md">{error}</p>
@@ -253,15 +340,113 @@ export default function JewelleryListing({ category }: Props) {
                 </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div
+                className={`grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 transition-opacity duration-200 ${
+                  refreshing ? 'opacity-55' : 'opacity-100'
+                }`}
+              >
                 {items.map((product) => (
                   <ProductCard key={product.id || product.tag_number} product={product} />
                 ))}
               </div>
             )}
+            {refreshing && !initialLoading ? (
+              <div className="pointer-events-none absolute top-2 right-2 z-10">
+                <div className="w-6 h-6 border-2 border-[#2e6da4] border-t-transparent rounded-full animate-spin bg-white/80" />
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
+
+      {/* Mobile bottom Filters tab */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-[60] pointer-events-none">
+        <div
+          className="pointer-events-auto border-t border-gray-200 bg-white/95 backdrop-blur-sm shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+        >
+          <button
+            type="button"
+            onClick={() => setFiltersOpen(true)}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3.5 text-[#032C5E] font-semibold text-[13px] uppercase tracking-widest"
+            aria-haspopup="dialog"
+            aria-expanded={filtersOpen}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M4 5h16M7 12h10M10 19h4" strokeLinecap="round" />
+            </svg>
+            Filters
+            {activeCount > 0 ? (
+              <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-[#2e6da4] text-white text-[11px] font-bold flex items-center justify-center">
+                {activeCount}
+              </span>
+            ) : null}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile filters bottom sheet */}
+      {filtersOpen ? (
+        <div className="lg:hidden fixed inset-0 z-[70]" role="dialog" aria-modal="true" aria-label="Filters">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/40"
+            aria-label="Close filters"
+            onClick={() => setFiltersOpen(false)}
+          />
+          <div
+            className="absolute inset-x-0 bottom-0 max-h-[85vh] flex flex-col bg-white rounded-t-2xl shadow-2xl"
+            style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+          >
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 shrink-0">
+              <div className="flex items-center gap-3">
+                <span className="font-domine text-[#032C5E] text-lg font-bold">Filters</span>
+                {activeCount > 0 ? (
+                  <span className="text-[12px] text-gray-400">{activeCount} applied</span>
+                ) : null}
+              </div>
+              <div className="flex items-center gap-3">
+                {activeCount > 0 ? (
+                  <button
+                    type="button"
+                    onClick={clearFilters}
+                    className="text-[12px] font-semibold uppercase tracking-wide text-[#2e6da4]"
+                  >
+                    Clear
+                  </button>
+                ) : null}
+                <button
+                  type="button"
+                  onClick={() => setFiltersOpen(false)}
+                  className="w-9 h-9 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center"
+                  aria-label="Close"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="overflow-y-auto flex-1 overscroll-contain">
+              <FiltersBody
+                category={category}
+                filterOptions={filterOptions}
+                active={active}
+                setActive={setActive}
+              />
+            </div>
+            <div className="shrink-0 border-t border-gray-100 p-4 bg-white">
+              <button
+                type="button"
+                onClick={() => setFiltersOpen(false)}
+                className="w-full bg-[#032C5E] text-white font-bold text-[12px] uppercase tracking-widest py-3.5 rounded-full"
+              >
+                Show {refreshing ? '…' : total} result{total === 1 ? '' : 's'}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }

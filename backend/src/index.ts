@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -16,8 +17,12 @@ import testimonialsRoutes from './routes/testimonials.js';
 import standaloneBannerRoutes from './routes/standaloneBanner.js';
 import jewelleryCategoriesRoutes from './routes/jewelleryCategories.js';
 import jewelleryProductsRoutes from './routes/jewelleryProducts.js';
+import websiteImagesRoutes from './routes/websiteImages.js';
+import itemMetaRoutes from './routes/itemMeta.js';
 import catalogRoutes from './routes/catalog.js';
 import checkoutRoutes from './routes/checkout.js';
+import authRoutes from './routes/auth.js';
+import { requireAdmin } from './lib/customerAuth.js';
 import { UPLOADS_DIR } from './lib/upload.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -31,7 +36,8 @@ app.use(
     credentials: true,
   }),
 );
-app.use(express.json({ limit: '2mb' }));
+app.use(cookieParser());
+app.use(express.json({ limit: '8mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/uploads', express.static(UPLOADS_DIR));
@@ -40,6 +46,7 @@ app.get('/health', (_req, res) => {
   res.json({ ok: true, service: 'anagha-backend' });
 });
 
+app.use('/api/upload', requireAdmin);
 app.use('/api/upload/hero', heroRoutes);
 app.use('/api/upload/header', headerRoutes);
 app.use('/api/upload/categories', categoriesRoutes);
@@ -52,9 +59,13 @@ app.use('/api/upload/testimonials', testimonialsRoutes);
 app.use('/api/upload/standalone-banner', standaloneBannerRoutes);
 app.use('/api/upload/jewellery/categories', jewelleryCategoriesRoutes);
 app.use('/api/upload/jewellery/products', jewelleryProductsRoutes);
+app.use('/api/upload/jewellery/website-images', websiteImagesRoutes);
+app.use('/api/upload/jewellery/item-meta', itemMetaRoutes);
 
 // Live ERP inventory catalog (BFF) — multi-client via ERP_STORE_SLUG
 app.use('/api/catalog', catalogRoutes);
+// Customer email/password auth (website shoppers)
+app.use('/api/auth', authRoutes);
 // Checkout: reserve → PhonePe → ERP bill on success
 app.use('/api/checkout', checkoutRoutes);
 

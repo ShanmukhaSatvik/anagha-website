@@ -1,4 +1,5 @@
 import {
+  boolean,
   integer,
   jsonb,
   pgTable,
@@ -47,6 +48,22 @@ export const products = pgTable('products', {
     .defaultNow(),
 });
 
+/** Website shoppers (email/password). Separate from ERP POS staff auth. */
+export const websiteCustomers = pgTable('website_customers', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  email: text('email').notNull().unique(),
+  passwordHash: text('password_hash').notNull(),
+  name: text('name').notNull(),
+  mobile: text('mobile').notNull(),
+  isAdmin: boolean('is_admin').notNull().default(false),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
 /** Website checkout sessions (ERP customer created only after paid). */
 export const checkoutSessions = pgTable('checkout_sessions', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -55,6 +72,7 @@ export const checkoutSessions = pgTable('checkout_sessions', {
   inventoryId: text('inventory_id'),
   amount: text('amount').notNull(),
   currency: text('currency').notNull().default('INR'),
+  websiteCustomerId: uuid('website_customer_id'),
   customerName: text('customer_name'),
   customerMobile: text('customer_mobile'),
   customerEmail: text('customer_email'),

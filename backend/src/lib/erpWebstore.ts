@@ -8,7 +8,11 @@ function webstoreSecret() {
   return secret;
 }
 
-async function erpWebstore(path: string, body: Record<string, unknown>) {
+async function erpWebstore(
+  path: string,
+  body: Record<string, unknown>,
+  method: 'POST' | 'PUT' = 'POST',
+) {
   const { base, storeSlug, branchId } = getErpConfig();
   const url = `${base}/webstore/${encodeURIComponent(storeSlug)}${path}`;
   const payload = {
@@ -17,7 +21,7 @@ async function erpWebstore(path: string, body: Record<string, unknown>) {
   };
 
   const res = await fetch(url, {
-    method: 'POST',
+    method,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -63,4 +67,28 @@ export function completeOnErp(input: {
     paid_amount: input.paidAmount,
     customer: input.customer,
   });
+}
+
+export function uploadWebsiteImageOnErp(input: {
+  tagNumber: string;
+  file: string;
+  fileName?: string;
+}) {
+  const tag = encodeURIComponent(String(input.tagNumber || '').trim());
+  return erpWebstore(`/items/${tag}/website-images/upload`, {
+    file: input.file,
+    fileName: input.fileName,
+  });
+}
+
+export function setWebsiteImagesOnErp(input: {
+  tagNumber: string;
+  websiteImages: string[];
+}) {
+  const tag = encodeURIComponent(String(input.tagNumber || '').trim());
+  return erpWebstore(
+    `/items/${tag}/website-images`,
+    { website_images: input.websiteImages },
+    'PUT',
+  );
 }

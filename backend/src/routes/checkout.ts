@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { db } from '../db/index.js';
 import { checkoutSessions } from '../db/schema.js';
 import { reserveOnErp, releaseOnErp, completeOnErp } from '../lib/erpWebstore.js';
+import { requireCustomer } from '../lib/customerAuth.js';
 import {
   initiatePhonePePayment,
   verifyPhonePeWebhookChecksum,
@@ -94,17 +95,18 @@ async function finalizePaidSession(sessionId: string, paymentRef: string) {
   return updated;
 }
 
-/** POST /api/checkout/session — reserve ERP item + start PhonePe */
-router.post('/session', async (req: Request, res: Response) => {
+/** POST /api/checkout/session — reserve ERP item + start PhonePe (auth required). */
+router.post('/session', requireCustomer, async (req: Request, res: Response) => {
   try {
+    const customer = req.customer!;
     const tag = String(req.body.tag_number || '').trim().toUpperCase();
-    const name = String(req.body.customer_name || '').trim();
-    const mobile = String(req.body.customer_mobile || '').trim();
-    const email = String(req.body.customer_email || '').trim();
+    const name = customer.name;
+    const mobile = customer.mobile;
+    const email = customer.email;
 
     if (!tag) return res.status(400).json({ error: 'tag_number is required' });
     if (!name || !mobile) {
-      return res.status(400).json({ error: 'customer_name and customer_mobile are required' });
+      return res.status(400).json({ error: 'Account is missing name or mobile' });
     }
 
     const sessionId = uuidv4();
@@ -133,6 +135,7 @@ router.post('/session', async (req: Request, res: Response) => {
         inventoryId: line?.inventory_id || null,
         amount: String(amount),
         currency: 'INR',
+        websiteCustomerId: customer.id,
         customerName: name,
         customerMobile: mobile,
         customerEmail: email || null,

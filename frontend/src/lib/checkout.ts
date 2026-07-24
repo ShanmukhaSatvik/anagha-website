@@ -51,14 +51,10 @@ export function clearCartItem() {
   localStorage.removeItem(CART_KEY);
 }
 
-export async function createCheckoutSession(input: {
-  tag_number: string;
-  customer_name: string;
-  customer_mobile: string;
-  customer_email?: string;
-}) {
+export async function createCheckoutSession(input: { tag_number: string }) {
   const res = await fetch('/api/checkout/session', {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
   });
@@ -83,12 +79,27 @@ export async function fetchCheckoutSession(id: string) {
 export async function mockConfirmCheckout(sessionId: string) {
   const res = await fetch('/api/checkout/mock-confirm', {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ session_id: sessionId }),
   });
   const body = await res.json().catch(() => ({}));
   if (!res.ok) {
     throw new Error(body.error || 'Mock payment failed');
+  }
+  return body.data as CheckoutSession;
+}
+
+/** Release ERP hold after sandbox Failure (or user abort). */
+export async function cancelCheckoutSession(sessionId: string) {
+  const res = await fetch(`/api/checkout/session/${encodeURIComponent(sessionId)}/cancel`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(body.error || 'Could not cancel checkout');
   }
   return body.data as CheckoutSession;
 }
