@@ -6,6 +6,8 @@ import {
   text,
   timestamp,
   uuid,
+  real,
+  index,
 } from 'drizzle-orm/pg-core';
 
 /** Key/value CMS blobs (hero, header, offers, plans, etc.) */
@@ -56,6 +58,9 @@ export const websiteCustomers = pgTable('website_customers', {
   name: text('name').notNull(),
   mobile: text('mobile').notNull(),
   isAdmin: boolean('is_admin').notNull().default(false),
+  shippingAddress: jsonb('shipping_address').default({}),
+  cart: jsonb('cart').default([]),
+  wishlist: jsonb('wishlist').default([]),
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
     .defaultNow(),
@@ -81,6 +86,7 @@ export const checkoutSessions = pgTable('checkout_sessions', {
   erpBillId: text('erp_bill_id'),
   erpBillNumber: text('erp_bill_number'),
   paymentPayload: jsonb('payment_payload').default({}),
+  shippingAddress: jsonb('shipping_address').default({}),
   expiresAt: timestamp('expires_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
@@ -89,3 +95,26 @@ export const checkoutSessions = pgTable('checkout_sessions', {
     .notNull()
     .defaultNow(),
 });
+
+/** Background synced ERP catalog for fast sorted queries */
+export const cachedCatalogItems = pgTable('cached_catalog_items', {
+  tagNumber: text('tag_number').primaryKey(),
+  id: text('id'),
+  groupSlug: text('group_slug'),
+  typeSlug: text('type_slug'),
+  articleSlug: text('article_slug'),
+  metalType: text('metal_type'),
+  purity: text('purity'),
+  displayPrice: real('display_price'),
+  hasImage: boolean('has_image').default(false),
+  erpCreatedAt: timestamp('erp_created_at', { withTimezone: true }),
+  data: jsonb('data').notNull(), // The full ERP JSON object
+  syncedAt: timestamp('synced_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('group_price_idx').on(t.groupSlug, t.displayPrice),
+  index('type_price_idx').on(t.typeSlug, t.displayPrice),
+  index('article_price_idx').on(t.articleSlug, t.displayPrice),
+  index('group_date_idx').on(t.groupSlug, t.erpCreatedAt),
+  index('type_date_idx').on(t.typeSlug, t.erpCreatedAt),
+  index('article_date_idx').on(t.articleSlug, t.erpCreatedAt),
+]);

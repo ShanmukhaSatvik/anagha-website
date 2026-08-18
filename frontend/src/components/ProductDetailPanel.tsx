@@ -1,8 +1,11 @@
 'use client';
 
+import { useState } from 'react';
+
 import AddToCartButton from '@/components/AddToCartButton';
 import BuyNowButton from '@/components/BuyNowButton';
 import { formatDisplayPrice } from '@/lib/erpCatalog';
+import { useContactInfo } from '@/lib/contact';
 
 type Props = {
   name: string;
@@ -13,6 +16,9 @@ type Props = {
   netWeight?: number | string | null;
   grossWeight?: number | string | null;
   description?: string | null;
+  purity?: string | null;
+  metalType?: string | null;
+  group?: string | null;
 };
 
 export default function ProductDetailPanel({
@@ -24,7 +30,12 @@ export default function ProductDetailPanel({
   netWeight,
   grossWeight,
   description,
+  purity,
+  metalType,
+  group,
 }: Props) {
+  const { whatsapp, phone } = useContactInfo();
+  const [openSection, setOpenSection] = useState<string | null>('auth');
   // const [customizeOpen, setCustomizeOpen] = useState(false);
   const weight = netWeight ?? grossWeight;
   const weightLabel =
@@ -65,23 +76,44 @@ export default function ProductDetailPanel({
         <p className="text-gray-400 text-[11px]">MRP Incl. of all taxes</p>
       </div>
 
-      {weightLabel ? (
-        <div className="flex items-center gap-2 mb-5">
-          <span className="inline-flex items-center gap-1.5 bg-[#f5f0e8] border border-[#e0d5c0] rounded-full px-4 py-1.5 text-[13px] font-semibold text-[#7a5c2e]">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"
-              />
-            </svg>
-            Weight: {weightLabel}
-          </span>
+      <div className="bg-[#f9fafb] border border-gray-100 rounded-lg p-4 mb-6">
+        <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-[12px]">
+          <div className="flex flex-col">
+            <span className="text-gray-400 uppercase tracking-wider text-[10px] font-bold mb-0.5">Product Code</span>
+            <span className="font-medium text-[#222]">{tagNumber}</span>
+          </div>
+          {group && (
+            <div className="flex flex-col">
+              <span className="text-gray-400 uppercase tracking-wider text-[10px] font-bold mb-0.5">Category</span>
+              <span className="font-medium text-[#222] capitalize">{group.toLowerCase()}</span>
+            </div>
+          )}
+          {metalType && (
+            <div className="flex flex-col">
+              <span className="text-gray-400 uppercase tracking-wider text-[10px] font-bold mb-0.5">Metal</span>
+              <span className="font-medium text-[#222] capitalize">{metalType}</span>
+            </div>
+          )}
+          {purity && (
+            <div className="flex flex-col">
+              <span className="text-gray-400 uppercase tracking-wider text-[10px] font-bold mb-0.5">Purity</span>
+              <span className="font-medium text-[#222]">{purity}</span>
+            </div>
+          )}
+          {weightLabel && (
+            <div className="flex flex-col">
+              <span className="text-gray-400 uppercase tracking-wider text-[10px] font-bold mb-0.5">Weight</span>
+              <span className="font-medium text-[#222]">{weightLabel}</span>
+            </div>
+          )}
+          {description && description.trim() !== '' && description.length < 20 && (
+            <div className="flex flex-col">
+              <span className="text-gray-400 uppercase tracking-wider text-[10px] font-bold mb-0.5">Design Code</span>
+              <span className="font-medium text-[#222]">{description.trim()}</span>
+            </div>
+          )}
         </div>
-      ) : null}
-
-      <p className="text-[12px] text-gray-600 mb-6 font-medium leading-relaxed">{desc}</p>
+      </div>
 
       {/* Customize / size — revisit later
       <button
@@ -89,10 +121,10 @@ export default function ProductDetailPanel({
         onClick={() => setCustomizeOpen((v) => !v)}
         className="w-full border-y border-gray-100 py-3 mb-6 flex items-center justify-between group"
       >
-        <span className="text-[12px] text-[#222] font-bold uppercase tracking-wide group-hover:text-[#2e6da4] transition-colors">
+        <span className="text-[12px] text-[#222] font-bold uppercase tracking-wide group-hover:text-[#032C5E] transition-colors">
           Customize this design
         </span>
-        <span className="text-lg text-gray-400 group-hover:text-[#2e6da4] transition-colors">
+        <span className="text-lg text-gray-400 group-hover:text-[#032C5E] transition-colors">
           {customizeOpen ? '−' : '+'}
         </span>
       </button>
@@ -115,7 +147,7 @@ export default function ProductDetailPanel({
             </svg>
           </div>
         </div>
-        <button type="button" className="text-[12px] text-[#2e6da4] hover:underline whitespace-nowrap">
+        <button type="button" className="text-[12px] text-[#032C5E] hover:underline whitespace-nowrap">
           Not sure about the size?
         </button>
       </div>
@@ -126,7 +158,7 @@ export default function ProductDetailPanel({
           <BuyNowButton item={cartItem} className="flex-1" />
         ) : null}
         <a
-          href={`https://wa.me/?text=${whatsappText}`}
+          href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}?text=${whatsappText}`}
           target="_blank"
           rel="noopener noreferrer"
           className="flex flex-1 items-center justify-center gap-2 bg-[#25D366] text-white font-bold py-3 px-4 rounded-full hover:bg-[#128C7E] transition-colors uppercase tracking-widest text-[11px] sm:text-[12px]"
@@ -146,31 +178,76 @@ export default function ProductDetailPanel({
         </div>
         <p className="text-[12px] text-gray-500">
           Schedule video call{' '}
-          <a href={`https://wa.me/?text=${whatsappText}`} className="text-[#2e6da4] font-medium underline underline-offset-4">
+          <a href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}?text=${whatsappText}`} target="_blank" rel="noopener noreferrer" className="text-[#032C5E] font-medium underline underline-offset-4">
             Book Now
           </a>
+        </p>
+      </div>
+
+      <div className="mb-6">
+        <h3 className="text-[13px] font-bold text-[#222] mb-2 uppercase tracking-widest border-b border-gray-200 pb-2">Description</h3>
+        <p className="text-[12px] text-gray-600 leading-relaxed">
+          {description && description.trim() !== '' && description.length >= 20 ? description.trim() : `Premium ${name} crafted with the finest materials. This exquisite piece features intricate detailing, perfect for elevating your everyday style or making a statement at special events.`}
         </p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 border-t border-b border-gray-300 pt-1.5 pb-1.5 mb-6">
         <div className="flex flex-col items-center text-center">
           <div className="w-7 h-7 flex items-center justify-center mb-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#2e6da4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#032C5E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
           </div>
-          <span className="text-[11px] text-[#2e6da4] uppercase font-bold leading-tight px-1 tracking-tight">
+          <span className="text-[11px] text-[#032C5E] uppercase font-bold leading-tight px-1 tracking-tight">
             Lifetime Exchange &amp; Buy-Back
           </span>
         </div>
         <div className="flex flex-col items-center text-center border-l border-gray-300">
           <div className="w-7 h-7 flex items-center justify-center mb-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#2e6da4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#032C5E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
           </div>
-          <span className="text-[11px] text-[#2e6da4] uppercase font-bold tracking-tight">Certified Jewellery</span>
+          <span className="text-[11px] text-[#032C5E] uppercase font-bold tracking-tight">Certified Jewellery</span>
         </div>
+      </div>
+
+      {/* Accordion Sections */}
+      <div className="mt-8 border-t border-gray-200">
+
+        {/* Section 2: Authenticity Guarantee */}
+        <div className="border-b border-gray-200">
+          <button
+            type="button"
+            className="w-full py-4 flex items-center justify-between text-left group"
+            onClick={() => setOpenSection(openSection === 'auth' ? null : 'auth')}
+          >
+            <span className="text-[14px] font-bold text-[#222] uppercase tracking-wide group-hover:text-[#032C5E] transition-colors">
+              Authenticity Guarantee
+            </span>
+            <span className="text-gray-400 group-hover:text-[#032C5E] transition-colors font-medium text-lg">
+              {openSection === 'auth' ? '−' : '+'}
+            </span>
+          </button>
+          {openSection === 'auth' && (
+            <div className="pb-5 pt-1 text-[13px] text-gray-600 leading-relaxed">
+              <p className="mb-2">Every piece of Anagha Jewellery is strictly quality-checked and certified.</p>
+              <ul className="list-disc pl-4 space-y-1">
+                <li><strong>Premium Silver:</strong> Minimum 92.5% purity guaranteed.</li>
+                <li><strong>Quality Craftsmanship:</strong> Handcrafted with precision and care.</li>
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+        <p className="text-[12px] text-gray-500 font-medium">
+          Any Questions? Please feel free to reach us at:{' '}
+          <a href={`tel:${phone.replace(/[^0-9]/g, '')}`} className="text-[#032C5E] font-bold hover:underline whitespace-nowrap">
+            {phone}
+          </a>
+        </p>
       </div>
 
     </div>

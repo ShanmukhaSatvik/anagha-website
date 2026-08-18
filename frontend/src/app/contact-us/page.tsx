@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { useContactInfo } from '@/lib/contact';
 
 const WhatsAppIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -17,13 +18,34 @@ const PinIcon = () => (
   </svg>
 );
 
-export default function ContactUsPage() {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', query: '' });
+export default function ContactUs() {
+  const { whatsapp, email, phone, corporateEmail, salesEmail, addresses } = useContactInfo();
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', query: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    setErrorMsg('');
+    try {
+      const res = await fetch('/api/site/contact/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        setErrorMsg('Something went wrong. Please try again.');
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      setErrorMsg('Failed to connect to the server.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,12 +77,12 @@ export default function ContactUsPage() {
               <div>
                 <h3 className="text-[#f1592a] font-semibold text-[15px] mb-4 font-domine">Customer Delight</h3>
                 <div className="space-y-2 text-[14px] text-[#4a4a4a] leading-relaxed">
-                  <p>Call us at <strong>18004190066</strong> (9 am–10 pm, 7 days a week)</p>
+                  <p>Call us at <strong>{phone}</strong> (9 am–10 pm, 7 days a week)</p>
                   <p className="text-gray-400">or</p>
-                  <p>
+                  <p className="text-[13px] text-gray-500 font-sans mt-2">
                     Write to us at{' '}
-                    <a href="mailto:an@anagha.com" className="text-[#4a4a4a] hover:underline">
-                      an@anagha.com
+                    <a href={`mailto:${email}`} className="text-[#4a4a4a] hover:underline">
+                      {email}
                     </a>
                   </p>
                 </div>
@@ -70,10 +92,15 @@ export default function ContactUsPage() {
               <div>
                 <h3 className="text-[#f1592a] font-semibold text-[15px] mb-4 font-domine">WhatsApp Support</h3>
                 <div className="space-y-2 text-[14px] text-[#4a4a4a] leading-relaxed">
-                  <p>
+                  <p className="text-[13px] text-gray-500 font-sans">
                     Prefer chatting? Reach us directly on WhatsApp at{' '}
-                    <a href="https://wa.me/918004190066" target="_blank" rel="noopener noreferrer" className="text-[#25D366] font-semibold hover:underline">
-                      +91 80041 90066
+                    <a
+                      href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#f1592a] font-bold hover:underline"
+                    >
+                      {whatsapp}
                     </a>
                   </p>
                   <p className="text-gray-500 text-[13px]">
@@ -88,46 +115,38 @@ export default function ContactUsPage() {
                 <div className="space-y-2 text-[14px] text-[#4a4a4a] leading-relaxed">
                   <p>
                     For all corporate sales related queries please write to us at{' '}
-                    <a href="mailto:corporate.sales@anagha.com" className="text-[#4a4a4a] hover:underline">
-                      corporate.sales@anagha.com
+                    <a href={`mailto:${corporateEmail}`} className="text-[#4a4a4a] hover:underline">
+                      {corporateEmail}
                     </a>
                   </p>
                   <p>
                     For bulk enquiries or sales associations please contact{' '}
-                    <a href="mailto:sales@anagha.com" className="text-[#4a4a4a] hover:underline">
-                      sales@anagha.com
+                    <a href={`mailto:${salesEmail}`} className="text-[#4a4a4a] hover:underline">
+                      {salesEmail}
                     </a>
                   </p>
                 </div>
               </div>
 
-              {/* Office Address */}
-              <div>
-                <h3 className="text-[#f1592a] font-semibold text-[15px] mb-4 font-domine">Office Address</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-[13.5px] text-[#4a4a4a] leading-relaxed">
-                  <div>
-                    <div className="flex items-start gap-1.5 mb-2">
-                      <PinIcon />
-                      <span className="text-[#4a4a4a] font-semibold">Hyderabad</span>
-                    </div>
-                    <p>Anagha Jewellery and Lifestyle Limited</p>
-                    <p>No. 8-2-293/82/A/270, Road No. 36,</p>
-                    <p>Jubilee Hills, Hyderabad – 500033</p>
-                    <p>Telangana, India</p>
-                  </div>
-                  <div>
-                    <div className="flex items-start gap-1.5 mb-2">
-                      <PinIcon />
-                      <span className="text-[#4a4a4a] font-semibold">Mumbai</span>
-                    </div>
-                    <p>Anagha Jewellery and Lifestyle Limited</p>
-                    <p>302, Dhantak Plaza, Makwana Road,</p>
-                    <p>Marol, Andheri (East)</p>
-                    <p>Mumbai-59</p>
-                    <p>Maharashtra, India</p>
+              {/* Office Addresses */}
+              {addresses && addresses.length > 0 && (
+                <div>
+                  <h3 className="text-[#f1592a] font-semibold text-[15px] mb-4 font-domine">Office Addresses</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-[13.5px] text-[#4a4a4a] leading-relaxed">
+                    {addresses.map((addr, idx) => (
+                      <div key={idx}>
+                        <div className="flex items-start gap-1.5 mb-2">
+                          <PinIcon />
+                          <span className="text-[#4a4a4a] font-semibold">Address {idx + 1}</span>
+                        </div>
+                        {addr.split('\n').map((line, i) => (
+                          <p key={i}>{line}</p>
+                        ))}
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </div>
+              )}
 
             </div>
 
@@ -147,7 +166,7 @@ export default function ContactUsPage() {
                   </div>
                   <p className="text-[16px] font-semibold text-[#222]">Thank you!</p>
                   <p className="text-[14px] text-gray-500">We've received your query and will get back to you within 24 hours.</p>
-                  <button onClick={() => { setSubmitted(false); setForm({ name:'', email:'', phone:'', query:'' }); }} className="mt-2 text-[13px] text-[#f1592a] underline">Submit another</button>
+                  <button onClick={() => { setSubmitted(false); setFormData({ name:'', email:'', phone:'', query:'' }); }} className="mt-2 text-[13px] text-[#f1592a] underline">Submit another</button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6 text-[14px] text-[#4a4a4a]">
@@ -158,8 +177,8 @@ export default function ContactUsPage() {
                       type="text"
                       placeholder="Enter name"
                       required
-                      value={form.name}
-                      onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                      value={formData.name}
+                      onChange={e => setFormData(f => ({ ...f, name: e.target.value }))}
                       className="flex-1 border-0 border-b border-gray-200 outline-none py-2 text-[14px] text-[#222] placeholder-gray-300 focus:border-[#f1592a] transition-colors bg-transparent"
                     />
                   </div>
@@ -171,8 +190,8 @@ export default function ContactUsPage() {
                       type="email"
                       placeholder="Enter email"
                       required
-                      value={form.email}
-                      onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                      value={formData.email}
+                      onChange={e => setFormData(f => ({ ...f, email: e.target.value }))}
                       className="flex-1 border-0 border-b border-gray-200 outline-none py-2 text-[14px] text-[#222] placeholder-gray-300 focus:border-[#f1592a] transition-colors bg-transparent"
                     />
                   </div>
@@ -185,8 +204,8 @@ export default function ContactUsPage() {
                       <input
                         type="tel"
                         placeholder="Enter phone"
-                        value={form.phone}
-                        onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
+                        value={formData.phone}
+                        onChange={e => setFormData(f => ({ ...f, phone: e.target.value }))}
                         className="flex-1 border-0 outline-none py-2 text-[14px] text-[#222] placeholder-gray-300 bg-transparent"
                       />
                     </div>
@@ -196,24 +215,30 @@ export default function ContactUsPage() {
                   <div className="flex items-start gap-6">
                     <label className="w-[80px] shrink-0 pt-2 text-[#4a4a4a] font-medium">Query</label>
                     <textarea
+                      required
                       placeholder="Enter query"
                       rows={4}
-                      value={form.query}
-                      onChange={e => setForm(f => ({ ...f, query: e.target.value }))}
+                      value={formData.query}
+                      onChange={(e) => setFormData({ ...formData, query: e.target.value })}
                       className="flex-1 border-0 border-b border-gray-200 outline-none py-2 text-[14px] text-[#222] placeholder-gray-300 focus:border-[#f1592a] transition-colors resize-none bg-transparent"
-                    />
+                    ></textarea>
                   </div>
+
+                  {errorMsg && (
+                    <div className="text-red-500 text-sm font-semibold">{errorMsg}</div>
+                  )}
 
                   <button
                     type="submit"
-                    className="w-full bg-[#f1592a] text-white py-4 font-bold text-[13px] tracking-widest uppercase hover:bg-[#d04a20] transition-colors rounded-sm"
+                    disabled={loading}
+                    className="w-full bg-[#f1592a] text-white py-4 font-bold text-[13px] tracking-widest uppercase hover:bg-[#d04a20] transition-colors rounded-sm disabled:opacity-50"
                   >
-                    Submit
+                    {loading ? 'Sending...' : 'Submit'}
                   </button>
 
                   {/* WhatsApp Banner — below submit */}
                   <a
-                    href="https://wa.me/918004190066"
+                    href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="mt-2 flex items-center justify-between gap-4 bg-[#25D366] rounded-xl px-5 py-4 shadow hover:shadow-md hover:brightness-105 transition-all duration-200 group"

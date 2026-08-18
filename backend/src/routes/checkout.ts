@@ -10,6 +10,7 @@ import {
   verifyRazorpayPaymentSignature,
   fetchRazorpayPayment,
 } from '../lib/razorpay.js';
+import { sendOrderInvoice } from '../lib/mailer.js';
 
 const router = Router();
 
@@ -240,6 +241,7 @@ router.post('/session', requireCustomer, async (req: Request, res: Response) => 
         customerName: name,
         customerMobile: mobile,
         customerEmail: email || null,
+        shippingAddress: customer.shippingAddress || {},
         paymentPayload: { cart_tags: uniqueTags, items: lines },
         expiresAt,
       });
@@ -427,6 +429,15 @@ router.post('/session/:id/confirm-razorpay', async (req: Request, res: Response)
     }
 
     const updated = await finalizePaidSession(session.id, paymentId);
+    
+    if (updated.customerEmail) {
+      const prevPayload = typeof updated.paymentPayload === 'object' ? (updated.paymentPayload as any) : {};
+      const items = Array.isArray(prevPayload.items) ? prevPayload.items : [];
+      sendOrderInvoice(updated, items).catch(err => {
+        console.error('[checkout] Error triggering invoice email', err);
+      });
+    }
+
     res.json({ data: publicSession(updated) });
   } catch (err) {
     handle(err, res);

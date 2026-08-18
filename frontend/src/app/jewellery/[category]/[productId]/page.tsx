@@ -46,11 +46,15 @@ export default async function ProductDetailPage({
   }
 
   const groupSlug = product.group_slug || category;
-  const gallery: string[] = Array.isArray(product.website_images) && product.website_images.length
-    ? product.website_images
-    : product.image_url
-      ? [product.image_url]
-      : [];
+  
+  const gallery: string[] = [];
+  if (product.pos_image_url) gallery.push(product.pos_image_url);
+  if (product.image_url && product.image_url !== product.pos_image_url) gallery.push(product.image_url);
+  if (Array.isArray(product.website_images)) {
+    product.website_images.forEach((img: string) => {
+      if (!gallery.includes(img)) gallery.push(img);
+    });
+  }
 
   return (
     <main className="w-full bg-white min-h-screen font-sans pb-20">
@@ -69,18 +73,21 @@ export default async function ProductDetailPage({
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 mt-8">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
           <div className="w-full lg:w-[45%] flex flex-col items-center">
-            <ProductGallery images={gallery} alt={product.name} />
+            <ProductGallery images={gallery} alt={product.name} product={product} />
           </div>
 
           <ProductDetailPanel
             name={product.name}
             tagNumber={product.tag_number}
             displayPrice={product.display_price}
-            imageUrl={product.image_url}
+            imageUrl={gallery[0] || null}
             groupSlug={groupSlug}
             netWeight={product.net_weight}
             grossWeight={product.gross_weight}
             description={product.description}
+            purity={product.purity}
+            metalType={product.metal_type}
+            group={product.group}
           />
         </div>
       </div>

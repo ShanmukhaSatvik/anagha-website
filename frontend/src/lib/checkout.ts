@@ -147,6 +147,25 @@ export function clearCart() {
   emitCartChanged();
 }
 
+export function mergeCart(remoteCart: unknown[]): CheckoutCartItem[] {
+  const remote = normalizeCart(remoteCart);
+  const local = loadCart();
+  
+  const map = new Map<string, CheckoutCartItem>();
+  // Local overwrites remote for the same item tag, but we merge both.
+  for (const item of remote) {
+    map.set(item.tag_number, item);
+  }
+  for (const item of local) {
+    map.set(item.tag_number, item);
+  }
+  
+  const merged = Array.from(map.values());
+  persistCart(merged);
+  return merged;
+}
+
+
 /** @deprecated Use addToCart / loadCart. Kept for older call sites. */
 export function saveCartItem(item: CheckoutCartItem) {
   addToCart(item);
@@ -165,6 +184,7 @@ export function clearCartItem() {
 export async function createCheckoutSession(input: {
   tag_number?: string;
   tag_numbers?: string[];
+  shippingAddress?: any;
 }) {
   const tags = (input.tag_numbers?.length
     ? input.tag_numbers
@@ -175,13 +195,16 @@ export async function createCheckoutSession(input: {
     .map((t) => String(t || '').trim().toUpperCase())
     .filter(Boolean);
 
+  const payload: any = tags.length === 1 ? { tag_number: tags[0] } : { tag_numbers: tags };
+  if (input.shippingAddress) {
+    payload.shippingAddress = input.shippingAddress;
+  }
+
   const res = await fetch('/api/checkout/session', {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(
-      tags.length === 1 ? { tag_number: tags[0] } : { tag_numbers: tags },
-    ),
+    body: JSON.stringify(payload),
   });
   const body = await res.json().catch(() => ({}));
   if (!res.ok) {
