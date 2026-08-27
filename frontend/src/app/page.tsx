@@ -1,5 +1,3 @@
-import { readFile } from 'node:fs/promises';
-import path from 'node:path';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import Categories from '@/components/Categories';
@@ -11,39 +9,64 @@ import Testimonials from '@/components/Testimonials';
 import AboutCompany from '@/components/AboutCompany';
 import PromiseSection from '@/components/Promise';
 import Footer from '@/components/Footer';
+
+const EMPTY_LANDING = {
+  hero: null,
+  goldCategories: [],
+  silverCategories: [],
+  offers: [],
+  landing_visibility: {},
+};
+
 async function getMeta() {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.BACKEND_URL || 'http://localhost:4001';
   try {
-    const raw = await readFile(
-      path.join(process.cwd(), 'public', 'uploads', 'metadata.json'),
-      'utf8'
-    );
-    return JSON.parse(raw);
+    const res = await fetch(`${API_URL}/api/site/landing/content`, {
+      cache: 'no-store',
+    });
+    if (!res.ok) return EMPTY_LANDING;
+    return await res.json();
   } catch {
-    return { hero: null, goldCategories: [], silverCategories: [], offers: [] };
+    return EMPTY_LANDING;
   }
 }
 
-export default async function Home() {
+import { Suspense } from 'react';
+
+async function LandingContent() {
   const meta = await getMeta();
+  const visibility = meta.landing_visibility || {};
 
   return (
     <>
-      <Header />
-      <main className="flex flex-col gap-y-8 md:gap-y-12 pb-8 md:pb-12 overflow-x-clip w-full max-w-[100vw]">
-        <Hero />
+      {!visibility.hideHero && <Hero meta={meta.hero} />}
+      
+      {!visibility.hideCategories && (
         <Categories
           goldLive={meta.goldCategories || []}
           silverLive={meta.silverCategories || []}
           goldPlan={meta.goldPlan}
           silverPlan={meta.silverPlan}
+          hideGoldPlan={visibility.hideGoldPlan}
+          hideSilverPlan={visibility.hideSilverPlan}
         />
-        <Offers live={meta.offers || []} />
+      )}
+      
+      {!visibility.hideOffers && <Offers live={meta.offers || []} />}
+      
+      {!visibility.hideCollections && (
         <LatestCollections live={meta.collections || []} btnLink={meta.collectionsBtnLink} />
+      )}
+      
+      {!visibility.hideCurated && (
         <CuratedStyles liveSlots={meta.curatedSlots} liveTitles={meta.curatedTitles} />
+      )}
 
+      {!visibility.hideDesignLed && (
         <DesignLed liveImages={meta.designLedImages} liveLabels={meta.designLedLabels} />
+      )}
 
-        {/* Standalone Banner Section */}
+      {!visibility.hideBanner && (
         <section className="w-full">
           <img 
             src={meta.standaloneBanner ? `/uploads/${meta.standaloneBanner}` : "/images/banner_collection.webp"}
@@ -52,7 +75,9 @@ export default async function Home() {
             draggable={false}
           />
         </section>
+      )}
 
+      {!visibility.hideTestimonials && (
         <Testimonials 
           live={{
             images: meta.testimonialsImages || [],
@@ -60,8 +85,31 @@ export default async function Home() {
             texts:  meta.testimonialsTexts || [],
           }} 
         />
-        <AboutCompany />
-        <PromiseSection />
+      )}
+      
+      {!visibility.hideAbout && <AboutCompany data={meta.about} />}
+      
+      {!visibility.hidePromise && <PromiseSection labels={meta.promise} />}
+    </>
+  );
+}
+
+function LandingSkeleton() {
+  return (
+    <div className="w-full h-[60vh] bg-gray-50 flex items-center justify-center animate-pulse">
+      <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <>
+      <Header />
+      <main className="flex flex-col gap-y-0 md:gap-y-8 pb-8 md:pb-12 overflow-x-clip w-full max-w-[100vw]">
+        <Suspense fallback={<LandingSkeleton />}>
+          <LandingContent />
+        </Suspense>
       </main>
       <Footer />
     </>

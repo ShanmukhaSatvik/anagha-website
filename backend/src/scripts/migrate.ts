@@ -57,12 +57,16 @@ async function main() {
       name TEXT NOT NULL,
       mobile TEXT NOT NULL,
       is_admin BOOLEAN NOT NULL DEFAULT FALSE,
+      shipping_address JSONB DEFAULT '{}'::jsonb,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `;
 
   await sql`ALTER TABLE website_customers ADD COLUMN IF NOT EXISTS is_admin BOOLEAN NOT NULL DEFAULT FALSE`;
+  await sql`ALTER TABLE website_customers ADD COLUMN IF NOT EXISTS shipping_address JSONB DEFAULT '{}'::jsonb`;
+  await sql`ALTER TABLE website_customers ADD COLUMN IF NOT EXISTS cart JSONB DEFAULT '[]'::jsonb`;
+  await sql`ALTER TABLE website_customers ADD COLUMN IF NOT EXISTS wishlist JSONB DEFAULT '[]'::jsonb`;
 
   await sql`CREATE INDEX IF NOT EXISTS website_customers_email_idx ON website_customers (email)`;
 
@@ -134,10 +138,51 @@ async function main() {
     await sql`ALTER TABLE checkout_sessions DROP COLUMN phonepe_txn_id`;
   }
 
-  await sql`DROP INDEX IF EXISTS checkout_sessions_merchant_txn_idx`;
   await sql`CREATE INDEX IF NOT EXISTS checkout_sessions_status_idx ON checkout_sessions (status)`;
   await sql`CREATE INDEX IF NOT EXISTS checkout_sessions_razorpay_order_idx ON checkout_sessions (razorpay_order_id)`;
   await sql`CREATE INDEX IF NOT EXISTS checkout_sessions_customer_idx ON checkout_sessions (website_customer_id)`;
+
+  await sql`ALTER TABLE checkout_sessions ADD COLUMN IF NOT EXISTS shipping_address JSONB DEFAULT '{}'::jsonb`;
+  await sql`ALTER TABLE checkout_sessions ADD COLUMN IF NOT EXISTS items_amount TEXT`;
+  await sql`ALTER TABLE checkout_sessions ADD COLUMN IF NOT EXISTS shipping_amount TEXT DEFAULT '0'`;
+  await sql`ALTER TABLE checkout_sessions ADD COLUMN IF NOT EXISTS shipping_method_id TEXT`;
+  await sql`ALTER TABLE checkout_sessions ADD COLUMN IF NOT EXISTS shipping_method_name TEXT`;
+  await sql`ALTER TABLE checkout_sessions ADD COLUMN IF NOT EXISTS shipping_eta TEXT`;
+  await sql`ALTER TABLE checkout_sessions ADD COLUMN IF NOT EXISTS courier_name TEXT`;
+  await sql`ALTER TABLE checkout_sessions ADD COLUMN IF NOT EXISTS tracking_number TEXT`;
+  await sql`ALTER TABLE checkout_sessions ADD COLUMN IF NOT EXISTS tracking_url TEXT`;
+  await sql`ALTER TABLE checkout_sessions ADD COLUMN IF NOT EXISTS packed_at TIMESTAMPTZ`;
+  await sql`ALTER TABLE checkout_sessions ADD COLUMN IF NOT EXISTS shipped_at TIMESTAMPTZ`;
+  await sql`ALTER TABLE checkout_sessions ADD COLUMN IF NOT EXISTS delivered_at TIMESTAMPTZ`;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS cached_catalog_items (
+      tag_number TEXT PRIMARY KEY,
+      id TEXT,
+      group_slug TEXT,
+      type_slug TEXT,
+      article_slug TEXT,
+      metal_type TEXT,
+      purity TEXT,
+      display_price REAL,
+      has_image BOOLEAN DEFAULT false,
+      erp_created_at TIMESTAMPTZ,
+      data JSONB NOT NULL,
+      synced_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
+  await sql`CREATE INDEX IF NOT EXISTS group_price_idx ON cached_catalog_items (group_slug, display_price)`;
+  await sql`CREATE INDEX IF NOT EXISTS type_price_idx ON cached_catalog_items (type_slug, display_price)`;
+  await sql`CREATE INDEX IF NOT EXISTS article_price_idx ON cached_catalog_items (article_slug, display_price)`;
+  await sql`CREATE INDEX IF NOT EXISTS group_date_idx ON cached_catalog_items (group_slug, erp_created_at)`;
+  await sql`CREATE INDEX IF NOT EXISTS type_date_idx ON cached_catalog_items (type_slug, erp_created_at)`;
+  await sql`CREATE INDEX IF NOT EXISTS article_date_idx ON cached_catalog_items (article_slug, erp_created_at)`;
+
+  await sql`ALTER TABLE cached_catalog_items ADD COLUMN IF NOT EXISTS origin TEXT NOT NULL DEFAULT 'erp'`;
+  await sql`ALTER TABLE cached_catalog_items ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'available'`;
+  await sql`ALTER TABLE cached_catalog_items ADD COLUMN IF NOT EXISTS sold_at TIMESTAMPTZ`;
+  await sql`CREATE INDEX IF NOT EXISTS catalog_status_idx ON cached_catalog_items (status)`;
 
   console.log('Migration complete.');
 }

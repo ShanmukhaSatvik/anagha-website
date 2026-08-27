@@ -10,7 +10,9 @@ import {
   loadCart,
   type CheckoutCartItem,
 } from '@/lib/checkout';
-import { fetchMe, type WebsiteCustomer } from '@/lib/auth';
+import { fetchMe, type WebsiteCustomer, type ShippingAddress } from '@/lib/auth';
+import { fetchShippingMethods, type ShippingMethod } from '@/lib/shipping';
+import { quoteCartOffer, type OfferQuote } from '@/lib/cartOffers';
 
 async function loadItem(tag: string): Promise<CatalogItem | null> {
   try {
@@ -40,6 +42,11 @@ export default function CheckoutForm() {
 
   const [items, setItems] = useState<CatalogItem[]>([]);
   const [customer, setCustomer] = useState<WebsiteCustomer | null>(null);
+  const [addresses, setAddresses] = useState<ShippingAddress[]>([]);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const [shippingMethods, setShippingMethods] = useState<ShippingMethod[]>([]);
+  const [shippingMethodId, setShippingMethodId] = useState<string>('');
+  const [quote, setQuote] = useState<OfferQuote | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -65,6 +72,24 @@ export default function CheckoutForm() {
         return;
       }
       setCustomer(me);
+
+      const methods = await fetchShippingMethods().catch(() => []);
+      if (cancelled) return;
+      setShippingMethods(methods);
+      if (methods.length) setShippingMethodId(methods[0].id);
+      
+      let existing: ShippingAddress[] = [];
+      if (Array.isArray(me.shippingAddress)) {
+        existing = me.shippingAddress;
+      } else if (me.shippingAddress && (me.shippingAddress as ShippingAddress).pincode) {
+        existing = [me.shippingAddress as ShippingAddress];
+      }
+      setAddresses(existing);
+      
+      if (existing.length > 0) {
+        const defaultAddr = existing.find((a: ShippingAddress) => a.isDefault) || existing[0];
+        setSelectedAddressId(defaultAddr.id || JSON.stringify(defaultAddr));
+      }
 
       const tags = tagFromQuery
         ? [tagFromQuery]
@@ -101,7 +126,21 @@ export default function CheckoutForm() {
     };
   }, [tagFromQuery, router]);
 
-  const total = useMemo(
+  useEffect(() => {
+    let cancelled = false;
+    if (!items.length) {
+      setQuote(null);
+      return;
+    }
+    quoteCartOffer(items.map((item) => item.tag_number)).then((next) => {
+      if (!cancelled) setQuote(next);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [items]);
+
+  const subtotal = useMemo(
     () =>
       items.reduce((sum, item) => {
         const price = Number(item.display_price);
@@ -109,15 +148,37 @@ export default function CheckoutForm() {
       }, 0),
     [items],
   );
+  const discount = quote?.discount || 0;
+  const itemsAmount = quote ? quote.items_amount : subtotal;
+  const freeTags = new Set(quote?.applied?.free_tags || []);
+
+  const shippingCharge = useMemo(() => {
+    const method = shippingMethods.find((m) => m.id === shippingMethodId);
+    return method ? Number(method.charge) || 0 : 0;
+  }, [shippingMethods, shippingMethodId]);
+
+  const payable = itemsAmount + shippingCharge;
 
   async function onPay() {
     if (!items.length || !customer || submitting) return;
+    if (!selectedAddressId) {
+      setError('Please select a shipping address before proceeding.');
+      return;
+    }
+    if (shippingMethods.length && !shippingMethodId) {
+      setError('Please select a shipping method.');
+      return;
+    }
     setSubmitting(true);
     setError(null);
+
+    const selectedAddr = addresses.find(a => (a.id || JSON.stringify(a)) === selectedAddressId);
 
     try {
       const { session, payment } = await createCheckoutSession({
         tag_numbers: items.map((item) => item.tag_number),
+        shippingAddress: selectedAddr,
+        shipping_method_id: shippingMethodId || undefined,
       });
 
       if (payment?.mode !== 'razorpay' || !session?.id) {
@@ -162,11 +223,97 @@ export default function CheckoutForm() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 md:px-8 py-10">
-      <h1 className="font-domine text-[28px] text-[#032C5E] font-bold mb-8">Checkout</h1>
+      <h1 className="font-domine text-[24px] sm:text-[28px] text-[#032C5E] font-bold mb-8">Checkout</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
         <div className="lg:col-span-3 space-y-5">
           <div className="rounded-xl border border-gray-100 bg-[#fafafa] p-5 space-y-3">
+            <div className="flex justify-between items-center border-b border-gray-200 pb-2 mb-3">
+              <h2 className="text-sm font-bold text-[#032C5E] uppercase tracking-wide">
+                Shipping Address
+              </h2>
+              <Link
+                href={`/account/address?next=${encodeURIComponent('/checkout')}`}
+                className="text-[11px] font-bold text-teal-600 hover:text-teal-700 uppercase tracking-widest border border-teal-200 hover:border-teal-300 rounded px-2 py-1 transition-colors"
+              >
+                + Add New
+              </Link>
+            </div>
+            
+            {addresses.length === 0 ? (
+              <div className="text-sm text-gray-500 py-2">
+                You do not have any saved addresses. <br/>
+                <Link href={`/account/address?next=${encodeURIComponent('/checkout')}`} className="text-teal-600 underline font-medium mt-1 inline-block">Add an address now</Link>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {addresses.map((addr) => {
+                  const addrId = addr.id || JSON.stringify(addr);
+                  return (
+                    <label key={addrId} className={`flex gap-3 p-3 rounded-lg border cursor-pointer transition-all ${selectedAddressId === addrId ? 'border-teal-500 bg-teal-50/30 ring-1 ring-teal-500' : 'border-gray-200 hover:border-teal-200 bg-white'}`}>
+                      <input 
+                        type="radio" 
+                        name="shippingAddress" 
+                        className="mt-1 w-4 h-4 text-teal-600 border-gray-300 focus:ring-teal-500" 
+                        checked={selectedAddressId === addrId}
+                        onChange={() => setSelectedAddressId(addrId)}
+                      />
+                      <div className="text-sm text-gray-600 flex-1">
+                        <p className="font-bold text-gray-900">{addr.recipientName || customer.name}</p>
+                        <p>{addr.addressLine || addr.street}</p>
+                        <p>{[addr.locality, addr.city, addr.state, addr.pincode].filter(Boolean).join(', ')}</p>
+                        <p className="mt-1 text-gray-500">Mobile: {addr.mobile || customer.mobile}</p>
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {shippingMethods.length ? (
+            <div className="rounded-xl border border-gray-100 bg-[#fafafa] p-5 space-y-3">
+              <h2 className="text-sm font-bold text-[#032C5E] uppercase tracking-wide border-b border-gray-200 pb-2 mb-3">
+                Shipping method
+              </h2>
+              <div className="space-y-3">
+                {shippingMethods.map((method) => (
+                  <label
+                    key={method.id}
+                    className={`flex gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
+                      shippingMethodId === method.id
+                        ? 'border-teal-500 bg-teal-50/30 ring-1 ring-teal-500'
+                        : 'border-gray-200 hover:border-teal-200 bg-white'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="shippingMethod"
+                      className="mt-1 w-4 h-4 text-teal-600 border-gray-300 focus:ring-teal-500"
+                      checked={shippingMethodId === method.id}
+                      onChange={() => setShippingMethodId(method.id)}
+                    />
+                    <div className="flex-1 text-sm">
+                      <div className="flex justify-between gap-3">
+                        <p className="font-bold text-gray-900">{method.name}</p>
+                        <p className="font-medium text-[#222]">
+                          {method.charge > 0 ? formatDisplayPrice(method.charge) : 'Free'}
+                        </p>
+                      </div>
+                      {method.eta ? (
+                        <p className="text-gray-500 mt-0.5">{method.eta}</p>
+                      ) : null}
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          <div className="rounded-xl border border-gray-100 bg-[#fafafa] p-5 space-y-3">
+            <h2 className="text-sm font-bold text-[#032C5E] uppercase tracking-wide border-b border-gray-200 pb-2 mb-3">
+              Contact Info
+            </h2>
             <div className="flex justify-between gap-4 text-sm">
               <span className="text-gray-500">Name</span>
               <span className="font-medium text-[#222] text-right">{customer.name}</span>
@@ -177,7 +324,7 @@ export default function CheckoutForm() {
             </div>
             <div className="flex justify-between gap-4 text-sm">
               <span className="text-gray-500">Email</span>
-              <span className="font-medium text-[#222] text-right">{customer.email}</span>
+              <span className="font-medium text-[#222] text-right break-all min-w-0">{customer.email}</span>
             </div>
           </div>
 
@@ -214,15 +361,77 @@ export default function CheckoutForm() {
                     <p className="text-[11px] text-gray-400 uppercase">Tag {item.tag_number}</p>
                     <p className="text-sm font-medium text-[#222] leading-snug mt-1">{item.name}</p>
                     <p className="text-sm font-bold text-[#222] mt-2">
-                      {formatDisplayPrice(item.display_price)}
+                      {freeTags.has(item.tag_number) ? (
+                        <span>
+                          <span className="line-through text-gray-400 font-medium mr-2">
+                            {formatDisplayPrice(item.display_price)}
+                          </span>
+                          Free
+                        </span>
+                      ) : (
+                        formatDisplayPrice(item.display_price)
+                      )}
                     </p>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="flex justify-between text-base font-bold text-[#222] border-t border-gray-200 pt-3 mt-5">
+            <div className="mt-5 space-y-2 border-t border-gray-200 pt-4 text-[13px] text-gray-600">
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span className="font-medium text-[#222]">{formatDisplayPrice(subtotal)}</span>
+              </div>
+              {discount > 0 ? (
+                <div className="flex justify-between text-[#00a699]">
+                  <span>{quote?.applied?.name || 'Offer'}</span>
+                  <span className="font-medium">-{formatDisplayPrice(discount)}</span>
+                </div>
+              ) : null}
+              <div className="flex justify-between">
+                <span>Shipping</span>
+                <span className={`font-medium ${shippingCharge > 0 ? 'text-[#222]' : 'text-[#00a699]'}`}>
+                  {shippingCharge > 0 ? formatDisplayPrice(shippingCharge) : 'Free'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span>Taxes</span>
+                <span className="font-medium text-[#222]">Included</span>
+              </div>
+            </div>
+
+            <div className="flex justify-between text-base font-bold text-[#222] border-t border-gray-200 pt-3 mt-3">
               <span>Total</span>
-              <span>{formatDisplayPrice(total)}</span>
+              <span>{formatDisplayPrice(payable)}</span>
+            </div>
+          </div>
+
+          {/* Trust Badges */}
+          <div className="mt-6 border border-gray-100 rounded-lg p-5 bg-[#fafafa]">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center text-teal-600 shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-[12px] font-bold text-[#032C5E] uppercase tracking-wide">100% Secure Payments</p>
+                  <p className="text-[11px] text-gray-500 mt-0.5">Protected by Razorpay encryption</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-[12px] font-bold text-[#032C5E] uppercase tracking-wide">Insured Shipping</p>
+                  <p className="text-[11px] text-gray-500 mt-0.5">Free fast delivery</p>
+                </div>
+              </div>
             </div>
           </div>
         </aside>

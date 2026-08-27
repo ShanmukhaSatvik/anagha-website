@@ -9,6 +9,8 @@ import heroRoutes from './routes/hero.js';
 import headerRoutes, { getHeaderSelection } from './routes/header.js';
 import groupImagesRoutes, { getGroupImages } from './routes/groupImages.js';
 import siteInvoiceRoutes from './routes/siteInvoice.js';
+import landingConfigRoutes from './routes/landingConfig.js';
+import policiesConfigRoutes from './routes/policiesConfig.js';
 import categoriesRoutes from './routes/categories.js';
 import offerPlanRoutes from './routes/offerPlan.js';
 import offersRoutes from './routes/offers.js';
@@ -21,6 +23,14 @@ import jewelleryCategoriesRoutes from './routes/jewelleryCategories.js';
 import jewelleryProductsRoutes from './routes/jewelleryProducts.js';
 import websiteImagesRoutes from './routes/websiteImages.js';
 import itemMetaRoutes from './routes/itemMeta.js';
+import erpVisibilityRoutes from './routes/erpVisibility.js';
+import contactInfoRoutes from './routes/contactInfo.js';
+import searchSuggestionsRoutes from './routes/searchSuggestions.js';
+import shippingConfigRoutes from './routes/shippingConfig.js';
+import { publicCartOffersRouter, adminCartOffersRouter } from './routes/cartOffers.js';
+import catalogImportRoutes from './routes/catalogImport.js';
+import catalogItemsRoutes from './routes/catalogItems.js';
+import catalogTaxonomyRoutes from './routes/catalogTaxonomy.js';
 import catalogRoutes from './routes/catalog.js';
 import checkoutRoutes from './routes/checkout.js';
 import authRoutes from './routes/auth.js';
@@ -69,10 +79,17 @@ app.get('/api/site/group-images', async (_req, res) => {
   }
 });
 
-/** Public bill PDF iframe — same ERP host as checkout (ERP_API_URL). */
+/** Public website sales-invoice PDF. */
 app.use('/api/site/invoice', siteInvoiceRoutes);
+app.use('/api/site/contact', contactInfoRoutes);
+app.use('/api/site/policies', policiesConfigRoutes);
+app.use('/api/site/search-suggestions', searchSuggestionsRoutes);
+app.use('/api/site/landing', landingConfigRoutes);
+app.use('/api/site/shipping', shippingConfigRoutes);
+app.use('/api/site/cart-offers', publicCartOffersRouter);
 
 app.use('/api/upload', requireAdmin);
+app.use('/api/upload/landing', landingConfigRoutes);
 app.use('/api/upload/hero', heroRoutes);
 app.use('/api/upload/header', headerRoutes);
 app.use('/api/upload/group-images', groupImagesRoutes);
@@ -88,12 +105,20 @@ app.use('/api/upload/jewellery/categories', jewelleryCategoriesRoutes);
 app.use('/api/upload/jewellery/products', jewelleryProductsRoutes);
 app.use('/api/upload/jewellery/website-images', websiteImagesRoutes);
 app.use('/api/upload/jewellery/item-meta', itemMetaRoutes);
+app.use('/api/upload/erp-visibility', erpVisibilityRoutes);
+app.use('/api/upload/contact', contactInfoRoutes);
+app.use('/api/upload/search-suggestions', searchSuggestionsRoutes);
+app.use('/api/upload/shipping', shippingConfigRoutes);
+app.use('/api/upload/cart-offers', adminCartOffersRouter);
+app.use('/api/upload/catalog/taxonomy', catalogTaxonomyRoutes);
+app.use('/api/upload/catalog/items', catalogItemsRoutes);
+app.use('/api/upload/catalog', catalogImportRoutes);
 
-// Live ERP inventory catalog (BFF) — multi-client via ERP_STORE_SLUG
+// Website catalog (Neon). ERP is used only via admin Re-import.
 app.use('/api/catalog', catalogRoutes);
 // Customer email/password auth (website shoppers)
 app.use('/api/auth', authRoutes);
-// Checkout: reserve → Razorpay → ERP bill on success
+// Checkout: reserve on website catalog → Razorpay → mark sold
 app.use('/api/checkout', checkoutRoutes);
 
 app.use(
